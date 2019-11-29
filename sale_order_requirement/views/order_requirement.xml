@@ -44,7 +44,7 @@
                         <field name="internal_note" nolabel="1"/>
                     </group>
                     <group col="1" colspan="4">
-                        <field name="order_requirement_line_ids" nolabel="1"/>
+                        <field name="order_requirement_line_ids" nolabel="1" context="{'order_id': id}"/>
                     </group>
                     <button name="set_state_draft" string="Return to Draft" type="object" icon="gtk-ok" states="done,cancel" />
                     <newline />

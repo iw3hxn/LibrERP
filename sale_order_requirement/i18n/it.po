@@ -165,9 +165,16 @@ msgid "BoM Routing"
 msgstr "Routing Distinta"
 
 #. module: sale_order_requirement
+#: field:order.requirement.line,sale_order_line_description:0
+#: field:temp.mrp.bom,name:0
 #: field:temp.mrp.routing,name:0
 msgid "Name"
 msgstr "Nome"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,sale_order_line_notes:0
+msgid "Order Line Notes"
+msgstr "Note della Riga"
 
 #. module: sale_order_requirement
 #: field:temp.mrp.routing,hour:0
@@ -485,6 +492,11 @@ msgstr "Inizia a Lavorare sul Prodotto"
 
 #. module: sale_order_requirement
 #: view:order.requirement.line:0
+msgid "Add Sale Order Line"
+msgstr "Collega una riga dell'ordine cliente"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
 msgid "Reload BOM"
 msgstr "Ricarica BOM"
 
@@ -659,5 +671,12 @@ msgstr "Riga Fabbisogno Ordine"
 
 #. module: sale_order_requirement
 #: view:purchase.order.line:0
+#: view:sale.order.line:0
 msgid "Sale Order Lines"
 msgstr "Ordine di Vendita Collegati"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+#: field:order.requirement.line,sale_order_line_id:0
+msgid "Sale Order Line"
+msgstr "Riga Ordine di Vendita"

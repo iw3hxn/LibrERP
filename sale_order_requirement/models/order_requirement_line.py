@@ -14,10 +14,11 @@ routing_colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
 sequence = 0
 
 
-class order_requirement_line(orm.Model):
+class OrderRequirementLine(orm.Model):
 
     _name = 'order.requirement.line'
     _rec_name = 'product_id'
+    _order = 'sequence asc, id'
 
     col = 0
 
@@ -689,15 +690,24 @@ class order_requirement_line(orm.Model):
 
     _defaults = {
         'state': 'draft',
-        'sequence': 10,
     }
+
+    def default_get(self, cr, uid, fields, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = super(OrderRequirementLine, self).default_get(cr, uid, fields, context)
+
+        if context.get('order_id'):
+            order = self.pool['order.requirement'].read(cr, uid, context['order_id'], ['order_requirement_line_ids'], context)
+            res['sequence'] = (len(order['order_requirement_line_ids']) + 1) * 100
+
+        return res
     
     def unlink(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         order_requirement_ids = []
         for line in self.browse(cr, uid, ids, context):
             order_requirement_ids.append(line.order_requirement_id.id)
-        res = super(order_requirement_line, self).unlink(cr, uid, ids, context)
+        res = super(OrderRequirementLine, self).unlink(cr, uid, ids, context)
 
         order_requirement_ids = list(set(order_requirement_ids))
 
@@ -1398,4 +1408,4 @@ class order_requirement_line(orm.Model):
         if vals.get('new_product_id', False) and not vals.get('product_id', False):
             vals['product_id'] = vals['new_product_id']
 
-        return super(order_requirement_line, self).create(cr, uid, vals, context)
+        return super(OrderRequirementLine, self).create(cr, uid, vals, context)

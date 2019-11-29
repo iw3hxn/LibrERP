@@ -16,6 +16,11 @@
                     <separator colspan="4" string="Production Order"/>
                     <field colspan="4" name="mrp_production_ids" nolabel="1" context="{'view_print': True}" groups="stock.group_stock_user"/>
                 </xpath>
+                <xpath expr="//field[@name='order_line' or @name='abstract_line_ids']/form/notebook" position="inside">
+                    <page string="Sale Order Lines">
+                        <field colspan="4" name="order_requirement_line_ids" nolabel="1" />
+                    </page>
+                </xpath>
 
             </field>
         </record>

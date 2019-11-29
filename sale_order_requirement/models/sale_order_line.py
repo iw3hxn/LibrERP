@@ -4,11 +4,12 @@
 from openerp.osv import orm, fields
 
 
-class sale_order(orm.Model):
+class SaleOrderLine(orm.Model):
     _inherit = 'sale.order.line'
 
     _columns = {
-        'order_requirement_line_id': fields.many2one('order.requirement.line', string='Order requirement line', select=True)
+        # 'order_requirement_line_id': fields.many2one('order.requirement.line', string='Order requirement line', select=True),
+        'order_requirement_line_ids': fields.one2many('order.requirement.line', 'sale_order_line_id', string='Order requirement lines'),
     }
 
     # TODO: If needed, change the view and attach the button from sale_order_line <==> order_requirement_line
