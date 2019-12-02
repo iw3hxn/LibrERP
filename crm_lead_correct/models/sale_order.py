@@ -49,6 +49,11 @@ class sale_order(orm.Model):
         'contact_id': fields.many2one('res.partner.address.contact', 'Contact'), 
     }
 
+    def onchange_partner_id(self, cr, uid, ids, part):
+        res = super(sale_order, self).onchange_partner_id(cr, uid, ids, part)
+        res['value']['contact_id'] = False
+        return res
+
     def hook_sale_state(self, cr, uid, orders, vals, context):
         crm_obj = self.pool['crm.lead']
         state = vals.get('state')
