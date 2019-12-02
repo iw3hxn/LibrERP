@@ -36,11 +36,6 @@ msgid "Parent"
 msgstr "Livello"
 
 #. module: sale_bom
-#: field:sale.order.line,with_bom:0
-msgid "With BOM"
-msgstr "With BOM"
-
-#. module: sale_bom
 #: help:sale.order.line.mrp.bom,sequence:0
 msgid "Gives the sequence order when displaying a list of sales order lines."
 msgstr "Gives the sequence order when displaying a list of sales order lines."
@@ -58,7 +53,7 @@ msgstr "Attributi"
 #. module: sale_bom
 #: field:sale.order.line.mrp.bom,sequence:0
 msgid "Sequence"
-msgstr "Sequence"
+msgstr "Sequenza"
 
 #. module: sale_bom
 #: view:sale.order:0
@@ -104,3 +99,8 @@ msgstr "Linea ordine di vendita"
 #: field:sale.order.line,cost_price_unit_routing
 msgid "Cost Price Routing"
 msgstr "Prezzo di Costo Routing"
+
+#. module: sale_bom
+#: field:sale.order.line,with_bom:0
+msgid "With BOM"
+msgstr "Con Distinta"
