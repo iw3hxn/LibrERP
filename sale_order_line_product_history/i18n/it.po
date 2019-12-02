@@ -41,3 +41,8 @@ msgstr "Storico Vendite"
 #: model:ir.model,name:sale_order_line_product_history.model_sale_order_line
 msgid "Sales Order Line"
 msgstr "Linea d'ordine di vendita"
+
+#. module: sale_order_line_product_history
+#: view:sale.order:0
+msgid "Sell History"
+msgstr "Storico Vendite"
