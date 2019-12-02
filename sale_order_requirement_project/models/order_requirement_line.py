@@ -70,28 +70,33 @@ class OrderRequirementLine(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         for line in self.browse(cr, uid, ids, context):
             if line.product_id.type == 'service':
+                project_task_obj = self.pool['project.task']
                 self.write(cr, uid, line.id, {'state': 'done'}, context)
+                project_task_vals = {}
+                description = []
+                for connect_product in line.connected_product_ids:
+                    description.append(connect_product.name_get()[0][1])
+
+                if line.sale_order_line_id.notes:
+                    description.append(line.sale_order_line_id.notes)
+                if description:
+                    project_task_vals.update({
+                        'description': '\n'.join(description)
+                    })
+
                 if line.sale_order_id.project_project and not line.connected_task_id:
-                    project_task_vals = {
+                    project_task_vals.update({
                         'project_id': line.sale_order_id.project_project.id,
                         'name': re.compile('\[.*\]\ ').sub('', line.sale_order_line_id.name),
                         'user_id': line.user_id and line.user_id.id,
                         'order_requirement_line_ids': [(4, line.id)],
                         'planned_hours': line.planned_hours,
                         'partner_id': line.sale_order_id.partner_id.id
-                    }
-                    description = []
-                    for connect_product in line.connected_product_ids:
-                        description.append(connect_product.name_get()[0][1])
+                    })
 
-                    if line.sale_order_line_id.notes:
-                        description.append(line.sale_order_line_id.notes)
-                    if description:
-                        project_task_vals.update({
-                            'description': '\n'.join(description)
-                        })
-
-                    self.pool['project.task'].create(cr, uid, project_task_vals, context)
+                    project_task_obj.create(cr, uid, project_task_vals, context)
+                if line.connected_task_id:
+                    connected_task_ids = project_task_obj.search(cr, uid, [('order_requirement_line_ids', 'in', line.id)], context=context)
 
             else:
                 super(OrderRequirementLine, self).confirm_suppliers(cr, uid, [line.id], context)

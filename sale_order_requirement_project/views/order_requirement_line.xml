@@ -25,7 +25,7 @@
             <field name="arch" type="xml">
                 <field name="state" position="before">
                     <field name="product_type_small" invisible="1"/>
-                    <field name="order_requirement_id" />
+                    <field name="order_requirement_id"  invisible="1"/>
                 </field>
 <!--                <group name="product_availability" position="attributes">-->
 <!--                    <attribute name="invisible">1</attribute>-->
@@ -48,7 +48,7 @@
             <field name="arch" type="xml">
                 <field name="state" position="before">
                     <field name="product_type_small" invisible="1"/>
-                    <field name="order_requirement_id" />
+                    <field name="order_requirement_id" invisible="1"/>
                 </field>
 <!--                <group name="product_availability" position="attributes">-->
 <!--                    <attribute name="invisible">1</attribute>-->
