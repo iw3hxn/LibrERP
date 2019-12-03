@@ -67,7 +67,7 @@ class product_pricelist_item(orm.Model):
             discount_value = string_discount.replace(',', '.').split("+")
             discount = float(100)
             for discount_str in discount_value:
-                if discount_str.replace('.', '').isdigit():
+                if discount_str.strip().replace('.', '').isdigit():
                     discount -= (discount * float(discount_str) / 100)
             discount = 100 - discount
 
