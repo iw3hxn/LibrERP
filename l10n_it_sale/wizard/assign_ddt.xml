@@ -14,7 +14,7 @@
                             <field name="existing_ddt" nolabel="1" readonly="1"/>
                             <newline/>
                         </group>
-                        <field name="number_method" nolabel="1"/>
+                        <field name="number_method" nolabel="1" on_change="onchange_number_method(number_method)"/>
                         <group col="2" attrs="{'invisible': [('number_method', '=', 'sequence')]}">
                             <label colspan="2" string="This will assign the DDT number"/>
                             <field name="ddt_number_already_exist" invisible="1"/>
