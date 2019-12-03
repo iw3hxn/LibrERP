@@ -42,7 +42,7 @@ msgstr "Modifica Massiva Prezzo"
 #. module: massive_price_change
 #: help:wzd.massive_price_change,value:0
 msgid "Insert a fix price or a value from 0 to 100 to markup old price"
-msgstr "Inserire un prexzzo fisso o un valore compreso tra 0 e 100 per ricaricare il vecchio prezzo"
+msgstr "Inserire un prezzo fisso o un valore compreso tra 0 e 100 per ricaricare il vecchio prezzo"
 
 #. module: massive_price_change
 #: selection:wzd.massive_price_change,name:0
