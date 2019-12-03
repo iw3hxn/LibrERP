@@ -24,7 +24,6 @@ import decimal_precision as dp
 
 
 class product_pricelist_item(orm.Model):
-
     def _price_field_get(self, cr, uid, context=None):
         """
             (1, u'Public Price'), 
@@ -40,24 +39,51 @@ class product_pricelist_item(orm.Model):
 
     _inherit = "product.pricelist.item"
 
-    def Calcolo_Sconto(self, cr, uid, ids, value, context=None):
-        if value:
-            discount_value = value.split("+")
-            discount = float(100)
-            for discount_str in discount_value:
-                if discount_str != "+":
-                    discount -= (discount * float(discount_str) / 100)
-            discount = ((100 - discount) * -1) / 100
-        else:
-            discount = 0
-        return {'value': {'price_discount': discount}}
-
     _columns = {
         'fixed_price': fields.float('Fixed Price',
             digits_compute=dp.get_precision('Sale Price')),
         'base': fields.selection(_price_field_get, 'Based on', required=True, size=-1, help="The mode for computing the price for this rule."),
         'string_discount': fields.char("String Discount", size=20, required=False, translate=False,
-                                       help="Insert the multiple discount like: 50+10+5"),
-        }
+                                       help="Insert the multiple discount like: 50+10+5")
+    }
 
+    # def Calcolo_Sconto(self, cr, uid, ids, value, context=None):
+    #     if value:
+    #         discount_value = value.split("+")
+    #         discount = float(100)
+    #         for discount_str in discount_value:
+    #             if discount_str != "+":
+    #                 discount -= (discount * float(discount_str) / 100)
+    #         discount = ((100 - discount) * -1) / 100
+    #     else:
+    #         discount = 0
+    #     return {'value': {'price_discount': discount}}
 
+    @staticmethod
+    def calcolo_sconto(string_discount, price_unit, price_unit_uos):
+        discount = 0
+        if string_discount:
+            string_discount = string_discount.strip() or '0.0'
+            discount_value = string_discount.replace(',', '.').split("+")
+            discount = float(100)
+            for discount_str in discount_value:
+                if discount_str.replace('.', '').isdigit():
+                    discount -= (discount * float(discount_str) / 100)
+            discount = 100 - discount
+
+        price_unit_discount = price_unit * (100 - discount) / 100
+        price_unit_discount_uos = price_unit_uos * (100 - discount) / 100
+
+        return {'value': {
+            'discount': discount,
+            'string_discount': string_discount,
+            'price_unit_discount': price_unit_discount,
+            'price_unit_discount_uos': price_unit_discount_uos
+        }}
+
+    def Calcolo_Sconto(self, cr, uid, ids, string_discount, context=None):
+        values = self.calcolo_sconto(string_discount, 0, 0)
+        return {'value': {
+            'discount': values['value']['discount'],
+            'string_discount': values['value']['string_discount']
+        }}

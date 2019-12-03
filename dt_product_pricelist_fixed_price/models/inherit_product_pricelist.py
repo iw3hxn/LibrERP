@@ -165,7 +165,7 @@ class product_pricelist(orm.Model):
                         if price:
                             price_limit = price
 
-                            price *= (1.0+(res['price_discount'] or 0.0))
+                            price *= (1.0 + (res['price_discount'] or 0.0))
                             price = rounding(price, res['price_round'])
                             price += (res['price_surcharge'] or 0.0)
                             if res['price_min_margin']:
