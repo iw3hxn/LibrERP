@@ -23,7 +23,7 @@
 ##############################################################################
 {
     "name": "Add History of product in purchase order line",
-    "version": "3.0.1.0",
+    "version": "3.1.1.0",
     "depends": [
         "purchase_discount"
     ],
