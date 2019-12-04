@@ -69,9 +69,9 @@
                         <field colspan="4" name="product_purchase_order_history_ids" nolabel="1" readonly="1">
                             <tree string="Purchase History" editable="bottom">
                                 <field name="order_id"/>
+                                <field name="date_order" />
                                 <field name="name"/>
                                 <field name="partner_id" string="Supplier"/>
-                                <field name="product_id" invisible="1"/>
                                 <field name="price_unit"/>
                                 <field name="discount"/>
                                 <field name="product_qty"/>

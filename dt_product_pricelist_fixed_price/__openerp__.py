@@ -22,7 +22,7 @@
 
 {
     "name": "Price List Fixed Price",
-    "version": "3.1.0.4",
+    "version": "6.1.1.2.4",
     'category': 'Generic Modules/Inventory Control',
     "depends": ["product"],
     "author": "Agile Business Group & Domsense",
@@ -31,8 +31,8 @@
     'init_xml': [],
     'data': [
         'views/pricelist_view.xml',
-        ],
+    ],
     'demo_xml': [],
     'installable': True,
-    'active': False,
+    'active': False
 }

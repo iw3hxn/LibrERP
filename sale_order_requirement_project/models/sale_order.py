@@ -36,6 +36,6 @@ class SaleOrder(orm.Model):
                     'planned_hours': line.product_id and line.product_id.standard_service_time or 1,
                 }
                 ordreqline_id = order_requirement_line_obj.create(cr, uid, ord_req_line_vals, context)
-                sale_order_line_obj.write(cr, uid, line.id, {'order_requirement_line_id': ordreqline_id}, context)
+                # sale_order_line_obj.write(cr, uid, line.id, {'order_requirement_line_id': ordreqline_id}, context)
 
         return res

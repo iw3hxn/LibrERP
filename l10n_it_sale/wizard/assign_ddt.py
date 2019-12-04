@@ -47,6 +47,7 @@ class wizard_assign_ddt(orm.TransientModel):
     #     return res
 
     def _get_existing_ddt(self, cr, uid, ids, prop, unknow_none, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         description = []
         picking_obj = self.pool['stock.picking']
@@ -84,6 +85,7 @@ class wizard_assign_ddt(orm.TransientModel):
     def default_get(self, cr, uid, fields, context=None):
         """
         """
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = super(wizard_assign_ddt, self).default_get(cr, uid, fields, context=context)
         result.update({'ddt_to_recovery': False})
 
@@ -114,39 +116,41 @@ class wizard_assign_ddt(orm.TransientModel):
         return result
 
     def assign_ddt(self, cr, uid, ids, context=None):
-
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        wizard = self.browse(cr, uid, ids[0], context=context)
         picking_obj = self.pool['stock.picking']
+        sequence_recovery_obj = self.pool['ir.sequence_recovery']
+        sequence_obj = self.pool['ir.sequence']
+
         for picking in picking_obj.browse(cr, uid, context.get('active_ids', []), context=context):
             vals = {}
             if picking.ddt_number:
                 raise orm.except_orm('Error', _('DTT number already assigned'))
 
-            ddt_number = self.browse(cr, uid, ids, context=context)[0].ddt_number
+            ddt_number = wizard.ddt_number
             if ddt_number:
                 text = _(u'{picking} has been forced DDT to {ddt_number}').format(picking=picking.name,
                                                                                   ddt_number=ddt_number)
             else:
                 # Assign ddt from journal's sequence
                 if picking.stock_journal_id.ddt_sequence:
-                    ddt_number = self.pool['ir.sequence'].next_by_id(cr, uid, picking.stock_journal_id.ddt_sequence.id)
+                    ddt_number = sequence_obj.next_by_id(cr, uid, picking.stock_journal_id.ddt_sequence.id)
                 else:
-                    ddt_number = self.pool['ir.sequence'].get(cr, uid, 'stock.ddt')
+                    ddt_number = sequence_obj.get(cr, uid, 'stock.ddt')
                 text = _(u'{picking} using sequence for DDT to {ddt_number}').format(picking=picking.name,
                                                                                      ddt_number=ddt_number)
 
-            picking_obj.log(cr, uid, picking.id, text)
+            # picking_obj.log(cr, uid, picking.id, text)
             picking_obj.message_append(cr, uid, [picking.id], text, body_text=text, context=context)
 
-            recovery_ids = self.pool['ir.sequence_recovery'].search(cr, uid, [('name', '=', 'stock.picking'), ('sequence', '=', ddt_number)], context=context)
+            recovery_ids = sequence_recovery_obj.search(cr, uid, [('name', '=', 'stock.picking'), ('sequence', '=', ddt_number)], context=context)
 
             if recovery_ids:
-                recovery_id = recovery_ids[0]
-                self.pool['ir.sequence_recovery'].write(cr, uid, recovery_id, {'active': False}, context)
+                sequence_recovery_obj.write(cr, uid, recovery_ids, {'active': False}, context)
 
             vals.update({
                 'ddt_number': ddt_number,
-                'ddt_date': self.browse(cr, uid, ids, context=context)[0].ddt_date or time.strftime(
-                    DEFAULT_SERVER_DATE_FORMAT),
+                'ddt_date': wizard.ddt_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT),
             })
             picking.write(vals)
 
@@ -156,6 +160,13 @@ class wizard_assign_ddt(orm.TransientModel):
             return {
                 'type': 'ir.actions.act_window_close',
             }
+
+    def onchange_number_method(self, cr, uid, ids, number_method, context=None):
+        return {
+            'value': {
+                'ddt_number': False,
+                'ddt_date': False
+            }}
 
     def onchange_ddt_number(self, cr, uid, ids, ddt_number, context=None):
         ddt_number_already_exist = False

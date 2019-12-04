@@ -75,26 +75,17 @@ class sale_order(orm.Model):
             result['value']['goods_description_id'] = partner.goods_description_id.id
         return result
 
-    def action_ship_create(self, cr, uid, ids, context=None):
+    def action_wait(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        super(sale_order, self).action_ship_create(cr, uid, ids, context)
+        for order in self.browse(cr, uid, ids, context):
+            if not self.service_only(cr, uid, [order], context):
+                if order.company_id.required_minimum_planned_date and not order.minimum_planned_date:
+                    title = _(u'Error')
+                    msg = _(u'Is not possible to confirm because order {order} have no Minimum Planned Date').format(
+                        order=order.name)
+                    raise orm.except_orm(_(title), _(msg))
 
-        for order in self.browse(cr, uid, ids, context=context):
-            if order.company_id.required_minimum_planned_date and not order.minimum_planned_date:
-                title = _(u'Error')
-                msg = _(u'Is not possible to confirm because order {order} have no Minimum Planned Date').format(order=order.name)
-                raise orm.except_orm(_(title), _(msg))
-            # # partner = self.pool['res.partner'].browse(cr, uid, order.partner_id.id)
-            # picking_obj = self.pool['stock.picking']
-            # picking_ids = picking_obj.search(cr, uid, [('sale_id', '=', order.id)], context=context)
-            # for picking_id in picking_ids:
-            #     picking_obj.write(cr, uid, picking_id, {
-            #         # 'order_id': order.id,
-            #         'carriage_condition_id': order.carriage_condition_id.id,
-            #         'goods_description_id': order.goods_description_id.id,
-            #         # 'transportation_reason_id': partner.transportation_reason_id.id,
-            #         }, context=context)
-        return True
+        return super(sale_order, self).action_wait(cr, uid, ids, context)
 
     def _prepare_order_line_move(self, cr, uid, order, line, picking_id, date_planned, context=None):
         res = super(sale_order, self)._prepare_order_line_move(cr, uid, order, line, picking_id, date_planned, context)
