@@ -264,7 +264,7 @@
 
                     <button context="" name="action_open_bom" icon="terp-mrp" type="object" help="Start to Work on BOM" states="draft" />
                     <button name="action_reload_bom" icon="gtk-refresh" type="object" help="Reload BOM"
-                            states="done"/>
+                            attrs="{'invisible': [('state','!=','draft')]}"/>
                     <field name="production_orders_state"/>
                     <field name="purchase_orders_approved"/>
                     <field name="purchase_orders_state"/>

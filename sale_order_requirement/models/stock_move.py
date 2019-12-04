@@ -59,12 +59,13 @@ class StockMove(orm.Model):
                         order_name += ', '
                     order_name += line.name_get()[0][1]
                     order_ids.append(line.id)
-            elif stock_move.sale_line_id and stock_move.sale_line_id.order_requirement_line_id:
-                for line in stock_move.sale_line_id.order_requirement_line_id.temp_mrp_bom_ids:
-                    if order_name:
-                        order_name += ', '
-                    order_name += line.name_get()[0][1]
-                    order_ids.append(line.id)
+            elif stock_move.sale_line_id and stock_move.sale_line_id.order_requirement_line_ids:
+                for requirement_line in stock_move.sale_line_id.order_requirement_line_ids:
+                    for line in requirement_line.temp_mrp_bom_ids:
+                        if order_name:
+                            order_name += ', '
+                        order_name += line.name_get()[0][1]
+                        order_ids.append(line.id)
             res[stock_move.id] = {
                 'temp_mrp_bom_list': order_name,
                 'temp_mrp_bom_ids': order_ids
@@ -257,7 +258,7 @@ class StockMove(orm.Model):
         'production_order_state': fields.function(_get_production_order, type='char', size=128, method=True, string='Production Order', multi="production_order"),
 
         'product_bom_ids': fields.related(
-            'sale_line_id', 'order_requirement_line_id', 'temp_mrp_bom_ids', 'product_id',
+            'sale_line_id', 'order_requirement_line_ids', 'temp_mrp_bom_ids', 'product_id',
             string='Product BOM', relation='product.product', type='many2one'),
         'has_bom': fields.function(_has_bom, method=True, type='boolean', string='Product has bom?', readonly=True),
 
