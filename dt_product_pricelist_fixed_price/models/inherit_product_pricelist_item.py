@@ -84,6 +84,6 @@ class product_pricelist_item(orm.Model):
     def Calcolo_Sconto(self, cr, uid, ids, string_discount, context=None):
         values = self.calcolo_sconto(string_discount, 0, 0)
         return {'value': {
-            'discount': values['value']['discount'],
+            'price_discount': values['value']['discount'],
             'string_discount': values['value']['string_discount']
         }}
