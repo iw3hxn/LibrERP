@@ -39,6 +39,20 @@
 			</field>
 		</record>
 
+        <record model="ir.ui.view" id="view_purchase_order_filter_ext_search_view">
+			<field name="name">view.purchase.order.filter.ext.search.view</field>
+			<field name="model">purchase.order</field>
+			<field name="type">search</field>
+			<field name="inherit_id" ref="purchase.view_purchase_order_filter" />
+			<field name="arch" type="xml">
+				<xpath expr="//search//filter[@string='State']" position="after">
+					<filter string="User" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+				</xpath>
+			</field>
+		</record>
+
+
+
         <record id="view_purchase_order_form_line_sequenxe" model="ir.ui.view">
             <field name="name">purchase.order.line.sequence</field>
             <field name="model">purchase.order</field>
