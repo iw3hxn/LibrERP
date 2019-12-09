@@ -1197,15 +1197,13 @@ class OrderRequirementLine(orm.Model):
             else:
                 self._purchase_bom(cr, uid, line, context)
 
-            self.write(cr, uid, line.id, {'state': 'done'}, context)
+            line.write({'state': 'done'})
 
             # Counting lines in Draft state, for current order requirement
-            lines_draft = len(self.search(cr, uid, [('sale_order_id', '=', line.sale_order_id.id),
-                                                    ('state', '=ilike', 'draft')], context=context))
+            lines_draft = self.search(cr, uid, [('sale_order_id', '=', line.sale_order_id.id), ('state', '=', 'draft')], context=context, count=True)
             if lines_draft == 0:
                 # No more draft lefts
-                order_requirement_obj = self.pool['order.requirement']
-                order_requirement_obj.write(cr, uid, line.order_requirement_id.id, {'state': 'done'}, context)
+                line.order_requirement_id.write({'state': 'done'})
 
         return {
             'type': 'ir.actions.act_window_close'

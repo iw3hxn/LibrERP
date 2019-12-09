@@ -28,7 +28,7 @@
                             <tree string="Bom Line" editable="bottom" >
                                 <field name="order_id" invisible="1" />
                                 <field name="parent_id" readonly="1" />
-                                <field name="product_id" on_change="bom_product_id_change(product_id, product_uom, product_uom_qty, price_unit, context)" />
+                                <field name="product_id" on_change="bom_product_id_change(product_id, product_uom, product_uom_qty, False, context)" />
                                 <field name="name" string="Note"/>
                                 <field name='product_uom_qty' on_change="bom_product_id_change(product_id, product_uom, product_uom_qty, price_unit, context)"/>
                                 <field name='product_uom' on_change="bom_product_id_change(product_id, product_uom, product_uom_qty, price_unit, context)"/>
