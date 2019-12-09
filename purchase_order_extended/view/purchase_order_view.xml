@@ -9,6 +9,7 @@
             <field name="arch" type="xml">
                 <tree colors="grey:state=='cancel';blue:state in ('draft');orange:state in ('wait','confirmed');red:state in ('approved') and minimum_planned_date &lt; current_date" string="Purchase Order">
                     <field name="name" string="Reference"/>
+                    <field name="user_id" />
                     <field name="date_order" />
                     <field name="partner_id"/>
                     <field name="company_id" groups="base.group_multi_company" widget="selection"/>
@@ -22,6 +23,21 @@
                 </tree>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="view_request_for_quotation_filter_ext_search_view">
+			<field name="name">view.request.for_quotation.filter.ext.search.view</field>
+			<field name="model">purchase.order</field>
+			<field name="type">search</field>
+			<field name="inherit_id" ref="purchase.view_request_for_quotation_filter" />
+			<field name="arch" type="xml">
+				<field name="create_uid" position="after">
+					<field name="user_id"/>
+				</field>
+				<xpath expr="//search//filter[@string='State']" position="after">
+					<filter string="User" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+				</xpath>
+			</field>
+		</record>
 
         <record id="view_purchase_order_form_line_sequenxe" model="ir.ui.view">
             <field name="name">purchase.order.line.sequence</field>
