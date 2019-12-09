@@ -954,7 +954,7 @@ class OrderRequirementLine(orm.Model):
 
         if not purchase_order_ids:
             # Adding if no "similar" orders are presents
-
+            ctx = self.pool['res.users'].context_get(cr, uid)
             purchase_order_values = purchase_order_obj.onchange_partner_id(cr, uid, [], supplier_id)['value']
             if not purchase_order_values.get('partner_address_id', False):
                 raise orm.except_orm(_(u'Error !'),
@@ -971,10 +971,10 @@ class OrderRequirementLine(orm.Model):
                 # 'sale_order_ids': [(4, sale_order_id)],
             })
 
-            purchase_id = purchase_order_obj.create(cr, uid, purchase_order_values, context=context)
+            purchase_id = purchase_order_obj.create(cr, uid, purchase_order_values, context=ctx)
 
             purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, uom_id, qty,
-                                                                             purchase_order_values, supplier_id, context)
+                                                                             purchase_order_values, supplier_id, ctx)
             purchase_order_line_values.update({
                 # 'account_analytic_id': account_analytic_id,
                 'product_qty': qty,
@@ -995,7 +995,7 @@ class OrderRequirementLine(orm.Model):
             self.write(cr, uid, line_obj.id, {
                 'purchase_order_ids': [(4, purchase_id)],
                 'purchase_order_line_ids': [(4, purchase_line_id)]
-            }, context)
+            }, ctx)
 
             if is_temp_bom:
                 # If is a temp mrp bom, associate purchase line also to it
