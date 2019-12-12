@@ -85,30 +85,30 @@ class ImportFile(threading.Thread, Utils):
         self.cache_uom_product = {}
     
     def run(self):
-        # Recupera il record dal database
-        self.filedata_obj = self.pool['picking.import']
-        self.pickingImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.pickingImportID, context=self.context)
-        self.file_name = self.pickingImportRecord.file_name.split('\\')[-1]
-        self.address_id = self.pickingImportRecord.address_id
-        self.stock_journal_id = self.pickingImportRecord.stock_journal_id
-        self.location_id = self.pickingImportRecord.location_id
-        self.location_dest_id = self.pickingImportRecord.location_dest_id
-
-        # ===================================================
-        Config = getattr(settings, self.pickingImportRecord.format)
-
-        self.HEADER = Config.HEADER_PICKING
-        self.REQUIRED = Config.REQUIRED_PICKING
-        
-        if not len(self.HEADER) == len(Config.COLUMNS_PICKING.split(',')):
-            pprint(zip(self.HEADER, Config.COLUMNS_PICKING.split(',')))
-            raise orm.except_orm('Error: wrong configuration!', 'The length of columns and headers must be the same')
-        
-        self.RecordPicking = namedtuple('RecordPicking', Config.COLUMNS_PICKING)
-
-        # ===================================================
-
         try:
+            # Recupera il record dal database
+            self.filedata_obj = self.pool['picking.import']
+            self.pickingImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.pickingImportID, context=self.context)
+            self.file_name = self.pickingImportRecord.file_name.split('\\')[-1]
+            self.address_id = self.pickingImportRecord.address_id
+            self.stock_journal_id = self.pickingImportRecord.stock_journal_id
+            self.location_id = self.pickingImportRecord.location_id
+            self.location_dest_id = self.pickingImportRecord.location_dest_id
+
+            # ===================================================
+            Config = getattr(settings, self.pickingImportRecord.format)
+
+            self.HEADER = Config.HEADER_PICKING
+            self.REQUIRED = Config.REQUIRED_PICKING
+
+            if not len(self.HEADER) == len(Config.COLUMNS_PICKING.split(',')):
+                pprint(zip(self.HEADER, Config.COLUMNS_PICKING.split(',')))
+                raise orm.except_orm('Error: wrong configuration!', 'The length of columns and headers must be the same')
+
+            self.RecordPicking = namedtuple('RecordPicking', Config.COLUMNS_PICKING)
+
+            # ===================================================
+
             table, self.numberOfLines = import_sheet(self.file_name, self.pickingImportRecord.content_text)
         except Exception as e:
                 # Annulla le modifiche fatte
