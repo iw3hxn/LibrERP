@@ -41,7 +41,9 @@ class filedata_import(orm.TransientModel):
     # # # # # # # # # # # # # #
     # action of button click  #
     # # # # # # # # # # # # # #
-    def actionCheckEncoding(self, cr, uid, ids, context=False):
+    def actionCheckEncoding(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid, context=context)
+
         # WARNING: Context is required, for correct functionally of 'read'.
         record = self.browse(cr, uid, ids[0], context=context)
 
