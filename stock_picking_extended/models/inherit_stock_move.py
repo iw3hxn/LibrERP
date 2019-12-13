@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 
-#    Copyright (C) 2015 Didotech srl
+#    Copyright (C) 2015-2019 Didotech srl
 #    (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 
 import decimal_precision as dp
 from openerp.osv import orm, fields
+from collections import defaultdict
 
 
 class stock_move(orm.Model):
@@ -69,7 +70,7 @@ class stock_move(orm.Model):
 
     def _get_average_price(self, cr, uid, ids, field_name, arg, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        res = {}
+        res = defaultdict(dict)
         stock_move_group_read_ids = []
         stock_move_group_obj = self.pool['stock.move.group']
         for move in self.read(cr, uid, ids, ['product_id', 'location_id'], context=context, load='_obj'):
@@ -89,7 +90,7 @@ class stock_move(orm.Model):
             average_price = move_group.average
             res[move_id]['average_price'] = average_price
 
-        return res
+        return dict(res)
 
     _columns = {
         'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
