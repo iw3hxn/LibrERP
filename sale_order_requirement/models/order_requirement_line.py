@@ -859,11 +859,12 @@ class OrderRequirementLine(orm.Model):
             for t in temp.bom_lines:
                 _recalc_qty_rec(t, new_qty)
 
-        father = line.temp_mrp_bom_ids[0]
-        new_father_qty = father.original_qty * qty
-        temp_mrp_bom_obj.write(cr, uid, father.id, {'product_qty': new_father_qty}, context)
-        # Recursively calculate quantity
-        _recalc_qty_rec(father, new_father_qty)
+        if line.temp_mrp_bom_ids:
+            father = line.temp_mrp_bom_ids[0]
+            new_father_qty = father.original_qty * qty
+            temp_mrp_bom_obj.write(cr, uid, father.id, {'product_qty': new_father_qty}, context)
+            # Recursively calculate quantity
+            _recalc_qty_rec(father, new_father_qty)
 
         total_cost = self._update_cost(cr, uid, line_id, context)
         return {'value': {'qty': qty, 'cost': total_cost}}
