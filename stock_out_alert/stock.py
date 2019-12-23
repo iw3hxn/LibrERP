@@ -67,7 +67,7 @@ class stock_move(osv.osv):
                                                       attachments=None,
                                                       subtype='plain',
                                                       reply_to=email_from,
-                                                      auto_delete=True,
+                                                      auto_delete=False,
                                                       context=context)
             else:
                 _logger.info("...no product out of stock found.")
@@ -84,8 +84,8 @@ class stock_move(osv.osv):
         orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
         uom_obj = self.pool.get('product.uom')
         prod_list = []
-        for op_id in orderpoint_obj.search(cr, uid, [('active', '=', True)], context=context):
-            op = orderpoint_obj.browse(cr, uid, op_id, context=context)
+        orderpoint_ids = orderpoint_obj.search(cr, uid, [('active', '=', True)], context=context)
+        for op in orderpoint_obj.browse(cr, uid, orderpoint_ids, context=context):
             product = op.product_id
             uom = product.product_tmpl_id.uom_id
             uom_po = product.product_tmpl_id.uom_po_id
