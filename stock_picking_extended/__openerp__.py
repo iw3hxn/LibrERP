@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2010 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
-#    Copyright (C) 2014-2018 Didotech SRL (<http://didotech.com>).
+#    Copyright (C) 2014-2019 Didotech SRL (<http://didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -22,7 +22,7 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.46.54.62',
+    'version': '3.46.55.62',
     'category': 'Others',
     'description': """LibrERP - Stock picking extension
 

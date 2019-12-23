@@ -131,10 +131,15 @@ class project_issue(orm.Model):
                     contact_ids = contact_obj.search(cr, uid, [('email', '=', email)], context=context)
                     if contact_ids:
                         partner_id = contact_obj.browse(cr, uid, contact_ids, context)[0].partner_id.id
-                        project_ids = project_obj.search(cr, uid, [('partner_id', '=', partner_id), ('state', 'in', ['open'])], context=context)
+                        project_ids = project_obj.search(cr, uid, [
+                            ('partner_id', '=', partner_id),
+                            ('state', 'in', ['open'])
+                        ], context=context)
                         if project_ids and len(project_ids) == 1:
-                            task_ids = task_obj.search(cr, uid, [('project_id', '=', project_ids[0]), ('state', 'in', ['open', 'working'])],
-                                                                        context=context)
+                            task_ids = task_obj.search(cr, uid, [
+                                ('project_id', '=', project_ids[0]),
+                                ('state', 'in', ['open', 'working'])
+                            ], context=context)
                             if task_ids and len(task_ids) == 1:
                                 task_id = task_ids[0]
                                 user = task_obj.browse(cr, uid, [task_id], context)[0].user_id
@@ -168,4 +173,10 @@ class project_issue(orm.Model):
     #     # import pdb;pdb.set_trace()
     #     return res
 
+    def silent_done(self, cr, uid, context=None):
+        if context.get('active_id'):
+            # Context that disable base.action.rule
+            new_context = {'action': True, '_action_trigger': 'write'}
+            self.write(cr, uid, context['active_id'], {'state': 'done'}, new_context)
 
+        return True
