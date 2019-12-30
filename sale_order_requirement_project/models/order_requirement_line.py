@@ -69,7 +69,7 @@ class OrderRequirementLine(orm.Model):
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         for line in self.browse(cr, uid, ids, context):
-            if line.product_id.type == 'service':
+            if line.product_id.type == 'service' and not line.buy:
                 project_task_obj = self.pool['project.task']
                 self.write(cr, uid, line.id, {'state': 'done'}, context)
                 project_task_vals = {}
