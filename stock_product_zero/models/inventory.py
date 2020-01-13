@@ -261,10 +261,10 @@ class stock_fill_inventory(orm.TransientModel):
         # unfortunately not hook
         inventory_id = context['id']
         self._logger.debug('FGF fill inventory ids, context %s, %s' % (ids, context))
-        display_with_zero_qty = None
+        # display_with_zero_qty = None
         # FIXME - display_with_zero_qty access not possible
-        # fill_inventory = self.browse(cr, uid, ids, context=context)
-        # display_with_zero_qty = fill_inventory.display_with_zero_qty
+        fill_inventory = self.browse(cr, uid, ids[0], context=context)
+        display_with_zero_qty = fill_inventory.display_with_zero_qty
 
         res_all = super(stock_fill_inventory, self).fill_inventory(cr, uid, ids, context)
 
