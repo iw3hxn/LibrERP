@@ -34,7 +34,7 @@ class ResPartner(orm.Model):
 
         for partner in self.browse(cr, uid, ids, context):
 
-            results[partner.id] = False
+            results[partner.id] = True
 
             if minutes_amount and minutes_amount > 0:
                 time_right_now = datetime.now()
@@ -43,7 +43,7 @@ class ResPartner(orm.Model):
                 seconds_left = int(delta_left.total_seconds())
 
                 if seconds_left > 0:
-                    results[partner.id] = True
+                    results[partner.id] = False
 
             if has_group:
                 results[partner.id] = False
