@@ -12,7 +12,7 @@
 				</field>
 
 				<field name="cf" position="attributes">
-					<attribute name="attrs">{'readonly': [('vat_readonly', '!=', False)]}</attribute>
+					<attribute name="attrs">{'readonly': [('vat_readonly', '!=', False)], 'invisible': [('individual', '=', False)]}</attribute>
 				</field>
 
   				<xpath expr="/form/notebook/page[@string='Fiscal Code']/field[@name='fiscalcode']" position="attributes">
