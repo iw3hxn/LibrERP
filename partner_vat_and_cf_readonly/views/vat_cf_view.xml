@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+		<record id="base_vat.view_partner_form_readonly" model="ir.ui.view">
+            <field name="name">res.partner.vat.inherit.readonly</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_it_account.view_partner_form_fiscalcode_data"/>
+
+            <field name="arch" type="xml">
+				<field name="vat" position="attributes">
+					<attribute name="attrs">{'readonly': [('vat_readonly', '!=', False)]}</attribute>
+				</field>
+
+				<field name="cf" position="attributes">
+					<attribute name="attrs">{'readonly': [('vat_readonly', '!=', False)], 'invisible': [('individual', '=', False)]}</attribute>
+				</field>
+
+  				<xpath expr="/form/notebook/page[@string='Fiscal Code']/field[@name='fiscalcode']" position="attributes">
+					<attribute name="attrs">{'readonly': [('vat_readonly', '!=', False)]}</attribute>
+                </xpath>
+
+				<field name="vat" position="after" >
+					<field name="vat_readonly" invisible="1" />
+				</field>
+            </field>
+        </record>
+	</data>
+</openerp>
