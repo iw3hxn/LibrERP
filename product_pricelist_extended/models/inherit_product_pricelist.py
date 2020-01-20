@@ -156,7 +156,7 @@ class ProductPricelist(orm.Model):
         if ttype == 'sale':
             domain = [('customer', '=', True)]
         elif ttype == 'purchase':
-            domain = ('supplier', '=', True)
+            domain = [('supplier', '=', True)]
         else:
             domain = []
 

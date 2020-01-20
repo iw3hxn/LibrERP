@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-		<record id="action_orders_renew" model="ir.actions.server">
-            <field name="name">Renew Orders</field>
-            <field name="model_id" ref="model_sale_order"/>
-            <field name="state">code</field>
-            <field name="code">action = obj.renew_orders({'anticipation': True})</field>
-        </record>
-      
-        <record id="action_open_analytic_account" model="ir.values">
-            <field name="name">Renew Orders</field>
-            <field name="key2">client_action_multi</field>
-            <field name="model">sale.order</field>
-            <field name="value" eval="'ir.actions.server,%d'%action_orders_renew" />
-            <field name="object" eval="True" />
-        </record>
+
     </data>
 </openerp>
