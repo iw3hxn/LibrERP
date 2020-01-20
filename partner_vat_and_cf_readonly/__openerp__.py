@@ -18,6 +18,7 @@
     ],
     "data": [
         'views/vat_cf_view.xml',
+        'data/vat_amount_of_minutes_data.xml'
     ],
     "demo": [],
     "active": False,
