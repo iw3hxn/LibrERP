@@ -36,6 +36,7 @@
     'init_xml': [],
     'update_xml': [
         'views/sale_view.xml',
+        'security/ir.model.access.csv'
     ],
 
     'installable': True,
