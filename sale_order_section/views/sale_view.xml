@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record id="view_order_form_section" model="ir.ui.view">
+            <field name="name">sale.order.form.section</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="type">form</field>
+            <field name="priority" eval="31"/>
+            <field name="arch" type="xml">
+                <data>
+
+                    <field name="pricelist_id" position="after">
+                        <group colspan="3" col="12" string="Stampa">
+                            <field name="view_total" invisible="1"/>
+                            <button name="action_check_intro" string="Totali visualizzati" type="object" icon="gtk-yes"
+                                    context="{ 'intro_id': 1}" colspan="2"
+                                    attrs="{'invisible': [('view_total', '=', False)]}"/>
+                            <button name="action_check_intro" string="Totali nascosti" type="object" icon="gtk-no"
+                                    context="{ 'intro_id': 1}" colspan="2"
+                                    attrs="{'invisible': [('view_total', '=', True)]}"/>
+
+                            <field name="view_discount" invisible="1"/>
+                            <button name="action_check_intro" string="Sconti visualizzati" type="object" icon="gtk-yes"
+                                    context="{ 'intro_id': 2}" colspan="2"
+                                    attrs="{'invisible': [('view_discount', '=', False)]}"/>
+                            <button name="action_check_intro" string="Sconti nascosti" type="object" icon="gtk-no"
+                                    context="{ 'intro_id': 2}" colspan="2"
+                                    attrs="{'invisible': [('view_discount', '=', True)]}"/>
+                            <newline/>
+                            <field name="view_price_unit" invisible="1"/>
+                            <button name="action_check_intro" string="Lordo e netto" type="object" icon="gtk-yes"
+                                    context="{ 'intro_id': 3}" colspan="2"
+                                    attrs="{'invisible': [('view_price_unit', '=', True)]}"/>
+                            <button name="action_check_intro" string="Solo Lordo" type="object" icon="gtk-no"
+                                    context="{ 'intro_id': 3}" colspan="2"
+                                    attrs="{'invisible': [('view_price_unit', '=', False)]}"/>
+
+                            <field name="view_code" invisible="1"/>
+                            <button name="action_check_intro" string="Codici visualizzati" type="object" icon="gtk-yes"
+                                    context="{ 'intro_id': 4}" colspan="2"
+                                    attrs="{'invisible': [('view_code', '=', False)]}"/>
+                            <button name="action_check_intro" string="Codici nascosti" type="object" icon="gtk-no"
+                                    context="{ 'intro_id': 4}" colspan="2"
+                                    attrs="{'invisible': [('view_code', '=', True)]}"/>
+                        </group>
+                        <field name="order_line_base_ids" colspan="4" nolabel="1">
+                            <tree string="Sezioni" editable="top"
+                                  colors="aqua:color=='aqua';black:color=='black';blue:color=='blue';brown:color=='brown';cadetblue:color=='cadetblue';darkblue:color=='darkblue';fuchsia:color=='fuchsia';forestgreen:color=='forestgreen';orange:color=='orange';green:color=='green';grey:color=='grey';red:color=='red';">
+                                <field name="is_store" invisible="1"/>
+                                <button name="action_remove" string="Giù" type="object" icon="gtk-remove"
+                                        attrs="{'invisible':[('is_store','==', 0)]}"/>
+                                <field name="sequence"/>
+                                <button name="action_add" string="Su" type="object" icon="gtk-add"
+                                        attrs="{'invisible':[('is_store','==', 0)]}"/>
+                                <field name="name"/>
+                                <field name="color"/>
+                                <field name="report_print"/>
+                                <field name="default"/>
+                                <button name="action_check" string="Corrente" type="object" icon="gtk-apply"
+                                        attrs="{'invisible': [('is_store','==', 0)]}"/>
+                                <field name="subtotal" sum="totale"/>
+                            </tree>
+                        </field>
+                    </field>
+
+                    <xpath expr="//field[@name='order_line' or @name='abstract_line_ids']/form//field[@name='product_id']"
+                       position="after">
+                        <newline/>
+                        <field name="order_line_base_id" domain="[('order_id', '=', parent.id)]"/>
+
+                    </xpath>
+
+
+                    <xpath expr="//field[@name='order_line' or @name='abstract_line_ids']/tree"
+                           position="attributes">
+                        <attribute name="colors">aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';</attribute>
+                    </xpath>
+
+                    <xpath expr="//field[@name='order_line' or @name='abstract_line_ids']/tree//field[@name='name']"
+                           position="before">
+                        <field name="id" groups="base.group_system"/>
+                        <button name="button_duplicate" type="object" icon="STOCK_COPY"/>
+                        <field name="row_color" invisible="1"/>
+                        <field name="order_line_base_id"/>
+                        <field name="option"/>
+                    </xpath>
+
+                    <field name="order_line" position="attributes">
+                        <attribute name="context">{'no_create_product': True, 'partner_id': partner_id, 'pricelist_id': pricelist_id, 'date_order': date_order, 'fiscal_position': fiscal_position, 'order_id': id, 'order_line_base_ids': order_line_base_ids, 'shop_id': shop_id, 'default_order_id': active_id, 'pricelist_id': pricelist_id}</attribute>
+                    </field>
+
+
+                </data>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

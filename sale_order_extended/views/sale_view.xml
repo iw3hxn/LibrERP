@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_order_form_sequence" model="ir.ui.view">
+            <field name="name">sale.order.form.sequence</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="type">form</field>
+            <field name="priority" eval="31"/>
+            <field name="arch" type="xml">
+                <data>
+
+                    <xpath expr="/form/notebook/page/field[@name='order_line']/tree[@string='Sales Order Lines']/field[@name='name']"
+                           position="before">
+                        <field name="sequence" invisible="1"/>
+                    </xpath>
+
+                </data>
+            </field>
+        </record>
+
+    </data>
+</openerp>

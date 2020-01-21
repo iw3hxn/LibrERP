@@ -29,7 +29,7 @@
 
 {
     "name": "Sale Order Extended",
-    "version": "3.0.3.0",
+    "version": "3.0.3.1",
     "category": "Sales Management",
     "description": """This Module increases usability on sale order
     """,
@@ -40,6 +40,7 @@
         'sale'
     ],
     "data": [
+        'views/sale_view.xml'
     ],
     "demo_xml": [],
     "installable": True,
