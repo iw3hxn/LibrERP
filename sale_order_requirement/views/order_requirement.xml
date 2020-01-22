@@ -60,6 +60,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Order Requirement" colors="blue:state == 'draft'; black:state in ('done'); gray:state == 'cancel'">
+                    <field name="id" />
                     <field name="sale_order_id"/>
                     <field name="client_order_ref"/>
                     <field name="date"/>

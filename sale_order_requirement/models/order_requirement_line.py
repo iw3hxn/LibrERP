@@ -639,7 +639,17 @@ class OrderRequirementLine(orm.Model):
             res[line.id] = has_bom
         return res
 
+    def _get_order_line_sequence(self, cr, uid, ids, field_name, arg, context):
+        result = {}
+        for line in self.browse(cr, uid, ids, context):
+            if line.order_requirement_id:
+                result[line.id] = line.order_requirement_id.order_requirement_line_ids.index(line) + 1
+            else:
+                result[line.id] = 0
+        return result
+
     _columns = {
+        'seq': fields.function(_get_order_line_sequence, string='Line #', type='integer', method=True),
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
                                           states={'draft': [('readonly', False)]}, select=True),
         'product_id': fields.many2one('product.product', 'Original Product', readonly=True),

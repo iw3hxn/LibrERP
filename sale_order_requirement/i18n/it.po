@@ -9,6 +9,11 @@ msgid "Order requirement lines"
 msgstr "Righe fabbisogno ordine"
 
 #. module: sale_order_requirement
+#: field:order.requirement.line,seq:0
+msgid "Line #"
+msgstr "Nr. linea"
+
+#. module: sale_order_requirement
 #: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement
 #: model:ir.ui.menu,name:sale_order_requirement.menu_view_order_requirement
 #: view:order.requirement:0
