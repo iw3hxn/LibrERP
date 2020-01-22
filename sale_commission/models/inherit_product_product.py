@@ -35,3 +35,12 @@ class product_product(orm.Model):
         'commission_exent': lambda *a: False,
     }
 
+    def copy(self, cr, uid, ids, default={}, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        default = default or {}
+        default.update({
+            'product_agent_ids': [],
+            'commission_exent': False
+        })
+
+        return super(product_product, self).copy(cr, uid, ids, default, context)

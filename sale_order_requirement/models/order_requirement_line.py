@@ -1227,19 +1227,18 @@ class OrderRequirementLine(orm.Model):
         is_manufactured = line.is_manufactured
         qty_mult = line.qty
 
-        if not line.new_product_id:
-            product_id = line.product_id.id
-            is_manufactured = True
-            line_vals = line.get_suppliers(line.product_id, context=context)
-            supplier_ids_formatted = line_vals['supplier_ids']
-            line_vals.update({'new_product_id': product_id,
+        product = line.new_product_id or line.product_id
+        is_manufactured = True
+        line_vals = line.get_suppliers(product, context=context)
+        supplier_ids_formatted = line_vals['supplier_ids']
+        line_vals.update({'new_product_id': product.id,
                               'is_manufactured': is_manufactured,
                               'supplier_ids': supplier_ids_formatted
                               })
 
-            self.write(cr, uid, line.id, line_vals, context)
-            # Reload line
-            line = self.browse(cr, uid, ids, context)[0]
+        self.write(cr, uid, line.id, line_vals, context)
+        # Reload line
+        line = self.browse(cr, uid, ids, context)[0]
 
         if line.cost == 0 or line.original_cost == 0:
             total_cost = line.new_product_id.cost_price
