@@ -9,6 +9,7 @@
 "access_create_partnerinfo","model_pricelist_partnerinfo","product.model_pricelist_partnerinfo","group_create_product",1,1,1,1
 "access_create_stock_warehouse_orderpoint","stock_warehouse_orderpoint","procurement.model_stock_warehouse_orderpoint","group_create_product",1,1,1,0
 "access_unlink_product_product","product_product","model_product_product","group_unlink_product",1,1,1,1
+"access_unlink_ir_property","ir_property","base.model_ir_property","group_unlink_product",1,1,1,1
 "access_unlink_product_template","product_template","product.model_product_template","group_unlink_product",1,1,1,1
 "access_unlink_mrp_bom","mrp_bom","model_mrp_bom","group_unlink_product",1,1,1,1
 "access_unlink_mrp_bom_version","mrp_bom_revision","mrp.model_mrp_bom_revision","group_unlink_product",1,1,1,1
