@@ -104,7 +104,7 @@ class StockSellGroupProduct(orm.Model):
                                             sm.partner_id as partner_id, 
                                             sp.stock_journal_id AS stock_journal_id, 
                                             sm.product_id AS product_id,
-                                            sm.location_id AS location_id,
+                                            sm.location_dest_id AS location_id,
                                             - sm.product_qty AS qty_out, 
                                             sm.product_uom AS product_uom, 
                                             sm.price_unit AS price,
