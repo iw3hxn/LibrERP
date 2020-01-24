@@ -9,45 +9,46 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 
-class StockSellGroup(orm.Model):
-    _name = 'stock.sell.group'
+class StockSellGroupProduct(orm.Model):
+    _name = 'stock.sell.group.product'
 
     _auto = False
     _rec_name = 'product_id'
 
     _columns = {
         'year': fields.integer('Year'),
-        'document_date': fields.datetime('Date'),
-        'real_date': fields.date('Real Date'),
-        'stock_journal_id': fields.many2one('stock.journal', 'Journal'),
-        'partner_id': fields.many2one('res.partner', 'Partner'),
         'product_id': fields.many2one('product.product', 'Product'),
         'categ_id': fields.many2one('product.category', 'Category'),
         'location_id': fields.many2one('stock.location', 'Location'),
         'qty_out': fields.float(string='Out Qty', digits_compute=dp.get_precision('Product UoM')),
-        'product_uom': fields.many2one('product.uom', 'Product Uom'),
-        'price': fields.float(string='Price Unit', digits_compute=dp.get_precision('Sale Price')),
-        'origin': fields.char('Origin', size=64),
-        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
-        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
-        'source_location_id': fields.reference("Source Location", [
-            ('sale.order', 'Sale Order'),
-            ('pos.order', 'Pos Order'),
-            ('purchase.order', 'Purchase Order')], size=128),
-        'move_line_id': fields.many2one('stock.move', 'Move', readonly=True),
+        'default_code': fields.char('Default Code', size=64),
     }
 
-    _order = "document_date, id"
+    _order = "qty_out desc, id"
 
     def init(self, cr):
-        tools.drop_view_if_exists(cr, 'stock_sell_group')
+        tools.drop_view_if_exists(cr, 'stock_sell_group_product')
         try:
             cr.execute("""
-                create or replace view stock_sell_group AS (
-                SELECT 
-                    D.*,
-                    pt.categ_id
-                FROM(
+                create or replace view stock_sell_group_product AS (
+                SELECT F.* 
+                    FROM(
+            
+                    SELECT 
+                        E.year, 
+                        E.product_id, 
+                        E.location_id, 
+                        E.categ_id,
+                        E.default_code,
+                        sum(E.qty_out) AS qty_out, 
+                        min(E.id) as ID
+                    FROM(
+                    SELECT 
+                                D.*,
+                                pt.categ_id,
+                    pp.default_code
+                    
+                    FROM(
                     SELECT
                         to_char(B.document_date, 'MM') as month,
                         date_trunc('day', B.document_date)::DATE AS real_date,
@@ -140,9 +141,9 @@ class StockSellGroup(orm.Model):
                                     ) AS A
                                     ORDER BY document_date
                         ) AS B
-                        ) as D, product_template as pt , product_product as pp 
-                    WHERE pp.product_tmpl_id = pt.id AND pp.id = D.product_id 
-                        
+                        ) AS D, product_template AS pt , product_product AS pp
+                    WHERE pp.product_tmpl_id = pt.id AND pp.id = D.product_id) AS E GROUP BY year, product_id, location_id, categ_id, default_code) AS F ORDER BY qty_out desc
+                
                 )                 
                 
             """)

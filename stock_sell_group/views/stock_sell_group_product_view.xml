@@ -1,0 +1,106 @@
+<openerp>
+    <data>
+
+        <record id="stock_sell_group_product_tree" model="ir.ui.view">
+            <field name="name">stock.sell.group.product.tree</field>
+            <field name="model">stock.sell.group.product</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Move Line"  >
+                    <field name="year" />
+<!--                    <field name="document_date"/>-->
+<!--                    <field name="real_date" />-->
+<!--                    <field name="origin" />-->
+<!--                    <field name="source_location_id" />-->
+<!--                    <field name="stock_journal_id" invisible="context.get('filter_stock_journal_id', False)"/>-->
+<!--                    <field name="partner_id" />-->
+                    <field name="categ_id" />
+                    <field name="default_code" invisible="context.get('filter_product_id', False)"/>
+                    <field name="product_id" invisible="context.get('filter_product_id', False)"/>
+                    <field name="location_id" invisible="context.get('filter_location_id', False)"/>
+                    <field name="qty_out" sum="qty_out" />
+<!--                    <field name="product_qty" sum="product_qty" />-->
+<!--                    <field name="stock_balance"/>-->
+<!--                    <field name="product_uom"/>-->
+<!--                    <field name="price"/>-->
+<!--                    <field name="move_value" sum="Move"/>-->
+<!--                    <field name="average" />-->
+<!--                    <field name="average_year" />-->
+<!--                    <field name="location_amount" />-->
+<!--                    <field name="location_amount_year" />-->
+                </tree>
+            </field>
+        </record>
+
+        <record id="stock_sell_group_product_form" model="ir.ui.view">
+            <field name="name">stock.sell.group.product.form</field>
+            <field name="model">stock.sell.group.product</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group colspan="4" col="4">
+                        <field name="year" />
+<!--                        <field name="real_date"/>-->
+<!--                        <field name="origin" />-->
+<!--                        <field name="source_location_id" />-->
+<!--                        <field name="stock_journal_id" invisible="context.get('filter_stock_journal_id', False)"/>-->
+<!--                        <field name="partner_id" />-->
+                        <field name="product_id" invisible="context.get('filter_product_id', False)"/>
+                        <field name="location_id" invisible="context.get('filter_location_id', False)"/>
+                        <field name="qty_out" sum="qty_out" />
+<!--                        <field name="product_uom"/>-->
+<!--                        <field name="price"/>-->
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="stock_sell_group_product_search" model="ir.ui.view">
+            <field name="name">Search Moves</field>
+            <field name="model">stock.sell.group.product</field>
+            <field name="type">search</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <search string="Search Moves">
+                    <field name="year" />
+
+<!--                    <filter icon="terp-go-month" string="Last Month" name="last_month"-->
+<!--                            domain="[('real_date', '&lt;', datetime.date.today().strftime('%%Y-%%m-01')), ('real_date', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01'))]"-->
+<!--                    />-->
+<!--                    -->
+<!--                    <filter icon="terp-go-month" string="Month" name="month"-->
+<!--                            domain="[('real_date', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01')), ('real_date', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01'))]"-->
+<!--                    />-->
+
+<!--                    <field name="date_from" filter_domain="[('real_date','&gt;=',self)]"/>-->
+<!--                    <field name="date_to" filter_domain="[('real_date','&lt;=',self)]"/>-->
+
+<!--                    <field name="stock_journal_id" context="{'filter_stock_journal_id': True}"/>-->
+                    <field name="categ_id" operator="child_of"/>
+                    <field name="product_id" context="{'filter_product_id': True}"/>
+                    <field name="location_id" context="{'filter_location_id': True}" domain="[('usage', '=', 'internal')]"/>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Category" icon="terp-accessories-archiver" domain="[]" context="{'group_by': 'categ_id'}"/>
+                        <filter string="Location" icon="terp-partner" domain="[]" context="{'group_by':'location_id'}"/>
+                        <filter string="Year" icon="terp-go-month" domain="[]" context="{'group_by':'year'}"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <record id="action_stock_sell_group_product" model="ir.actions.act_window">
+	        <field name="name">Sell Line Group By Product</field>
+	        <field name="res_model">stock.sell.group.product</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">tree,form</field>
+            <field name="limit">80</field>
+            <field name="context">{'noduplicate': '1', 'nodelete': '1', 'nocreate': '1'}</field>
+	    </record>
+
+        <menuitem action="action_stock_sell_group_product" id="menu_stock_sell_group_product"
+                              parent="stock.menu_stock_products_moves"/>
+
+    </data>
+</openerp>

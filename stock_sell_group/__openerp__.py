@@ -22,7 +22,7 @@
 
 {
     'name': 'Stock Sell Group',
-    'version': '3.0.0.0',
+    'version': '3.1.0.0',
     'category': 'Others',
     'description': """LibrERP - Stock picking extension
 
@@ -38,7 +38,9 @@ Functionalities:
         'core_extended',
     ],
     "data": [
+        'security/ir.model.access.csv',
         'views/stock_sell_group_view.xml',
+        'views/stock_sell_group_product_view.xml',
     ],
     "demo": [],
     "test": [
