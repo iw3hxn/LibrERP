@@ -61,11 +61,11 @@ class temp_mrp_bom(orm.Model):
         res = {}
         for line in self.read(cr, uid, ids, ['is_manufactured', 'buy'], context=context):
             if line['is_manufactured']:
-                preview = 'Produce'
+                preview = _('Produce')
             elif line['buy']:
-                preview = 'Buy'
+                preview = _('Buy')
             else:
-                preview = 'Stock'
+                preview = _('Stock')
             res[line['id']] = preview
         return res
 
@@ -271,6 +271,28 @@ class temp_mrp_bom(orm.Model):
             if temp_mrp_bom.check_parents(vals, temp_mrp_bom_ids):
                 return True
         return False
+
+    def onchange_supplier_id(self, cr, uid, ids, supplier_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        ctx = context.copy()
+        partner_obj = self.pool['res.partner']
+        unit_price = 0
+        ret = {}
+        if ids and supplier_id:
+            bom_line = self.browse(cr, uid, ids[0], ctx)
+            if supplier_id:
+                partner = partner_obj.browse(cr, uid, supplier_id, context=ctx)
+                ctx['pricelist'] = partner.property_product_pricelist_purchase and partner.property_product_pricelist_purchase.id or False
+                ctx['partner'] = partner.id
+            unit_price = self.pool['product.product']._product_price(cr, uid, [bom_line.product_id.id], 'price', False, ctx)[bom_line.product_id.id]
+            cost = self.pool['order.requirement.line']._get_cost_compute(bom_line.product_uom, bom_line.product_qty, unit_price)
+
+            ret.update({
+                'cost': cost,
+                'partial_cost': unit_price
+            })
+            self.write(cr, uid, ids[0], ret, context)
+        return {'value': ret}
 
     def onchange_temp_product_id(self, cr, uid, ids, temp_id, new_product_id, qty, is_manufactured, context=None):
         # if temp_id is not False:
