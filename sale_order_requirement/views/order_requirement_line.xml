@@ -87,7 +87,7 @@
                                         <field name="is_manufactured" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_leaf','=',True)]}"/>
                                         <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="terp-dolar" attrs="{'invisible': ['|',('level','=',0),('is_manufactured','=',True)]}"/>
                                         <field name="buy" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_manufactured','=',True)]}"/>
-                                        <field name="supplier_id"
+                                        <field name="supplier_id" on_change="onchange_supplier_id(supplier_id, context)"
                                                attrs="{'required': [('is_manufactured', '=', False)],
                                                     'readonly': ['|',('is_manufactured', '=', True),
                                                                      ('product_type','!=','product'),

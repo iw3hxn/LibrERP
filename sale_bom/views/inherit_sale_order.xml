@@ -33,7 +33,7 @@
                                 <field name='product_uom_qty' on_change="bom_product_id_change(product_id, product_uom, product_uom_qty, price_unit, context)"/>
                                 <field name='product_uom' on_change="bom_product_id_change(product_id, product_uom, product_uom_qty, price_unit, context)"/>
                                 <field name='price_unit' on_change="bom_product_id_change(product_id, product_uom, product_uom_qty, price_unit, context)"/>
-                                <field name='price_subtotal' string="Total" sum="Total"  />
+                                <field name='price_subtotal' sum="Total"  />
                             </tree>
                         </field>
                     </page>
