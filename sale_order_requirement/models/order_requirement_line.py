@@ -641,7 +641,7 @@ class OrderRequirementLine(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             try:
-                has_bom = bool(line.new_product_id.bom_ids) or bool(line.product_id.bom_ids)
+                has_bom = line.new_product_id.is_kit or line.product_id.is_kit
             except:
                 has_bom = False
             res[line.id] = has_bom
