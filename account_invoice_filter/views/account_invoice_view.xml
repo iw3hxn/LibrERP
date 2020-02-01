@@ -22,6 +22,13 @@
                         help="Invoices of the current month"
                         domain="[('date_invoice', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_invoice', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
                     />
+                    <separator orientation="vertical"/>
+                    <filter icon="terp-go-home"
+                        string="Private"
+                        name="private_partner"
+                        help="Private partners"
+                        domain="[('private', '=', True)]"
+                    />
                     <field name="date_from" filter_domain="[('date_invoice','&gt;=',self)]"/>
                     <field name="date_to" filter_domain="[('date_invoice','&lt;=',self)]"/>
                     <newline/>

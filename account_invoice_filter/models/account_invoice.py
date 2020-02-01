@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2020 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -24,6 +24,10 @@
 
 from openerp.osv import orm, fields
 import datetime
+try:
+    import codicefiscale
+except ImportError:
+    _logger.debug('Cannot import codicefiscale')
 
 
 class account_invoice(orm.Model):
@@ -62,15 +66,24 @@ class account_invoice(orm.Model):
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'product_id': fields.related('invoice_line', 'product_id', type='many2one', relation='product.product', string='Product'),
         'account_analytic_id': fields.related('invoice_line', 'account_analytic_id', type='many2one', relation='account.analytic.account',
-                                     string='Analytic Account'),
+                                     string='Analytic Account')
     }
     
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
+        partner_model = self.pool['res.partner']
         new_args = []
+
         for arg in args:
             if arg[0] == 'year':
                 new_args.append(('date_invoice', '>=', '{year}-01-01'.format(year=arg[2])))
                 new_args.append(('date_invoice', '<=', '{year}-12-31'.format(year=arg[2])))
+            elif arg[0] == 'private':
+                private_partner_ids = partner_model.search(cr, uid, [('vat', '=', False), ('fiscalcode', '!=', False)])
+                private_partner_ids = [partner.id
+                                       for partner in partner_model.browse(cr, uid, private_partner_ids, context)
+                                       if codicefiscale.isvalid(partner.fiscalcode)
+                                       ]
+                new_args.append(('partner_id.id', 'in', private_partner_ids))
             else:
                 new_args.append(arg)
                 

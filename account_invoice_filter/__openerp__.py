@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2020 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice Extended",
-    "version": "3.2.1.5",
+    "version": "3.2.2.6",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Accounting & Finance',
@@ -35,7 +35,7 @@
     """,
     "depends": [
         'base',
-        'account',
+        'account'
     ],
     "data": [
         'views/account_invoice_view.xml'
