@@ -685,3 +685,28 @@ msgstr "Ordine di Vendita Collegati"
 #: field:order.requirement.line,sale_order_line_id:0
 msgid "Sale Order Line"
 msgstr "Riga Ordine di Vendita"
+
+#. modules: sale_order_requirement
+#: field:temp.mrp.bom,temp_mrp_bom_action:0
+msgid "Action"
+msgstr "Azione"
+
+#. modules: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:66
+#: field:order.requirement.line,buy:0
+#: field:temp.mrp.bom,buy:0
+#, python-format
+msgid "Buy"
+msgstr "Comprare"
+
+#. modules: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:64
+#, python-format
+msgid "Produce"
+msgstr "Produrre"
+
+#. modules: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:68
+#, python-format
+msgid "Stock"
+msgstr "Da Magazzino"
