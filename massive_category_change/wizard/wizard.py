@@ -28,20 +28,19 @@ class wzd_massive_category_change(osv.osv_memory):
 		'name': fields.many2one('product.category', 'Category'),
 	}
 
-	def change(self, cr, uid, ids, context={}):
+	def change(self, cr, uid, ids, context=None):
+		context = context or self.pool['res.users'].context_get(cr, uid)
 		wzd = self.browse(cr, uid, ids[0], context)
-		res = {}
+		vals = {}
 		categ = wzd.name
-		res['categ_id'] = categ.id
+		vals['categ_id'] = categ.id
 
 		if categ.provision_type:
-			res['type'] = categ.provision_type
+			vals['type'] = categ.provision_type
 		if categ.procure_method:
-			res['procure_method'] = categ.procure_method
+			vals['procure_method'] = categ.procure_method
 		if categ.supply_method:
-			res['supply_method'] = categ.supply_method
+			vals['supply_method'] = categ.supply_method
 
-		self.pool.get('product.product').write(cr, uid, context['active_ids'], res)
+		self.pool['product.product'].write(cr, uid, context['active_ids'], vals, context)
 		return {'type': 'ir.actions.act_window_close'}
-
-wzd_massive_category_change()
