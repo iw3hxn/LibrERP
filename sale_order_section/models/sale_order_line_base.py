@@ -45,9 +45,9 @@ class SaleOrderLineBase(orm.Model):
         res = {}
         for base_line_id in ids:
             res[base_line_id] = 0
-            # sale_order_line_ids = sale_order_line_obj.search(cr, uid, [('order_line_base_id', '=', base_line_id)], context=context)
-            # for sale_order_line in sale_order_line_obj.read(cr, uid, sale_order_line_ids, ['price_subtotal'], context=context):
-            #     res[base_line_id] += sale_order_line['price_subtotal']
+            sale_order_line_ids = sale_order_line_obj.search(cr, uid, [('order_line_base_id', '=', base_line_id)], context=context)
+            for sale_order_line in sale_order_line_obj.read(cr, uid, sale_order_line_ids, ['price_subtotal'], context=context):
+                res[base_line_id] += sale_order_line['price_subtotal']
         return res
 
     _columns = {
