@@ -37,7 +37,7 @@ COLOR_SELECTION = [
 ]
 
 
-class sale_order_line_base(orm.Model):
+class SaleOrderLineBase(orm.Model):
     _name = 'sale.order.line.base'
 
     def _get_subtotal_line(self, cr, uid, ids, field_name, arg, context):
@@ -45,9 +45,9 @@ class sale_order_line_base(orm.Model):
         res = {}
         for base_line_id in ids:
             res[base_line_id] = 0
-            sale_order_line_ids = sale_order_line_obj.search(cr, uid, [('order_line_base_id', '=', base_line_id)], context=context)
-            for sale_order_line in sale_order_line_obj.read(cr, uid, sale_order_line_ids, ['price_subtotal'], context=context):
-                res[base_line_id] += sale_order_line['price_subtotal']
+            # sale_order_line_ids = sale_order_line_obj.search(cr, uid, [('order_line_base_id', '=', base_line_id)], context=context)
+            # for sale_order_line in sale_order_line_obj.read(cr, uid, sale_order_line_ids, ['price_subtotal'], context=context):
+            #     res[base_line_id] += sale_order_line['price_subtotal']
         return res
 
     _columns = {
@@ -101,7 +101,7 @@ class sale_order_line_base(orm.Model):
     def create(self, cr, uid, values, context):
         values.update(is_store=True)
         origin_base_line_id = values.get('origin_base_line_id', False)
-        new_base_line_id = super(sale_order_line_base, self).create(cr, uid, values, context)
+        new_base_line_id = super(SaleOrderLineBase, self).create(cr, uid, values, context)
 
         if context.get('new_line_ids') and origin_base_line_id:
             for order_line in self.pool['sale.order.line'].browse(cr, uid, context['new_line_ids']):
@@ -113,6 +113,6 @@ class sale_order_line_base(orm.Model):
         return new_base_line_id
 
     def copy_data(self, cr, uid, line_base_id, default=None, context=None):
-        line_base_copy = super(sale_order_line_base, self).copy_data(cr, uid, line_base_id, default=default, context=context)
+        line_base_copy = super(SaleOrderLineBase, self).copy_data(cr, uid, line_base_id, default=default, context=context)
         line_base_copy['origin_base_line_id'] = line_base_id
         return line_base_copy
