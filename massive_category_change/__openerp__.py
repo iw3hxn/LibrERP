@@ -19,7 +19,7 @@
 
 {
     'name': 'Massive Category Change',
-    'version': '0.1',
+    'version': '0.2',
     'category': 'Tools',
     'complexity': "easy",
     'description': 'Wizard to change category to a lot of product with one click',
