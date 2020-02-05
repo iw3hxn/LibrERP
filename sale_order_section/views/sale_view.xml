@@ -69,7 +69,7 @@
                        position="after">
                         <newline/>
                         <field name="order_line_base_id" domain="[('order_id', '=', parent.id)]"/>
-
+                        <field name="option" />
                     </xpath>
 
 
