@@ -169,8 +169,9 @@
                                         <button name="out_of_stock_button" type="object" icon="gtk-dialog-error"
                                                 attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
                                         <field name="cost"/>
-                                        <field name="is_manufactured" readonly="1"/>
-                                        <field name="buy" readonly="1"/>
+                                        <field name="temp_mrp_bom_action"/>
+                                        <field name="is_manufactured" readonly="1" invisible="1"/>
+                                        <field name="buy" readonly="1" invisible="1"/>
                                         <field name="supplier_id"  readonly="1"/>
                                         <field name="purchase_order_id" />
                                         <button string="View" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>

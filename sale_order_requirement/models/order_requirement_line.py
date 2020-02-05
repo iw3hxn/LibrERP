@@ -189,10 +189,11 @@ class OrderRequirementLine(orm.Model):
         # Set temp values by original BOM
         line_id = ids[0]
         is_leaf = not bool(bom.child_buy_and_produce_ids)
-        is_manufactured = not is_leaf
-        buy = not is_manufactured
-
         product = bom.product_id
+        is_manufactured = not is_leaf
+        buy = False
+        if is_leaf:
+            buy = product.procure_method == 'make_to_order'
 
         line = self.browse(cr, uid, line_id, context)
 
@@ -708,6 +709,7 @@ class OrderRequirementLine(orm.Model):
 
     _defaults = {
         'state': 'draft',
+        'qty': 1,
     }
 
     def default_get(self, cr, uid, fields, context=None):
@@ -1232,17 +1234,18 @@ class OrderRequirementLine(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         line = self.browse(cr, uid, ids, context)[0]
 
-        is_manufactured = line.is_manufactured
+        # is_manufactured = line.is_manufactured
         qty_mult = line.qty
 
         product = line.new_product_id or line.product_id
         is_manufactured = True
         line_vals = line.get_suppliers(product, context=context)
         supplier_ids_formatted = line_vals['supplier_ids']
-        line_vals.update({'new_product_id': product.id,
-                              'is_manufactured': is_manufactured,
-                              'supplier_ids': supplier_ids_formatted
-                              })
+        line_vals.update({
+            'new_product_id': product.id,
+            'is_manufactured': is_manufactured,
+            'supplier_ids': supplier_ids_formatted
+        })
 
         self.write(cr, uid, line.id, line_vals, context)
         # Reload line
