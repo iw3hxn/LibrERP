@@ -52,7 +52,6 @@
 		</record>
 
 
-
         <record id="view_purchase_order_form_line_sequenxe" model="ir.ui.view">
             <field name="name">purchase.order.line.sequence</field>
             <field name="model">purchase.order</field>
@@ -71,6 +70,11 @@
                 </xpath>
                 <field name="validator" position="before">
                     <field name="user_id" />
+                </field>
+                <field name="partner_address_id" position="after">
+                    <field name="contact_id" context="{'address_id': partner_address_id}"
+                        domain="[('address_id', '=', partner_address_id)]"
+                    />
                 </field>
             </field>
         </record>

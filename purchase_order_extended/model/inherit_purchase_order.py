@@ -30,6 +30,10 @@ class purchase_order(orm.Model):
 
     _inherit = 'purchase.order'
 
+    _columns = {
+        'contact_id': fields.many2one('res.partner.address.contact', 'Contact'),
+    }
+
     def _get_vals_inv_data(self, cr, uid, order, pay_acc_id, journal_ids, inv_lines, context):
         res = super(purchase_order, self)._get_vals_inv_data(cr, uid, order, pay_acc_id, journal_ids, inv_lines, context)
         payment_term = order.partner_id.property_payment_term_payable and order.partner_id.property_payment_term_payable.id or order.partner_id.property_payment_term and order.partner_id.property_payment_term.id or False

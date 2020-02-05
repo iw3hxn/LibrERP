@@ -29,3 +29,8 @@ msgstr "Modalità di pagamento per Fornitore"
 #: help:res.partner,property_payment_term_payable:0
 msgid "This payment term will be used instead of the default one for the current partner for supplier moves."
 msgstr "Questo metodo di pagamento verrà utilizzato rispetto a quello di default per gli acquisti da questo partner."
+
+#. module: purchase_order_extended
+#: field:purchase.order,contact_id:0
+msgid "Contact"
+msgstr "Contatto"
