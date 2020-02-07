@@ -69,3 +69,14 @@ msgstr "Prodotto"
 #: field:account.invoice,account_analytic_id:0
 msgid "Analytic Account"
 msgstr "Contabilità Analitica"
+
+#. module: account_invoice_filter
+#: view:account.invoice:0
+msgid "Private"
+msgstr "Privati"
+
+#. module: account_invoice_filter
+#: view:account.invoice:0
+msgid "Private partners"
+msgstr "Partner privati"
+

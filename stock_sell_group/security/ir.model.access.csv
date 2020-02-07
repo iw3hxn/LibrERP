@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_sell_group_all,stock.sell.group.user,model_stock_sell_group,stock.group_stock_user,1,0,0,0
+access_stock_sell_group_product_all,stock.sell.group.user,model_stock_sell_group_product,stock.group_stock_user,1,0,0,0

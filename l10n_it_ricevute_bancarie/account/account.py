@@ -276,6 +276,16 @@ class account_invoice(orm.Model):
         'unsolved_move_line_ids': fields.many2many('account.move.line', 'invoice_unsolved_line_rel', 'invoice_id', 'line_id', 'Unsolved journal items'),
     }
 
+    def merge_invoice(self, cr, uid, invoices, merge_lines, context=None):
+        invoice_id = super(account_invoice, self).merge_invoice(cr, uid, invoices, merge_lines, context)
+        product_exclude_ids = self.pool['account.payment.term'].get_product_incasso(cr, uid, context)
+        account_invoice_line_obj = self.pool['account.invoice.line']
+        line_to_delete_ids = account_invoice_line_obj.search(cr, uid, [('invoice_id', '=', invoice_id), ('product_id', 'in', product_exclude_ids)], context=context)
+        if line_to_delete_ids:
+            account_invoice_line_obj.unlink(cr, uid, line_to_delete_ids, context)
+            self.button_reset_taxes(cr, uid, [invoice_id], context)
+        return invoice_id
+
     def _spese_incasso_vals(self, cr, uid, ids, spese_incasso_id, invoice_id, invoice_type, partner_id, company_id, payment_term_id, fiscal_position_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         account_invoice_line_obj = self.pool['account.invoice.line']

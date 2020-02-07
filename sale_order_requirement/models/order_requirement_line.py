@@ -97,7 +97,7 @@ class OrderRequirementLine(orm.Model):
             # --find the supplier
             if product.seller_ids:
                 seller_ids = list(set([info.name.id for info in product.seller_ids]))
-                supplier_id = seller_ids[0]
+                supplier_id = product.seller_ids[0].name.id
             else:
                 supplier_id = False
                 # If not suppliers found -> returns all of them
@@ -189,10 +189,11 @@ class OrderRequirementLine(orm.Model):
         # Set temp values by original BOM
         line_id = ids[0]
         is_leaf = not bool(bom.child_buy_and_produce_ids)
-        is_manufactured = not is_leaf
-        buy = not is_manufactured
-
         product = bom.product_id
+        is_manufactured = not is_leaf
+        buy = False
+        if is_leaf:
+            buy = product.procure_method == 'make_to_order'
 
         line = self.browse(cr, uid, line_id, context)
 
@@ -344,6 +345,13 @@ class OrderRequirementLine(orm.Model):
         # Pass the first, recursion will do the rest
         _sort_rec(temp_mrp_bom_ids[0], temp_mrp_bom_ids)
 
+    def _get_cost_compute(self, uom, qty, unit_cost):
+        factor = uom.factor or 1
+        amount = qty / factor
+        rounding(amount * factor, uom.rounding)
+        cost = unit_cost * amount
+        return cost
+
     def _compute_cost(self, cr, uid, ids, temp, temp_mrp_boms, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
 
@@ -351,17 +359,18 @@ class OrderRequirementLine(orm.Model):
         # TODO: Add to this the PRODUCTION COST (Routing)
         # COST: Cost of product itself + cost of all children
         # NOTE: Original quantity is what is really matters -> I want cost of a single piece
-        uom_obj = self.pool['product.uom']
-        uom = uom_obj.browse(cr, uid, temp.product_uom.id, context)
-        qty = temp.original_qty
-
-        factor = uom.factor or 1
-
-        amount = qty / factor
-        rounding(amount * factor, uom.rounding)
-
-        cost = temp.partial_cost * amount
-
+        # uom_obj = self.pool['product.uom']
+        # uom = uom_obj.browse(cr, uid, temp.product_uom.id, context)
+        # uom = temp.product_uom
+        # qty = temp.original_qty
+        #
+        # factor = uom.factor or 1
+        #
+        # amount = qty / factor
+        # rounding(amount * factor, uom.rounding)
+        #
+        # cost = temp.partial_cost * amount
+        cost = self._get_cost_compute(temp.product_uom, temp.original_qty, temp.partial_cost)
         # Children
         for t in temp_mrp_boms:
             if t.bom_id.id == temp.id:
@@ -374,7 +383,8 @@ class OrderRequirementLine(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         line = self.browse(cr, uid, line_id, context)
-        if not line.temp_mrp_bom_ids:
+        temp_mrp_boms = line.temp_mrp_bom_ids
+        if not temp_mrp_boms:
             # TODO: LINE COST (When no BOM is present)
             total_cost = line.product_id.cost_price
             line_vals = {'cost': total_cost}
@@ -382,8 +392,7 @@ class OrderRequirementLine(orm.Model):
                 line_vals.update({'original_cost': total_cost})
             self.write(cr, uid, line_id, line_vals, context)
             return total_cost
-        temp = line.temp_mrp_bom_ids[0]
-        temp_mrp_boms = line.temp_mrp_bom_ids
+        temp = temp_mrp_boms[0]
 
         self._compute_cost(cr, uid, [], temp, temp_mrp_boms, context)
         for t in temp_mrp_boms:
@@ -633,7 +642,7 @@ class OrderRequirementLine(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             try:
-                has_bom = bool(line.new_product_id.bom_ids) or bool(line.product_id.bom_ids)
+                has_bom = line.new_product_id.is_kit or line.product_id.is_kit
             except:
                 has_bom = False
             res[line.id] = has_bom
@@ -700,6 +709,7 @@ class OrderRequirementLine(orm.Model):
 
     _defaults = {
         'state': 'draft',
+        'qty': 1,
     }
 
     def default_get(self, cr, uid, fields, context=None):
@@ -1224,22 +1234,22 @@ class OrderRequirementLine(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         line = self.browse(cr, uid, ids, context)[0]
 
-        is_manufactured = line.is_manufactured
+        # is_manufactured = line.is_manufactured
         qty_mult = line.qty
 
-        if not line.new_product_id:
-            product_id = line.product_id.id
-            is_manufactured = True
-            line_vals = line.get_suppliers(line.product_id, context=context)
-            supplier_ids_formatted = line_vals['supplier_ids']
-            line_vals.update({'new_product_id': product_id,
-                              'is_manufactured': is_manufactured,
-                              'supplier_ids': supplier_ids_formatted
-                              })
+        product = line.new_product_id or line.product_id
+        is_manufactured = True
+        line_vals = line.get_suppliers(product, context=context)
+        supplier_ids_formatted = line_vals['supplier_ids']
+        line_vals.update({
+            'new_product_id': product.id,
+            'is_manufactured': is_manufactured,
+            'supplier_ids': supplier_ids_formatted
+        })
 
-            self.write(cr, uid, line.id, line_vals, context)
-            # Reload line
-            line = self.browse(cr, uid, ids, context)[0]
+        self.write(cr, uid, line.id, line_vals, context)
+        # Reload line
+        line = self.browse(cr, uid, ids, context)[0]
 
         if line.cost == 0 or line.original_cost == 0:
             total_cost = line.new_product_id.cost_price

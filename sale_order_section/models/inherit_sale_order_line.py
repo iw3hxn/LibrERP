@@ -32,30 +32,8 @@ OPTION_SELECTION = [
 ]
 
 
-class sale_order_line(orm.Model):
+class SaleOrderLine(orm.Model):
     _inherit = 'sale.order.line'
-
-    _index_name = 'sale_order_line_product_id_index'
-
-    def _auto_init(self, cr, context={}):
-        super(sale_order_line, self)._auto_init(cr, context)
-        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (self._index_name,))
-        if not cr.fetchone():
-            cr.execute('CREATE INDEX {name} ON sale_order_line (product_id)'.format(name=self._index_name))
-
-    def _amount_line(self, cr, uid, ids, field_name, arg, context=None):
-        tax_obj = self.pool.get('account.tax')
-        cur_obj = self.pool.get('res.currency')
-        res = {}
-        if context is None:
-            context = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            price = line.price_unit_uos * (1 - (line.discount or 0.0) / 100.0)
-            taxes = tax_obj.compute_all(cr, uid, line.tax_id, price, line.product_uos_qty,
-                                        line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)
-
-            res[line.id] = taxes['total']  # float_round(taxes['total'], precision_rounding=0.001)
-        return res
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -66,79 +44,6 @@ class sale_order_line(orm.Model):
             else:
                 value[line.id] = 'black'
         return value
-
-    def _cost_price_sale_order_line_price(self, cr, uid, ids, field_name, arg, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        res = {}
-        for line in self.browse(cr, uid, ids, context):
-            res[line.id] = {
-                'price_unit_discount': 0.0,
-                'price_unit_discount_uos': 0.0,
-                'price_subtotal': 0.0
-            }
-            disc = self.Calcolo_Sconto(cr, uid, ids, line.string_discount, line.price_unit, line.price_unit_uos, context).get('value')
-            res[line.id].update({
-                'price_unit_discount': disc['price_unit_discount'],
-                'price_unit_discount_uos': disc['price_unit_discount_uos'],
-                'price_subtotal': round(line.product_uos_qty, 3) * round(disc['price_unit_discount_uos'], 4)
-            })
-
-        return res
-
-    def _get_product_available(self, product):
-        vals = {
-            'qty_available': 0,
-            'qty_available_uos': 0,
-            'virtual_available': 0,
-            'virtual_available_uos': 0
-        }
-        if product.type != 'service':
-            uos_coeff = product.get_uos_coeff()
-            vals.update({
-                'qty_available': product.qty_available or False,
-                'qty_available_uos': product.qty_available * uos_coeff or False,
-                'virtual_available': product.virtual_available or False,
-                'virtual_available_uos': product.virtual_available * uos_coeff or False
-            })
-        return vals
-
-    def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
-        """ Finds the incoming and outgoing quantity of product.
-        @return: Dictionary of values
-        """
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        res = {}
-
-        if context.get('shop', False):
-            context['warehouse'] = self.pool['sale.shop']._get_warehouse_id(cr, uid, context['shop'], context)
-        for line in self.browse(cr, uid, ids, context):
-            res[line.id] = self._get_product_available(line.product_id)
-        return res
-
-    def _set_dummy(self, cr, uid, ids, name, value, arg, context=None):
-        return True
-
-    def _getlist_price_uos(self, cr, uid, ids, name, arg, context=None):
-        res = {}
-
-        for line in self.browse(cr, uid, ids, context=context):
-            uos_coeff = line.product_id.get_uos_coeff()
-            #
-            # if line.product_id:
-            #     uos_coeff = line.product_id.uos_coeff or 1
-            # if uos_coeff == 0:
-            #     uos_coeff = 1
-
-            product_uos_qty = round(line.product_uom_qty * uos_coeff, 4)
-            if abs(product_uos_qty - int(product_uos_qty)) < 0.005:
-                product_uos_qty = int(product_uos_qty)
-
-            res[line.id] = {
-                'product_uos_qty': product_uos_qty,
-                'product_uos': line.product_id and line.product_id.uos_id and line.product_id.uos_id.id or False,
-                'price_unit_uos': round(line.price_unit / uos_coeff, 4)
-            }
-        return res
 
     _columns = {
         'option': fields.selection(OPTION_SELECTION, 'Opzione'),
@@ -170,7 +75,7 @@ class sale_order_line(orm.Model):
 
     def default_get(self, cr, uid, fields, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        res = super(sale_order_line, self).default_get(cr, uid, fields, context)
+        res = super(SaleOrderLine, self).default_get(cr, uid, fields, context)
         if context.get('order_line_base_ids', False):
             sale_order_line_base_obj = self.pool['sale.order.line.base']
             default = False
@@ -187,7 +92,6 @@ class sale_order_line(orm.Model):
             res.update(sequence=int(context['sequence']))
         return res
 
-
     def create(self, cr, uid, values, context=None):
         order_line_base_model = self.pool['sale.order.line.base']
 
@@ -200,7 +104,7 @@ class sale_order_line(orm.Model):
                 if values['order_line_base_id'] == origin_base_line_id:
                     values['order_line_base_id'] = line_base_id
 
-        new_line_id = super(sale_order_line, self).create(cr, uid, values, context)
+        new_line_id = super(SaleOrderLine, self).create(cr, uid, values, context)
         if 'new_line_ids' in context:
             context['new_line_ids'].append(new_line_id)
         else:
