@@ -188,6 +188,7 @@ class riba_accreditation(osv.osv_memory):
                     'debit': wizard.bank_amount,
                     'credit': 0.0,
                     'date': date_accreditation,
+                    'date_maturity': date_accreditation,
                     }),
                 (0, 0, {
                     'name': _('Credit'),
@@ -195,6 +196,7 @@ class riba_accreditation(osv.osv_memory):
                     'credit': wizard.accreditation_amount,
                     'debit': 0.0,
                     'date': date_accreditation,
+                    'date_maturity': date_accreditation,
                     }),
 #                 (0, 0, {
 #                     'name': _('Bank'),

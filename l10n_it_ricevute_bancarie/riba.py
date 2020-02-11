@@ -504,7 +504,7 @@ class riba_distinta_line(osv.osv):
             move_line_pool.create(cr, uid, {
                 'name': 'Ri.Ba. %s-%s Rif. %s - %s' % (line.distinta_id.name, line.sequence, riba_move_line_name, line.partner_id.name),
                 'account_id': line.acceptance_account_id.id,
-                # 'partner_id': line.partner_id.id,
+                'partner_id': line.partner_id.id,
                 'date_maturity': line.due_date,
                 'credit': total_credit < 0 and abs(total_credit) or 0.0,
                 'debit': total_credit > 0 and abs(total_credit) or 0.0,
