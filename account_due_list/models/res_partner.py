@@ -193,5 +193,6 @@ class res_partner(orm.Model):
         'next_overdue_credit_activity_date': fields.function(_get_credit_activity_history_next, fnct_search=_search_next_overdue_credit_activity_date, method=True, string="Next Activity On", type='date'),
         'collections_out': fields.boolean('Recupero Presso Terzi'),
         'credit_phonecall_ids': fields.one2many('credit.phonecall', 'partner_id', 'Phonecalls'),
+        'excluding_recall': fields.boolean('Escluso dai richiami'),
     }
 
