@@ -184,7 +184,7 @@ class partner_ledger_xls(report_xls):
             ('move', 1, 0, 'text', _('Entry'), None, c_hdr_cell_style),
             ('journal', 1, 0, 'text', _('Journal'), None, c_hdr_cell_style),
             ('partner', 1, 0, 'text', _('Partner'), None, c_hdr_cell_style),
-            ('label', 1, 0, 'text', _('Label'), None, c_hdr_cell_style),
+            ('label', 1, 0, 'text', _('Label - Invoice Number'), None, c_hdr_cell_style),
             ('rec', 1, 0, 'text', _('Rec.'), None, c_hdr_cell_style),
             ('debit', 1, 0, 'text', _('Debit'), None, c_hdr_cell_style_right),
             ('credit', 1, 0, 'text', _('Credit'),
@@ -311,8 +311,10 @@ class partner_ledger_xls(report_xls):
 
                         label_elements = [line.get('lname') or '']
                         if line.get('invoice_number'):
-                            label_elements.append(
-                                "(%s)" % (line['invoice_number'],))
+                            label_elements.append("(%s)" % (line['invoice_number'],))
+                        if line.get('supplier_invoice_number'):
+                            label_elements.append("(%s)" % (line['supplier_invoice_number'],))
+
                         label = ' '.join(label_elements)
                         cumul_balance += line.get('balance') or 0.0
 
