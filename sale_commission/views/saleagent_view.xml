@@ -51,7 +51,7 @@
                         <!--<page string="Customer assigned" >
                             <field colspan="4" name="customer" nolabel="1" readonly="1"/>
                         </page>-->
-                        <page string="Settlements executed">
+                        <page string="Settlements executed" groups="account.group_account_manager">
                             <field colspan="4" name="settlement_ids" nolabel="1" readonly="1"/>
                         </page>
                     </notebook>
