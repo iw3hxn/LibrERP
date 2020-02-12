@@ -151,7 +151,7 @@ class stock_move(osv.osv):
             body += "\n\n  * %s" % _("No product out of stock found.")
             return body
         head = "  " + _("Product").ljust(38) + _("Qty. Available").rjust(15) + "\t" + _("Qty. Virtual").rjust(
-            15) + "\t" + _("Qty. Needed").rjust(15) + "\n"
+            15) + "\t" + _("Qty. Needed").rjust(15) + "\t" + _("PO").rjust(15) + "\n"
         head += "  " + ("-" * len(_("Product"))).ljust(38) + "-" * 15 + "\t" + "-" * 15 + "\t" + "-" * 15 + "\n"
         for company_id in stock_out.keys():
             body += "\n\n> " + stock_out[company_id]['company'].name + "\n"
@@ -164,16 +164,18 @@ class stock_move(osv.osv):
                 if len(location_data['products']) == 0:
                     body += "  %s" % _("No product out of stock found.")
                 else:
-                    for product_data in location_data['products']:
-                        product_reg = {
-                            'name': ("[%s] %s" % (product_data['product'].default_code, product_data['product'].name))[0:37],
-                            'qty_available': "%s %s" % (product_data['product'].qty_available, product_data['product'].product_tmpl_id.uom_id.name),
-                            'virtual_available': "%s %s" % (product_data['product'].virtual_available,
-                                                            product_data['product'].product_tmpl_id.uom_id.name),
-                            'needed': "%s %s" % (product_data['qty'], product_data['uom'].name)
+	            for product_data in location_data['products']:
+        		purchase_order = '-' if (product_data['product'].last_purchase_order_id.state == 'done' or not product_data['product'].last_purchase_order_id) else product_data['product'].last_purchase_order_id.name
+                    	product_reg = {
+				'name': ("[%s] %s" % (product_data['product'].default_code, product_data['product'].name))[0:37],
+                        	'qty_available': "%s %s" % (product_data['product'].qty_available, product_data['product'].product_tmpl_id.uom_id.name),
+                        	'virtual_available': "%s %s" % (product_data['product'].virtual_available,
+                                                        product_data['product'].product_tmpl_id.uom_id.name),
+                        	'needed': "%s %s" % (product_data['qty'], product_data['uom'].name),
+                        	'purchase_order': purchase_order
 
-                        }
-                        body += "  %(name)-38s%(qty_available)15s\t%(virtual_available)15s\t%(needed)15s\n" % product_reg
+                    	}
+                    	body += "  %(name)-38s%(qty_available)15s\t%(virtual_available)15s\t%(needed)15s\t%(purchase_order)10s\n" % product_reg
         return body
 
     def make_stock_out_email(self, cr, uid, prod_list, context={}):
