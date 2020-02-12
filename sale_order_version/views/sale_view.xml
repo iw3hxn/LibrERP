@@ -10,6 +10,11 @@
                 <xpath expr="//form/group[1]/group[1]/field[@name='name']" position="replace">
                     <field name="name" readonly="1"/>
                 </xpath>
+                <xpath expr="//form/group[1]/group[1]/field[@name='date_order']" position="after">
+                    <field name="visible_original_quotation" invisible="1" />
+                    <field name="original_quotation_name" readonly="1" attrs="{'invisible':[('visible_original_quotation','=',False)]}" />
+                    <field name="original_quotation_date" readonly="1" attrs="{'invisible':[('visible_original_quotation','=',False)]}" />
+                </xpath>
                 <xpath expr="//form/group[1]/group[1]/field[@name='client_order_ref']" position="after">
                     <field name="sale_version_id" attrs="{'invisible':[('sale_version_id','=',False)]}" readonly="1"/>
                     <field name="active" invisible="1"/>

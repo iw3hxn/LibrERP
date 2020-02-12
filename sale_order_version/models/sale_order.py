@@ -116,6 +116,15 @@ class sale_order(orm.Model):
                 res[sale.id] = []
         return res
 
+    def _get_visible_original_quotation(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for sale in self.browse(cr, uid, ids, context):
+            res[sale.id] = False
+            if sale.original_quotation_name and sale.original_quotation_name != sale.name:
+                res[sale.id] = True
+        return res
+
     _columns = {
         'original_quotation_name': fields.char('Original Quotation Name'),
         'original_quotation_date': fields.date('Original Quotation Date'),
@@ -123,7 +132,8 @@ class sale_order(orm.Model):
         'version': fields.integer('Version no.', readonly=True),
         'active': fields.boolean('Active', readonly=False, help="It indicates that the sales order is active."),
         'version_ids': fields.function(_get_version_ids, method=True, type="one2many", relation='sale.order',
-                                       string='Versions', readonly=True)
+                                       string='Versions', readonly=True),
+        'visible_original_quotation': fields.function(_get_visible_original_quotation, type="boolean", string="visible original quotation")
     }
 
     _defaults = {

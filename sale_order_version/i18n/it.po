@@ -43,6 +43,18 @@ msgid "Versions"
 msgstr "Versioni"
 
 #. module: sale_order_version
+#: view:sale.order:0
+#: field:sale.order,original_quotation_name:0
+msgid "Original Quotation Name"
+msgstr "Quotazione Originale"
+
+#. module: sale_order_version
+#: view:sale.order:0
+#: field:sale.order,original_quotation_date:0
+msgid "Original Quotation Data"
+msgstr "del"
+
+#. module: sale_order_version
 #: help:sale.shop,sequence_id:0
 msgid "This field contains the information related to the numbering of the Sale Orders."
 msgstr "Questo campo contiene le informazioni relative al numero dell'Ordine di Vendita"
