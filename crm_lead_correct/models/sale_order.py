@@ -41,7 +41,9 @@ class sale_order(orm.Model):
             result[sale.id] = False
             if sale.id == order_id:
                 result[sale.id] = True
-
+            if self.pool['sale.order']._columns.get('sale_version_id', False):
+                if sale.sale_version_id and sale.sale_version_id.id == order_id:
+                    result[sale.id] = True
         return result
 
     _columns = {
