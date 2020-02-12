@@ -601,6 +601,13 @@ class OrderRequirementLine(orm.Model):
             res[line.id] = state_str
         return res
 
+    def _get_purchase_order_id(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = line.purchase_order_ids and line.purchase_order_ids[0].id or False
+        return res
+
     def _order_state(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
@@ -690,6 +697,7 @@ class OrderRequirementLine(orm.Model):
             [('cancel', 'Cancelled'), ('draft', 'Draft'), ('done', 'Done')], 'State', required=True, readonly=True,
         ),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
+        'purchase_order_id': fields.function(_get_purchase_order_id, string='Purchase Order', type='many2one', relation='purchase.order'),
         'purchase_order_ids': fields.many2many('purchase.order', string='Purchase Orders'),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
         'production_orders_state': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
@@ -931,7 +939,7 @@ class OrderRequirementLine(orm.Model):
         purchase_order_line_obj = self.pool['purchase.order.line']
 
         # Field supplier_id is present in both temp_mrp_bom and ordreq line
-        supplier_id = obj.supplier_id.id
+        supplier_id = obj.supplier_id and obj.supplier_id.id
 
         if not supplier_id:
             raise orm.except_orm(_(u'Error !'),
@@ -970,8 +978,9 @@ class OrderRequirementLine(orm.Model):
         shop_id = shop.id
         # account_analytic_id = obj.sale_order_id.project_id and obj.sale_order_id.project_id.id
 
-        purchase_order_ids = purchase_order_obj.search(cr, uid, [('partner_id', '=', supplier_id),
-                                                                 ('state', '=', 'draft')], limit=1, context=context)
+        purchase_order_ids = purchase_order_obj.search(cr, uid,
+                                                       [('partner_id', '=', supplier_id), ('shop_id', '=', shop_id),
+                                                        ('state', '=', 'draft')], limit=1, context=context)
 
         if not purchase_order_ids:
             # Adding if no "similar" orders are presents
@@ -1064,9 +1073,10 @@ class OrderRequirementLine(orm.Model):
                 # Creating a new line
                 purchase_line_id = purchase_order_line_obj.create(cr, uid, purchase_order_line_values, context)
                 # Link to line many2many fields
-                self.write(cr, uid, line_obj.id, {'purchase_order_line_ids': [(4, purchase_line_id)],
-                                              'purchase_order_ids': [(4, present_order_id)],
-                                              }, context)
+                line_obj.write({
+                    'purchase_order_ids': [(4, present_order_id)],
+                    'purchase_order_line_ids': [(4, purchase_line_id)],
+                })
 
                 # Add references also to purchase order
                 refence_values = {'sale_order_ids': [(4, sale_order_id)]}
@@ -1108,6 +1118,7 @@ class OrderRequirementLine(orm.Model):
                     # If is a temp mrp bom, associate purchase line also to it
                     temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
                                                              'purchase_order_line_id': order_line_id}, context)
+        return True
 
     def _manufacture_bom(self, cr, uid, temp, context):
         mrp_production_obj = self.pool['mrp.production']

@@ -139,12 +139,17 @@
 
                     <field name="new_product_id" on_change="onchange_product_id(new_product_id,qty,context)"/>
                     <field name="qty"/>
+                    <field name="original_cost"/>
+                    <field name="cost"/>
+                    <field name="has_bom" invisible="1"/>
+                    <field name="buy" attrs="{'readonly': ['|', ('is_manufactured','=',True)]}"/>
                     <field name="is_manufactured" on_change="onchange_is_manufactured(is_manufactured,new_product_id)"/>
                     <field name="supplier_id" attrs="{'invisible': [('is_manufactured', '=', True)],
                                 'required': [('is_manufactured', '=', False)],
                                 'readonly': [('state','!=','draft')]}"/>
-                    <field name="supplier_ids" invisible="1"/>
+                    <field name="purchase_order_id" attrs="{'invisible': [('buy','=', False)]}"/>
                     <field name="id" invisible="1"/>
+                    <field name="user_id" widget="selection" />
 <!--                    <group colspan="8" col="8" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),-->
 <!--                                                                         ('is_manufactured','=',False)]}">-->
                         <notebook colspan="4">
