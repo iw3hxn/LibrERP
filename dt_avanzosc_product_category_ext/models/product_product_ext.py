@@ -64,12 +64,12 @@ class product_product(orm.Model):
                 if self.pool['mrp.bom'].search(cr, uid, [('product_id', '=', product.id), ('bom_id', '=', False)], context=context):
                     res['supply_method'] = 'produce'
                     return {'value': res}
-            warn = {
-                    'title': _('Error'),
-                    'message': _("For change you need to create BOM"),
-            }
-            res['supply_method'] = product.supply_method
-            return {'value': res, 'warning': warn}
+                warn = {
+                        'title': _('Error'),
+                        'message': _("For change you need to create BOM"),
+                }
+                res['supply_method'] = product.supply_method
+                return {'value': res, 'warning': warn}
 
         if not categ_id:
             res = {
@@ -114,7 +114,7 @@ class product_product(orm.Model):
                     res.update(purchase_ok=False, supply_method='produce')
                 else:
                     res.update(purchase_ok=True, supply_method='buy')
-            print res['type'], res['purchase_ok'], res['supply_method']
+            # print res['type'], res['purchase_ok'], res['supply_method']
 
             if category.sale_taxes_ids:
                 taxes = [x.id for x in category.sale_taxes_ids]
