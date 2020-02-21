@@ -777,7 +777,8 @@ class product_product(orm.Model):
         # search product with kit
         product_ids = self.search(cr, uid, [('is_kit', '=', True)], context=context)
         for product in self.browse(cr, uid, product_ids, context):
-            self.write(cr, uid, product.id, {'standard_price': product.cost_price}, context)
+            if product.standard_price != product.cost_price:
+                self.write(cr, uid, product.id, {'standard_price': product.cost_price}, context)
         return True
 
     # from profilehooks import profile
