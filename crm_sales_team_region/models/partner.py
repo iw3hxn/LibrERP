@@ -7,9 +7,32 @@ from openerp.osv import orm, fields
 class ResPartner(orm.Model):
     _inherit = 'res.partner'
 
+    def _get_regional_user_ids(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for partner in self.browse(cr, uid, ids, context):
+            if partner.region_id:
+                user_ids = []
+                for section in partner.region_id.crm_case_section_ids:
+                    if section.user_id:
+                        user_ids.append(section.user_id.id)
+                    for user in section.member_ids:
+                        user_ids.append(user.id)
+            res[partner.id] = list(set(user_ids))
+        return res
+
+    def _search_regional_user_ids(self, cr, uid, obj, name, args, context=None):
+        if args:
+            for arg in args:
+                if arg[0] == 'regional_user_ids':
+                    section_ids = self.pool['crm.case.section'].search(cr, uid, ['|', ('user_id', 'in', arg[2]), ('member_ids', 'in', arg[2])], context=context)
+                    region_ids = self.pool['res.region'].search(cr, uid, [('crm_case_section_ids', 'in', section_ids)], context=context)
+                    partner_ids = self.search(cr, uid, [('region_id', 'in', region_ids)], context=context)
+            return [('id', 'in', partner_ids)]
+        return []
+
     _columns = {
-        'region_id': fields.related('address', 'region', type='many2one', relation='res.region',
-                                     string='Region'),
+        'region_id': fields.related('address', 'region', type='many2one', relation='res.region', string='Region'),
+        'regional_user_ids': fields.function(_get_regional_user_ids, type='one2many', relation='res.users', string="Regional Users", fnct_search=_search_regional_user_ids)
     }
 
     def create(self, cr, uid, values, context=None):

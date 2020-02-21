@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="partner_read_own_regional" model="res.groups">
+            <field name="name">Can Read Partner on Own Region</field>
+        </record>
+
+
+        <record id="partner_read_own_regional" model="ir.rule">
+            <field name="name">Can Read Partner on Own Region</field>
+            <field ref="base.model_res_partner" name="model_id"/>
+            <field name="domain_force">[('regional_user_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4, ref('partner_read_own_regional'))]"/>
+        </record>
+
+    </data>
+</openerp>
