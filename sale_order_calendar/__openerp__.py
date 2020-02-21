@@ -23,7 +23,7 @@
     "description": """
             I can see on sale order date for recall customer
         """,
-    "version": "3.0.2.2",
+    "version": "3.1.2.2",
     "author": "Didotech SRL",
     "website": "http://www.didotech.srl",
     "category": "Sales",
