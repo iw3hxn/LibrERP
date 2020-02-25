@@ -21,6 +21,7 @@
 
 import time
 
+
 from openerp.osv import fields, orm
 from tools import DEFAULT_SERVER_DATE_FORMAT
 
@@ -153,10 +154,42 @@ class res_partner(orm.Model):
             res[res_id[0]] = res_id[1]
         return res
 
+    def _get_overdue_debit_positive(self, cr, uid, ids, field_name, arg, context=None):
+        res = dict.fromkeys(ids, 0.0)
+        current_date = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+
+        cr.execute("""SELECT
+                                account_move_line.partner_id,
+                                COALESCE(SUM(account_move_line.debit) - SUM(account_move_line.credit), 0) AS amount
+                            FROM
+                                account_account,
+                                account_move_line
+                            WHERE
+                                account_move_line.account_id = account_account.id AND
+                                account_move_line.state != 'draft' AND
+                                account_account.type = 'receivable' AND
+                                account_move_line.reconcile_id IS NULL AND
+                                partner_id in %s AND
+                                (account_move_line.date_maturity <= %s 
+                                    OR
+                                account_move_line.date <= %s AND account_move_line.date_maturity IS NULL)
+                            GROUP BY
+                                partner_id
+                      
+                    """, (tuple(ids), current_date, current_date))
+        res_sql = cr.fetchall()
+        for res_id in res_sql:
+            if res_id[1] >= 0:
+                res[res_id[0]] = True
+            else:
+                res[res_id[0]] = False
+        return res
+
     def _search_overdue_credit(self, cr, uid, obj, name, args, context=None):
         if args:
             current_date = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-            cr.execute("""SELECT 
+            cr.execute("""
+            SELECT 
                     account_move_line.partner_id
                 FROM 
                     account_account, 
@@ -185,10 +218,65 @@ class res_partner(orm.Model):
 
         return []
 
+
+    def _search_overdue_debit_positive(self, cr, uid, obj, name, args, context=None):
+        if args:
+            current_date = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+            cr.execute("""
+            SELECT
+                account_move_line.partner_id,
+                COALESCE(SUM(account_move_line.debit) - SUM(account_move_line.credit), 0) AS amount
+            FROM
+                account_account,
+                account_move_line
+            WHERE
+                account_move_line.account_id = account_account.id AND
+                account_move_line.state != 'draft' AND
+                account_account.type = 'receivable' AND
+                account_move_line.reconcile_id IS NULL AND
+                partner_id in (
+                    SELECT 
+                                account_move_line.partner_id
+                            FROM 
+                                account_account, 
+                                account_move_line,
+                                res_partner
+                            WHERE 
+                                account_move_line.account_id = account_account.id AND
+                                account_move_line.partner_id = res_partner.id AND
+                                (res_partner.collections_out != 'True' OR res_partner.collections_out IS NULL) AND
+                                account_move_line.state != 'draft' AND 
+                                account_account.type = 'receivable' AND 
+                                account_move_line.reconcile_id IS NULL AND
+                                account_move_line.date_maturity <= %s
+                            GROUP BY
+                                partner_id )
+                AND
+                    (account_move_line.date_maturity <= %s 
+                        OR
+                    account_move_line.date <= %s AND account_move_line.date_maturity IS NULL)
+                GROUP BY
+                    partner_id
+            """, (current_date, current_date, current_date, ))
+
+            res = cr.fetchall()
+            partner_ids = []
+            if res:
+                for rec in res:
+                    if rec[1] >= 0:
+                        partner_ids.append(rec[0])
+
+            if not partner_ids:
+                return [('id', '=', 0)]
+            return [('id', 'in', list(set(partner_ids)))]
+
+        return []
+
     _columns = {
         'payment_ids': fields.function(_get_invoice_payment, string="All Open Payment", type='one2many',
                                        method=True, relation='account.move.line'),
         'overdue_credit': fields.function(_get_overdue_credit, fnct_search=_search_overdue_credit, string="Overdue Payment", type='float', method=True),
+        'overdue_debit_positive': fields.function(_get_overdue_debit_positive, fnct_search=_search_overdue_debit_positive, string="Overdue positive", type='boolean', method=True),
         'last_overdue_credit_activity_date': fields.function(_get_credit_activity_history_last, method=True, string="Last Activity On", type='date'),
         'next_overdue_credit_activity_date': fields.function(_get_credit_activity_history_next, fnct_search=_search_next_overdue_credit_activity_date, method=True, string="Next Activity On", type='date'),
         'collections_out': fields.boolean('Recupero Presso Terzi'),
