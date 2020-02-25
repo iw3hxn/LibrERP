@@ -382,9 +382,12 @@ class WizardVatCommunication(orm.TransientModel):
                         fields['xml_Imposta'])
                     riepilogo.DatiIVA.Aliquota = '{:.2f}'.format(
                         fields['xml_Aliquota'])
-                    if 'xml_Detraibile' in fields:
+                    if 'xml_Detraibile' in fields and fields['xml_Detraibile'] >= 0:
                         riepilogo.Detraibile = '{:.2f}'.format(
                             fields['xml_Detraibile'])
+                    elif 'xml_Detraibile' in fields:
+                        raise orm.except_orm('Warning', "One of your invoices has negative deductible VAT value ({})".format(fields['xml_Detraibile']))
+
                     if 'xml_Deducibile' in fields:
                         riepilogo.Deducibile = fields['xml_Deducibile']
                     if 'xml_Natura' in fields:
