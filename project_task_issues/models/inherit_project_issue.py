@@ -64,7 +64,7 @@ class ProjectIssue(orm.Model):
 
     def onchange_task_id(self, cr, uid, ids, task_id, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        res = super(project_issue, self).onchange_task_id(cr, uid, ids, task_id, context)
+        res = super(ProjectIssue, self).onchange_task_id(cr, uid, ids, task_id, context)
         if not res.get('value', {}).get('user_id', False):
             issue = self.browse(cr, uid, ids[0], context)
             if not issue.user_id:
@@ -80,7 +80,7 @@ class ProjectIssue(orm.Model):
         @param *args: Give Tuple Value
 
         """
-        res = super(project_issue, self).case_close(cr, uid, ids, *args)
+        res = super(ProjectIssue, self).case_close(cr, uid, ids, *args)
         context = self.pool['res.users'].context_get(cr, uid)
         for issue in self.browse(cr, uid, ids, context):
             if not issue.task_id:
@@ -145,7 +145,7 @@ class ProjectIssue(orm.Model):
                                     'user_id': user and user.id or False
                                 })
 
-        res = super(project_issue, self).create(cr, uid, vals, context)
+        res = super(ProjectIssue, self).create(cr, uid, vals, context)
         return res
 
     def silent_done(self, cr, uid, context=None):
@@ -176,7 +176,7 @@ class ProjectIssue(orm.Model):
     #     @param *args: Give Tuple Value
     #     """
     #
-    #     res = super(project_issue, self).case_close(cr, uid, ids, *args)
+    #     res = super(ProjectIssue, self).case_close(cr, uid, ids, *args)
     #     # import pdb;pdb.set_trace()
     #     return res
 
@@ -186,4 +186,4 @@ class ProjectIssue(orm.Model):
         'status_id': fields.many2one(obj='project.issue.status', string='Status', required=False),
     }
 
-# end project_issue
+# end ProjectIssue
