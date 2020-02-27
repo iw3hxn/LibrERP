@@ -4,6 +4,7 @@
 #    Copyright (C) 2011 Agile Business Group sagl (<http://www.agilebg.com>)
 #    Copyright (C) 2011 Domsense srl (<http://www.domsense.com>)
 #    Copyright (C) 2014 Matmoz d.o.o. (<http://www.matmoz.si>)
+#    Copyright (C) 2020 Didotech srl (<http://www.didotech.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +22,7 @@
 ##############################################################################
 {
     'name': 'Project Task Issues',
-    'version': '3.1.4.6',
+    'version': '3.2.4.7',
     'category': 'Generic Modules/Projects & Services',
     'description': """Issues list associated to task. In the task form, you can see the issues related to that task
 		Create issues from tasks.""",
@@ -34,7 +35,8 @@
     "data": [
         'views/project_issue_menu.xml',
         'views/project_view.xml',
-        'views/project_issue_view.xml'
+        'views/project_issue_view.xml',
+        'views/project_issue_status_view.xml'
     ],
     "active": False,
     "installable": True

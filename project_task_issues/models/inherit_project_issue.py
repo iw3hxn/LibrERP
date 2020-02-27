@@ -28,16 +28,9 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.tools.translate import _
 
 
-class project_issue(orm.Model):
+class ProjectIssue(orm.Model):
 
     _inherit = "project.issue"
-
-    # def name_get(self, cr, uid, ids, context=None):
-    #     if not ids:
-    #         return []
-    #     if isinstance(ids, (int, long)):
-    #         ids = [ids]
-    #     return [(x['id'], str(x.id)) for x in self.browse(cr, uid, ids, context=context)]
 
     def on_change_project(self, cr, uid, ids, project_id, email_from, context=None):
         if not project_id or not ids:
@@ -77,11 +70,6 @@ class project_issue(orm.Model):
             if not issue.user_id:
                 res['value']['user_id'] = uid
         return res
-
-    _columns = {
-        'work_ids': fields.one2many('project.task.work', 'issue_id', 'Work done'),
-        'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),
-    }
 
     def case_close(self, cr, uid, ids, *args):
         """
@@ -160,6 +148,25 @@ class project_issue(orm.Model):
         res = super(project_issue, self).create(cr, uid, vals, context)
         return res
 
+    def silent_done(self, cr, uid, context=None):
+
+        if context.get('active_id'):
+            # Context that disable base.action.rule
+            new_context = {'action': True, '_action_trigger': 'write'}
+            self.write(cr, uid, context['active_id'], {'state': 'done'}, new_context)
+        # end if
+
+        return True
+    # end silent_done
+
+    # def name_get(self, cr, uid, ids, context=None):
+    #     if not ids:
+    #         return []
+    #     if isinstance(ids, (int, long)):
+    #         ids = [ids]
+    #     return [(x['id'], str(x.id)) for x in self.browse(cr, uid, ids, context=context)]
+
+
     # def case_close(self, cr, uid, ids, *args):
     #     """
     #     @param self: The object pointer
@@ -173,10 +180,10 @@ class project_issue(orm.Model):
     #     # import pdb;pdb.set_trace()
     #     return res
 
-    def silent_done(self, cr, uid, context=None):
-        if context.get('active_id'):
-            # Context that disable base.action.rule
-            new_context = {'action': True, '_action_trigger': 'write'}
-            self.write(cr, uid, context['active_id'], {'state': 'done'}, new_context)
+    _columns = {
+        'work_ids': fields.one2many('project.task.work', 'issue_id', 'Work done'),
+        'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),
+        'status_id': fields.many2one(obj='project.issue.status', string='Status', required=False),
+    }
 
-        return True
+# end project_issue

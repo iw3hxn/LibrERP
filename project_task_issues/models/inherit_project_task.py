@@ -22,7 +22,7 @@
 from openerp.osv import orm, fields
 
 
-class project_task(orm.Model):
+class ProjectTask(orm.Model):
     _inherit = "project.task"
 
     def _open_ticket(self, cr, uid, ids, field_name, arg, context=None):
