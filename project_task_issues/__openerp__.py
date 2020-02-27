@@ -22,7 +22,7 @@
 ##############################################################################
 {
     'name': 'Project Task Issues',
-    'version': '3.2.4.7',
+    'version': '3.2.4.8',
     'category': 'Generic Modules/Projects & Services',
     'description': """Issues list associated to task. In the task form, you can see the issues related to that task
 		Create issues from tasks.""",
@@ -33,6 +33,7 @@
         'project_issue_sheet'
     ],
     "data": [
+        'security/ir.model.access.csv',
         'views/project_issue_menu.xml',
         'views/project_view.xml',
         'views/project_issue_view.xml',
