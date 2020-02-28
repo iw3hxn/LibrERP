@@ -79,12 +79,26 @@
                 <!-- Remove Version column -->
                 <field name="version_id" position="replace"/>
 
-                <field name="priority" position="after">
-                    <field name="status_id"/>
-                </field>
+                <!-- Remove Category column -->
+                <!--
+                    Category field is set to invibile in parent view, so I removed the
+                    field and re-added it to reset invisible and modifiers attributes
+                -->
+                <field name="categ_id" position="replace"/>
 
+                <!-- Re-add field category -->
                 <field name="priority" position="after">
                     <field name="categ_id"/>
+                </field>
+
+                <field name="categ_id" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                    <attribute name="modifiers">{'tree_invisible': false}</attribute>
+                </field>
+
+                <!-- Add field Status after Category -->
+                <field name="categ_id" position="after">
+                    <field name="status_id"/>
                 </field>
 
             </field>
