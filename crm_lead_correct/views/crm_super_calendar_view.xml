@@ -84,19 +84,19 @@
         <menuitem name="Super Calendar" action="action_crm_super_calendar" id="menu_crm_super_calendar"
                   parent="base.menu_crm" sequence="2000" />
 
-        <record model="ir.ui.view" id="board_crm_form_inherit_replace3">
-            <field name="name">board.crm.form.inherit.replace1</field>
-            <field name="model">board.board</field>
-            <field name="type">form</field>
-            <field name="inherit_id" ref="sale.board_sales_form"/>
-            <field name="arch" type="xml">
-            <xpath expr="/form/board/column/action[@string='My appointments']" position="replace">
-                <action name="%(action_crm_my_super_calendar)d"
-                     string="My Calendar"
-                     />
-            </xpath>
-            </field>
-        </record>
+<!--        <record model="ir.ui.view" id="board_crm_form_inherit_replace3">-->
+<!--            <field name="name">board.crm.form.inherit.replace1</field>-->
+<!--            <field name="model">board.board</field>-->
+<!--            <field name="type">form</field>-->
+<!--            <field name="inherit_id" ref="sale.board_sales_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--            <xpath expr="/form/board/column/action[@string='My appointments']" position="replace">-->
+<!--                <action name="%(action_crm_my_super_calendar)d"-->
+<!--                     string="My Calendar"-->
+<!--                     />-->
+<!--            </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
 
     </data>
 </openerp>
