@@ -220,6 +220,8 @@ class sale_order_confirm(orm.TransientModel):
             # 'partner_id': sale_order.partner_id.id,
             'client_order_ref': sale_order.client_order_ref,
             'new_sale_order': False,
+            'cup': getattr(sale_order, 'cup', False),
+            'cig': getattr(sale_order, 'cig', False)
         })
         sale_order_confirm_line_list = []
 

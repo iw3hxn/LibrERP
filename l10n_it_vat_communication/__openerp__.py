@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #    Copyright (C) 2017    SHS-AV s.r.l. <https://www.zeroincombenze.it>
-#    Copyright (C) 2017-2019    Didotech srl <http://www.didotech.com>
+#    Copyright (C) 2017-2020    Didotech srl <http://www.didotech.com>
 #
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
@@ -8,7 +8,7 @@
 
 {
     "name": "Comunicazione periodica IVA",
-    "version": "6.1.0.5.13",
+    "version": "6.1.0.6.13",
     'category': 'Generic Modules/Accounting',
     'license': 'AGPL-3',
     "depends": [

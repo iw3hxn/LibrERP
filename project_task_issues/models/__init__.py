@@ -17,5 +17,6 @@
 ##############################################################################
 from . import inherit_project_task
 from . import inherit_project_issue
+from . import project_issue_status
 from . import inherit_project_task_work
 

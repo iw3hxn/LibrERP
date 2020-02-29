@@ -67,7 +67,8 @@
                 <field name="name" position="before">
                     <filter string="Overdue Credit" name="overdue_credit" icon="terp-dolar_ok!" context="{'show_overdue_activity': True}" domain="[('overdue_credit','=',1)]" groups="account_due_list.can_view_due_list"/>
                     <filter string="To Recall for Credit" icon="terp-gnome-cpu-frequency-applet+" context="{'show_overdue_activity': True}" domain="[('next_overdue_credit_activity_date','&lt;', current_date)]" groups="account_due_list.can_view_due_list"/>
-                    <filter string="Scaduto da sollecitare" icon="terp-mail-" context="{'show_overdue_activity': True}" domain="[('overdue_credit','=',1), ('excluding_recall', '=', False), ('collections_out', '=', False )]" groups="account_due_list.can_view_due_list"/>
+<!--                    <filter string="Scaduto da sollecitare" icon="terp-mail-" context="{'show_overdue_activity': True}" domain="[('overdue_credit','=',1), ('excluding_recall', '=', False), ('collections_out', '=', False )]" groups="account_due_list.can_view_due_list"/>-->
+                    <filter string="Scaduto da sollecitare" name="overdue_debit_positive" icon="terp-mail-" context="{'show_overdue_activity': True}" domain="[('excluding_recall', '=', False), ('collections_out', '=', False ), ('overdue_debit_positive', '=', True)]" groups="account_due_list.can_view_due_list"/>
                     <separator orientation="vertical"/>
                 </field>
             </field>

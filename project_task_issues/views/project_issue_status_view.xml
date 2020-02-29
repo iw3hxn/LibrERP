@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+
+
+
+        <!-- - - - - - - - - - - - - - - - - - - - -->
+        <!-- Views declarations  - - - - - - - - - -->
+        <!-- - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Issue Status -> Tree view -->
+        <record id="project_issue_status_tree_view" model="ir.ui.view">
+            <field name="name">Project Issue Tracker Status Tree</field>
+            <field name="model">project.issue.status</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Issue Status -> Form view -->
+        <record id="project_issue_status_form_view" model="ir.ui.view">
+            <field name="name">Project Issue Tracker Status Tree</field>
+            <field name="model">project.issue.status</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="name"/>
+                    <field name="description"/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Issue Status -> Search view -->
+        <record id="project_issue_status_search_view" model="ir.ui.view">
+            <field name="name">Issue Status</field>
+            <field name="model">project.issue.status</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Issue Status">
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
+
+
+
+        <!-- - - - - - - - - - - - - - - - - - - - -->
+        <!-- Actions declaration                   -->
+        <!-- - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Open the Issue Status main view (form with search and list)-->
+        <record model="ir.actions.act_window" id="project_issue_status_tree_view_action">
+            <field name="name">Status</field>
+            <field name="res_model">project.issue.status</field>
+            <!--
+                By using 'form' as 'view_type' and assigning the value 'form,tree' to 'view_mode' a full search/add/delete view will be generated.
+                By using 'tree' as 'view_type' a read-only view will be generated
+             -->
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+
+            <field name="sequence">200</field>
+            <!-- Without specifying the view_id the program should open the only defined view for this model -->
+            <field name="view_id" ref="project_issue_status_form_view"/>
+        </record>
+
+
+
+
+        <!-- - - - - - - - - - - - - - - - - - - - -->
+        <!-- Menu item declaration                 -->
+        <!-- - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Project/Configuration/Issue/Status -->
+        <menuitem
+            id="project_issue_status_config"
+            parent="project_issue.menu_project_confi"
+            name="Status"
+            action="project_issue_status_tree_view_action"
+        />
+
+    </data>
+</openerp>
