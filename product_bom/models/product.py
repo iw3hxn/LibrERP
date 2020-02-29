@@ -776,8 +776,14 @@ class product_product(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         # search product with kit
         product_ids = self.search(cr, uid, [('is_kit', '=', True)], context=context)
+        # digits_compute = dp.get_precision('Purchase Price')
+        # digits_compute(cr)[1]
+        delta = 10**-(self.pool['decimal.precision'].precision_get(cr, uid, 'Purchase Price'))
         for product in self.browse(cr, uid, product_ids, context):
-            if product.standard_price != product.cost_price:
+            standard_price = round(product.standard_price + delta, self.pool['decimal.precision'].precision_get(cr, uid, 'Purchase Price'))
+            cost_price = round(product.cost_price + delta, self.pool['decimal.precision'].precision_get(cr, uid, 'Purchase Price'))
+            diff = round(abs(standard_price - cost_price), self.pool['decimal.precision'].precision_get(cr, uid, 'Purchase Price'))
+            if diff > delta:
                 self.write(cr, uid, product.id, {'standard_price': product.cost_price}, context)
         return True
 
