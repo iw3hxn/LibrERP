@@ -7,7 +7,7 @@
         </record>
 
 
-        <record id="partner_read_own_regional" model="ir.rule">
+        <record id="rule_partner_read_own_regional" model="ir.rule">
             <field name="name">Can Read Partner on Own Region</field>
             <field ref="base.model_res_partner" name="model_id"/>
             <field name="domain_force">[('regional_user_ids', 'in', [user.id])]</field>
