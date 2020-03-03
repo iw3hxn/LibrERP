@@ -55,6 +55,7 @@ class wizard_registro_iva(osv.osv_memory):
         'message': fields.char('Message', size=64, readonly=True),
         'fiscal_page_base': fields.integer('Last printed page', required=True),
         'name': fields.char('Name', size=16),
+        'order_by_date': fields.boolean('Ordina per data')
     }
     _defaults = {
         'type': 'customer',
@@ -66,13 +67,18 @@ class wizard_registro_iva(osv.osv_memory):
     def print_registro(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         wizard = self.read(cr, uid, ids, context=context)[0]
-        move_obj = self.pool.get('account.move')
-        obj_model_data = self.pool.get('ir.model.data')
+        move_obj = self.pool['account.move']
+        obj_model_data = self.pool['ir.model.data']
+        if wizard['order_by_date']:
+            order = 'date'
+        else:
+            order = 'name'
+
         move_ids = move_obj.search(cr, uid, [
             ('journal_id', 'in', wizard['journal_ids']),
             ('period_id', 'in', wizard['period_ids']),
             ('state', '=', 'posted'),
-        ], order='name', context=context)
+        ], order=order, context=context)
         if not move_ids:
             self.write(cr, uid, ids, {'message': _('No documents found in the current selection')}, context)
             model_data_ids = obj_model_data.search(cr, uid, [('model', '=', 'ir.ui.view'), ('name', '=', 'wizard_registro_iva')], context=context)
