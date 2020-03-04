@@ -805,7 +805,7 @@ class sale_order(orm.Model):
                 )
                 for invoice in account_invoice_obj.browse(cr, uid, invoices2cancel, context):
                     if invoice.state == 'draft':
-                        print "canceling invoice {0} ({1})...".format(invoice.name, invoice.id)
+                        print("canceling invoice {0} ({1})...".format(invoice.name, invoice.id))
                         wf_service.trg_validate(uid, 'account.invoice', invoice.id, 'invoice_cancel', cr)
                         account_invoice_obj.unlink(cr, uid, invoice.id, context)
 
