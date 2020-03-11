@@ -3,7 +3,7 @@
 
 {
     'name': 'CRM Sales Team Region',
-    'version': '4.2.0.2',
+    'version': '4.2.0.3',
     "author": "Didotech Srl",
     "website": "www.didotech.com",
     'category': 'Customer Relationship Management',
@@ -16,7 +16,8 @@ Module addes possibility to assign a region to a Sales Team and automatically as
     'license': 'AGPL-3',
     "depends": [
         'crm',
-        'l10n_it_base'
+        'l10n_it_base',
+        'base_address_contacts'
     ],
     "data": [
         'security/security.xml',
