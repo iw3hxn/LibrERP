@@ -104,8 +104,7 @@ class res_partner_address_contact(orm.Model):
         return self.name_get(cr, uid, ids, context=context)
 
     def create(self, cr, uid, vals, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         name = ''
         update = False
 
@@ -123,8 +122,7 @@ class res_partner_address_contact(orm.Model):
         return super(res_partner_address_contact, self).create(cr, uid, vals, context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         name = ''
         update = False
@@ -147,6 +145,7 @@ class res_partner_address(orm.Model):
     _inherit = 'res.partner.address'
 
     def get_full_name(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for re in self.browse(cr, uid, ids, context=context):
             addr = ''
@@ -168,8 +167,7 @@ class res_partner_address(orm.Model):
         if not len(ids):
             return []
         res = []
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         length = context.get('name_lenght', False) or 80
         for record in self.browse(cr, uid, ids, context=context):
             name = record.complete_name or record.name or ''
@@ -181,8 +179,7 @@ class res_partner_address(orm.Model):
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
         if not args:
             args = []
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         ids = []
         name_array = name.split()
         search_domain = []
@@ -211,7 +208,7 @@ class res_partner(orm.Model):
     
     def _get_contacts(self, cr, uid, ids, field_name, arg, context=None):
         result = {}
-        
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for partner in self.browse(cr, uid, ids, context):
             result[partner.id] = []
             for address in partner.address:
@@ -219,9 +216,8 @@ class res_partner(orm.Model):
             
         return result
 
-    def create(self, cr, uid, vals, context):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+    def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if context.get('import', False):
             return super(res_partner, self).create(cr, uid, vals, context)
         if not vals.get('address', False) and context.get('default_type', '') != 'lead' and not context.get('install_mode', False): 
@@ -241,8 +237,7 @@ class res_partner(orm.Model):
         return super(res_partner, self).create(cr, uid, vals, context)
 
     def write(self, cr, uid, ids, vals, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if vals.get('address', False):
             address_model = self.pool['res.partner.address']
             default_address = 'unknown'
@@ -268,9 +263,8 @@ class res_partner(orm.Model):
 
         return super(res_partner, self).write(cr, uid, ids, vals, context)
 
-    def unlink(self, cr, uid, ids, context):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+    def unlink(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for partner in self.browse(cr, uid, ids, context):
             if partner.address:
                 raise orm.except_orm(
