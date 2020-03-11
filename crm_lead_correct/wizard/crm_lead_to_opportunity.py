@@ -91,30 +91,30 @@ class crm_lead2opportunity_partner(orm.TransientModel):
         lead_obj.write(cr, uid, lead_ids, vals, context=context)
         res = super(crm_lead2opportunity_partner, self).action_apply(cr, uid, ids, context=context)
         return res
-
-    def _create_partner(self, cr, uid, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        partner_ids = super(crm_lead2opportunity_partner, self)._create_partner(cr, uid, ids, context)
-        rec_ids = context and context.get('active_ids', [])
-        lead_obj = self.pool['crm.lead']
-        contact_obj = self.pool['res.partner.address.contact']
-        for data in self.browse(cr, uid, ids, context=context):
-            for lead in lead_obj.browse(cr, uid, rec_ids, context=context):
-                if data.action == 'create':
-                    if lead.partner_address_id:
-                        lead.partner_address_id.write({'name': False})
-                        if lead.contact_name:
-                            contact_id = contact_obj.create(cr, uid, {
-                                'last_name': lead.contact_name[0:lead.contact_name.find(' ')],
-                                'first_name': lead.contact_name[lead.contact_name.find(' '):],
-                                'title': lead.title.id,
-                                'email': lead.email_from,
-                                'website': lead.website,
-                                'address_id': lead.partner_address_id.id,
-                                'function_id': lead.function_id and lead.function_id.id or False,
-                                'mobile': lead.mobile or lead.phone,
-                            })
-                            lead.write({'contact_id': contact_id})
-                        else:
-                            raise orm.except_orm(_('Error!'), _("Missing Contact Name"))
-        return partner_ids
+    #
+    # def _create_partner(self, cr, uid, ids, context=None):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     partner_ids = super(crm_lead2opportunity_partner, self)._create_partner(cr, uid, ids, context)
+    #     rec_ids = context and context.get('active_ids', [])
+    #     lead_obj = self.pool['crm.lead']
+    #     contact_obj = self.pool['res.partner.address.contact']
+    #     for data in self.browse(cr, uid, ids, context=context):
+    #         for lead in lead_obj.browse(cr, uid, rec_ids, context=context):
+    #             if data.action == 'create':
+    #                 if lead.partner_address_id:
+    #                     lead.partner_address_id.write({'name': False})
+    #                     if lead.contact_name:
+    #                         contact_id = contact_obj.create(cr, uid, {
+    #                             'last_name': lead.contact_name[0:lead.contact_name.find(' ')],
+    #                             'first_name': lead.contact_name[lead.contact_name.find(' '):],
+    #                             'title': lead.title.id,
+    #                             'email': lead.email_from,
+    #                             'website': lead.website,
+    #                             'address_id': lead.partner_address_id.id,
+    #                             'function_id': lead.function_id and lead.function_id.id or False,
+    #                             'mobile': lead.mobile or lead.phone,
+    #                         })
+    #                         lead.write({'contact_id': contact_id})
+    #                     else:
+    #                         raise orm.except_orm(_('Error!'), _("Missing Contact Name"))
+    #     return partner_ids

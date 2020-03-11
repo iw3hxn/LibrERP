@@ -311,7 +311,8 @@ class crm_lead(orm.Model):
                 'mobile': lead.mobile or lead.phone,
             }
             contact_partner_address_obj = self.pool['res.partner.address.contact']
-            contact_partner_address_obj.create(cr, uid, vals, context)
+            contact_id = contact_partner_address_obj.create(cr, uid, vals, context)
+            lead.write({'contact_id': contact_id})
         return address_id
 
     def onchange_partner_id(self, cr, uid, ids, part, email=False, context=None):
