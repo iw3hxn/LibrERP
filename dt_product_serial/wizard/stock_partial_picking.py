@@ -126,7 +126,7 @@ class stock_partial_picking_line(orm.TransientModel):
             if code != line.product_id.default_code:
                 res[line.id] = code
             else:
-                res[line.id] = ''
+                res[line.id] = line.move_id.purchase_line_id and line.move_id.purchase_line_id.name or ''
         return res
 
     _columns = {
