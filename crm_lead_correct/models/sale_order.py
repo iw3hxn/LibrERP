@@ -58,11 +58,16 @@ class sale_order(orm.Model):
 
     def hook_sale_state(self, cr, uid, orders, vals, context):
         crm_obj = self.pool['crm.lead']
-        state = vals.get('state')
+        crm_sale_stage_obj = self.pool['crm.sale.stage']
+        state = vals.get('state', False)
         for order in orders:
             lead_ids = crm_obj.search(cr, uid, [('sale_order', '=', order.id)], context=context)
+            if context.get('active_model', '') == 'crm.lead':
+                lead_ids.append(context.get('active_id'))
+                lead_ids = list(set(lead_ids))
             if lead_ids:
-                for stage in order.shop_id.crm_sale_stage_ids:
-                    if stage.name == state:
-                        crm_obj.write(cr, uid, lead_ids, {'stage_id': stage.stage_id.id}, context.update({'force_stage_id': True}))
+                crm_sale_stage_ids = crm_sale_stage_obj.search(cr, uid, [('shop_id', '=', order.shop_id.id), ('name', '=', state)], context=context)
+                if crm_sale_stage_ids:
+                    stage_id = crm_sale_stage_obj.read(cr, uid, crm_sale_stage_ids[0], ['stage_id'], load='_obj')['stage_id']
+                    crm_obj.write(cr, uid, lead_ids, {'stage_id': stage_id}, context.update({'force_stage_id': True}))
         return super(sale_order, self).hook_sale_state(cr, uid, orders, vals, context)
