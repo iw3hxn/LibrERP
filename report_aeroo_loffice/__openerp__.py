@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# © 2018-2019 Didotech srl (www.didotech.com)
+# © 2018-2020 Didotech srl (www.didotech.com)
 
 { 
     'name': 'Aeroo Reports - LibreOffice Helper Addon',
-    'version': '4.0.1.0',
+    'version': '4.0.2.0',
     'category': 'Generic Modules/Aeroo Reporting',
     'description': """
 Aeroo Reports LibreOffice.org helper adds following features:

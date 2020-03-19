@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2018 Didotech srl (www.didotech.com)
+# © 2018-2020 Didotech srl (www.didotech.com)
 
 from openerp.osv import orm, fields
 import netsvc
@@ -8,6 +8,7 @@ import os
 import base64
 import urllib2
 from sys import platform
+import logging
 
 try:
     from cStringIO import StringIO
@@ -19,6 +20,9 @@ from tools.translate import _
 from report_aeroo_loffice.DocumentConverter import DocumentConversionException
 from report_aeroo_loffice.report_loffice import OpenOffice_service
 from report_aeroo.report_aeroo import aeroo_lock
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.INFO)
 
 _url = 'http://www.alistek.com/aeroo_banner/v6_1_report_aeroo_ooo.png'
 
@@ -98,7 +102,7 @@ class AerooConfigInstaller(orm.TransientModel):
             )
             with aeroo_lock:
                 DC.putDocument(file_data)
-                data = DC.saveByStream(u'writer_pdf_Export')
+                pdf_data = DC.saveByStream(u'writer_pdf_Export')
                 DC.closeDocument()
                 del DC
         except DocumentConversionException, e:
@@ -116,6 +120,9 @@ class AerooConfigInstaller(orm.TransientModel):
             msg = _('Connection to LibreOffice.org instance was not established or convertion to PDF unsuccessful!')
         else:
             msg = _('Connection to the LibreOffice.org instance was successfully established and PDF convertion is working.')
+
+        _logger.info(u'Info: {msg}'.format(msg=msg))
+        _logger.info(u'New path is {path}'.format(path=data['soffice']))
 
         return self.write(cr, uid, ids, {'msg': msg, 'error_details': error_details, 'state': state})
 
