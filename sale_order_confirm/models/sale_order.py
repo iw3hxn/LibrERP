@@ -106,6 +106,11 @@ class sale_order(orm.Model):
         order_id = super(sale_order, self).create(cr, uid, vals, context=context)
         order = self.browse(cr, uid, order_id, context)
         self.adaptative_function(cr, uid, [order], vals, context)
+        order_state = vals.get('state', order.state)
+        if order_state:
+            vals_copy = vals.copy()
+            vals_copy['state'] = order_state
+            self.hook_sale_state(cr, uid, [order], vals_copy, context)
         return order_id
 
     def write(self, cr, uid, ids, vals, context=None):
