@@ -22,7 +22,7 @@
 from openerp.osv import fields, orm
 
 
-class purchase_order(orm.Model):
+class PurchaseOrder(orm.Model):
 
 
 ##############################################################################
@@ -44,7 +44,7 @@ class purchase_order(orm.Model):
     }
 
     def onchange_partner_id(self, cr, uid, ids, partner_id):
-        res = super(purchase_order, self).onchange_partner_id(cr, uid, ids, partner_id)
+        res = super(PurchaseOrder, self).onchange_partner_id(cr, uid, ids, partner_id)
         supplier = self.pool['res.partner'].browse(cr, uid, partner_id)
         payment_term = supplier.property_payment_term and supplier.property_payment_term.id or False
         carriage_condition_id = supplier.carriage_condition_id and supplier.carriage_condition_id.id or False
@@ -57,7 +57,7 @@ class purchase_order(orm.Model):
         return res
 
     def action_invoice_create(self, cr, uid, ids, context=None):
-        inv_id = super(purchase_order, self).action_invoice_create(cr, uid, ids, context=context)
+        inv_id = super(PurchaseOrder, self).action_invoice_create(cr, uid, ids, context=context)
         payment_term = self.browse(cr, uid, ids, context)[0].payment_term
         if payment_term:
             self.pool['account.invoice'].write(cr, uid, inv_id, {'payment_term': payment_term.id}, context=context)
@@ -78,3 +78,10 @@ class purchase_order(orm.Model):
             'move_lines': [],
             'partner_id': order.partner_id.id,
         }
+
+    def _prepare_order_line_move(self, cr, uid, order, order_line, picking_id, context=None):
+        res = super(PurchaseOrder, self)._prepare_order_line_move(cr, uid, order, order_line, picking_id, context)
+        company = order.company_id
+        if company.note_on_stock_move:
+            res['note'] = order_line.notes
+        return res
