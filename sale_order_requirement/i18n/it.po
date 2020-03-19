@@ -710,3 +710,9 @@ msgstr "Produrre"
 #, python-format
 msgid "Stock"
 msgstr "Da Magazzino"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/purchase_order.py:29
+#, python-format
+msgid "The selected supplier has a minimal quantity set to {qty} for product \"{product}\""
+msgstr "Il fornitore ha un minimo d'ordine di {qty} per il prodotto \"{product}\""

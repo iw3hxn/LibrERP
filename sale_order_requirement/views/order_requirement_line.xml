@@ -261,7 +261,7 @@
                     <field name="has_bom" />
                     <field name="product_id"/>
                     <field name="new_product_id"/>
-                    <field name="qty" />
+                    <field name="qty" sum="qty"/>
                     <field name="stock_availability"/>
                     <field name="spare"/>
                     <field name="state" />
