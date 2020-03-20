@@ -63,7 +63,8 @@ class account_invoice(orm.Model):
                         )
 
                         # divide by quantity multiplied by UoM factor
-                        unit_purchase_price = price_subtotal / (line.quantity * line.product_id.uom_po_id.factor_inv)
+                        factor_inv = line.product_id.uom_po_id and line.product_id.uom_po_id.factor_inv or 1
+                        unit_purchase_price = price_subtotal / (line.quantity * factor_inv)
 
                         vals = {
                             'last_purchase_price': unit_purchase_price,
