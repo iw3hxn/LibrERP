@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# © 2014 - 2017 Didotech srl (www.didotech.com)
+# © 2014 - 2020 Didotech srl (www.didotech.com)
 
 {
     "name": "Product Extended",
-    "version": "3.9.18.18",
+    "version": "3.9.19.18",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     'category': 'Sales Management',

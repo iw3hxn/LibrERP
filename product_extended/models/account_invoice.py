@@ -3,6 +3,7 @@
 #
 #    Avanzosc - Avanced Open Source Consulting
 #    Copyright (C) 2011 - 2012 Avanzosc <http://www.avanzosc.com>
+#    © 2014 - 2020 Didotech srl (www.didotech.com)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -60,12 +61,18 @@ class account_invoice(orm.Model):
                             from_amount=line.price_subtotal,
                             context=context
                         )
+
+                        # divide by quantity multiplied by UoM factor
+                        unit_purchase_price = price_subtotal / (line.quantity * line.product_id.uom_po_id.factor_inv)
+
                         vals = {
-                            'last_purchase_price': price_subtotal / line.quantity,
+                            'last_purchase_price': unit_purchase_price,
                             'last_supplier_invoice_id': invoice.id
                         }
                         if line.product_id.cost_method == 'lpp':
-                            vals.update({'standard_price': price_subtotal / line.quantity})
+                            vals.update({
+                                'standard_price': unit_purchase_price
+                            })
 
                         self.pool['product.product'].write(cr, SUPERUSER_ID, line.product_id.id, vals, context)
         return True
