@@ -470,8 +470,6 @@ class account_invoice(orm.Model):
                                      _('Impossible to Cancel, need to cancel Internal Number {number}').format(
                                          number=invoice.internal_number))
 
-                return False
-
         return True
 
     def invoice_proforma_check(self, cr, uid, ids, context=None):
@@ -483,7 +481,6 @@ class account_invoice(orm.Model):
                 raise orm.except_orm(_('Invoice'),
                                      _('Impossible to Proforma, need to cancel Internal Number {number}').format(
                                          number=invoice.internal_number))
-                return False
 
         return True
 
@@ -518,14 +515,10 @@ class account_invoice(orm.Model):
         return super(account_invoice, self).copy(cr, uid, ids, default, context)
 
     def write(self, cr, uid, ids, vals, context=None):
-
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
-
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if isinstance(ids, (int, long)):
             ids = [ids]
         if 'internal_number' in vals.keys():
-
             if not vals['internal_number'] or vals['internal_number'].replace(' ', '') == '':
                 if not self.pool['res.groups'].user_in_group(cr, uid, uid, 'account.group_number_account_invoice', context):
                     raise orm.except_orm(_("You don't have Permission!"), _("You must be on group 'Cancel Internal Number'"))
@@ -533,6 +526,13 @@ class account_invoice(orm.Model):
                     self.pool['ir.sequence_recovery'].set(cr, uid, [invoice.id], 'account.invoice', 'internal_number', '', invoice.journal_id.sequence_id.id)
 
         return super(account_invoice, self).write(cr, uid, ids, vals, context)
+
+    def create(self, cr, uid, vals, context=None):
+        if 'internal_number' in vals:
+            recovery_ids = self.pool['ir.sequence_recovery'].search(cr, uid, [('name', '=', 'account.invoice'), ('sequence', '=', vals['internal_number'])], context=context)
+            if recovery_ids:
+                self.pool['ir.sequence_recovery'].write(cr, uid, recovery_ids[0], {'active': False}, context)
+        return super(account_invoice, self).create(cr, uid, vals, context)
 
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
         sale_order_obj = self.pool['sale.order']
