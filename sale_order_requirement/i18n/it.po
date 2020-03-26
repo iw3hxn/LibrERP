@@ -671,6 +671,7 @@ msgstr "Ordine di Produzione"
 #. module: sale_order_requirement
 #: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement_line
 #: field:mrp.production,order_requirement_line_id:0
+#: view:sale.order:0
 msgid "Order Requirement Line"
 msgstr "Riga Fabbisogno Ordine"
 
