@@ -23,7 +23,7 @@
 
 {
     "name": "Letter Management",
-    "version": "3.4.1.9",
+    "version": "3.4.2.9",
     "depends": [
         "base"
     ],

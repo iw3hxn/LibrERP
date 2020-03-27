@@ -193,6 +193,13 @@ class res_letter(orm.Model):
                 user = self.pool['res.users'].browse(cr, uid, values['user_id'], context)
                 values['company_id'] = user.company_id.id
         return super(res_letter, self).create(cr, uid, values, context)
+
+    def copy(self, cr, uid, ids, default=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        default = default or {}
+        default['number'] = self._get_number(cr, uid, context)
+        res = super(res_letter, self).copy(cr, uid, ids, default, context)
+        return res
     
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
         context = context or self.pool['res.users'].context_get(cr, uid)

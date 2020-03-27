@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-from . import inherit_hr_employeel
+from . import inherit_hr_employee
 from . import letter_channel
 from . import letter_class
 from . import letter_history
