@@ -717,3 +717,14 @@ msgstr "Da Magazzino"
 #, python-format
 msgid "The selected supplier has a minimal quantity set to {qty} for product \"{product}\""
 msgstr "Il fornitore ha un minimo d'ordine di {qty} per il prodotto \"{product}\""
+
+#. module: sale_order_requirement
+#: model:ir.actions.act_window,name:sale_order_requirement.action_add_sale_order_line
+#: view:order.requirement.line.add:0
+msgid "Add Order Line"
+msgstr "Aggiungi Righe d'Ordine"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line.add,order_line:0
+msgid "Order Line"
+msgstr "Riga"

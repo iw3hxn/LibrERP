@@ -1,5 +1,8 @@
-import decimal_precision as dp
+import datetime
+
+import netsvc
 from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from tools.translate import _
 
 
@@ -56,5 +59,80 @@ class OrderRequirementLineAdd(orm.TransientModel):
         for wizard in self.browse(cr, uid, ids, context):
             if wizard.order_line:
                 line_id = int(wizard.order_line)
-                self.pool['order.requirement.line'].write(cr, uid, line_ids, {'sale_order_line_id': line_id}, context=context)
+                order_requirement_line = self.pool['order.requirement.line'].browse(cr, uid, line_ids[0], context)
+                order_requirement_line.write({'sale_order_line_id': line_id})
+
+                order_requirement = self.pool['order.requirement'].browse(cr, uid, context['order_id'], context)
+
+                # create picking
+                pick_type = 'internal'
+                ir_sequence_obj = self.pool['ir.sequence']
+                stock_picking_obj = self.pool['stock.picking']
+
+                pick_name = ir_sequence_obj.get(cr, uid, 'stock.picking.' + pick_type)
+                order = order_requirement.sale_order_id
+                date_planned = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+
+                picking_vals = {
+                    'name': pick_name,
+                    'origin': _('Order Requirement') + ' ' + order.name,
+                    'date': date_planned,
+                    'type': pick_type,
+                    'state': 'auto',
+                    'move_type': 'one',
+                    'sale_id': order.id,
+                    'address_id': order.partner_shipping_id.id,
+                    'note': order.note,
+                    'invoice_state': 'none',
+                    'company_id': order.company_id.id,
+                    'auto_picking': True,
+                }
+                if order.project_project:
+                    project = order.project_project
+                    picking_vals.update({
+                        'project_id': project.id,
+                        'account_id': project.analytic_account_id.id,
+                        'sale_project': project.id
+                    })
+
+                picking_id = stock_picking_obj.create(cr, uid, picking_vals, context)
+
+                location_id = order.shop_id.warehouse_id.lot_stock_id.id
+                output_id = order.shop_id.warehouse_id.lot_output_id.id
+                price_unit = 0.0
+
+                if order_requirement_line.qty != 0.0:
+                    price_unit = order_requirement_line.product_id.cost_price
+
+                move_vals = {
+                    'name': order_requirement_line.product_id.name[:250],
+                    'picking_id': picking_id,
+                    'product_id': order_requirement_line.product_id.id,
+                    'date': date_planned,
+                    'date_expected': date_planned,
+                    'product_qty': order_requirement_line.qty,
+                    'product_uom': order_requirement_line.product_id.uom_id.id,
+                    # 'product_uos_qty': (line.product_uos and line.product_uos_qty) or line.product_uom_qty,
+                    # 'product_uos': (line.product_uos and line.product_uos.id) \
+                    #                or line.product_uom.id,
+                    # 'product_packaging': line.product_packaging.id,
+                    # 'address_id': order.partner_shipping_id.id,
+                    'location_id': location_id,
+                    'location_dest_id': output_id,
+                    'sale_line_id': line_id,
+                    'tracking_id': False,
+                    'state': 'draft',
+                    # 'state': 'waiting',
+                    'company_id': order.company_id.id,
+                    'price_unit': price_unit
+                }
+
+                move_id = self.pool['stock.move'].create(cr, uid, move_vals, context)
+                wf_service = netsvc.LocalService("workflow")
+                wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
+                stock_picking_obj.force_assign(cr, uid, [picking_id], context)
+                ctx = context.copy()
+                ctx['force_commit'] = True
+                stock_picking_obj._commit_cost(cr, uid, [picking_id], ctx)
+
         return True

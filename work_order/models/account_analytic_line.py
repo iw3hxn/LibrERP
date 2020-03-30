@@ -46,19 +46,12 @@ class account_analytic_line(orm.Model):
     def get_cost_amount(self, cr, uid, product, product_qty, context=None):
         price_unit_precision = self.pool['decimal.precision'].precision_get(cr, uid, 'Sale Price')
         if product.is_kit:
-            bom_obj = self.pool['mrp.bom']
-            amount = 0.0
-            for bom in product.bom_lines:
-                bom_product_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom.id)], context=context)
-                bom_products = bom_obj.browse(cr, uid, bom_product_ids, context)
-                for bom_product in bom_products:
-                    if not bom_product.product_id.product_tmpl_id.type == 'service':
-                        amount += bom_product.product_id.standard_price * bom_product.product_qty
-            return rounding(amount * product_qty, 10 ** - price_unit_precision)
+            amount = product.cost_price
         else:
-            return rounding(product.standard_price * product_qty, 10 ** - price_unit_precision)
+            amount = product.standard_price
+        return rounding(amount * product_qty, 10 ** - price_unit_precision)
     
-    def update_or_create_line(self, cr, uid, values, context=None):
+    def update_or_create_line(self, cr, uid, move, values, context=None):
         '''
             values = {
                 'name': expense_line.name,

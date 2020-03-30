@@ -35,10 +35,10 @@ class stock_picking(orm.Model):
         'sale_project': fields.related('sale_id', 'project_project', type='many2one', relation='project.project', string=_('Project'), store=False),
     }
 
-    def onchange_account_id(self, cr, uid, ids, project_id):
+    def onchange_account_id(self, cr, uid, ids, project_id, context=None):
         res = {}
         if project_id:
-            context = self.pool['res.users'].context_get(cr, uid)
+            context = context or self.pool['res.users'].context_get(cr, uid)
             project = self.pool['project.project'].browse(cr, uid, project_id, context)
             res.update({
                 'account_id': project.analytic_account_id.id,
@@ -71,13 +71,14 @@ class stock_picking(orm.Model):
                         'ref': picking.name,
                         'origin_document': move
                     }
-                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, values, context)
+                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, move, values, context)
         return True
 
     def action_done(self, cr, uid, ids, context=None):
         result = super(stock_picking, self).action_done(cr, uid, ids, context=context)
         picking_ids = self.search(cr, uid, [('id', 'in', ids), ('type', '=', 'internal')], context=context)
-        self._commit_cost(cr, uid, picking_ids, context)
+        if picking_ids:
+            self._commit_cost(cr, uid, picking_ids, context)
         return result
     
     def do_partial(self, cr, uid, ids, partial_data, context):

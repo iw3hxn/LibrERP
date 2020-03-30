@@ -15,7 +15,8 @@ and choose if manufacture or buy products from suppliers.
     "depends": [
         "mrp",
         "stock_picking_extended",
-        "purchase"
+        "purchase",
+        "work_order"
     ],
     'data': [
         'wizard/order_requirement_line_add.xml',

@@ -49,6 +49,7 @@
         'dt_product_serial',
         'project',
         'mrp',
+        'mrp_bom_standard_price',
         'sale_order_confirm',
         'project_timesheet',
         'task_time_control',
