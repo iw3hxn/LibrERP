@@ -23,6 +23,9 @@
                         <field name="in_format" required="1" on_change="change_input_format(in_format)"/>
                         <field name="out_format" required="1" domain="[('compatible_types','=',in_format)]"/>
                     </group>
+                    <group colspan="4">
+                        <field name="meta_title" required="1" />
+                    </group>
 
                     <notebook colspan="4">
                         <page string="Other Configuration">

@@ -79,6 +79,7 @@ class report_mimetypes(osv.osv):
     '''
     Aeroo Report Mime-Type
     '''
+
     _name = 'report.mimetypes'
     _description = 'Report Mime-Types'
 
@@ -394,6 +395,11 @@ class report_xml(osv.osv):
                                          help='Records limit at which you are invited to start the deferred process.'),
         'replace_report_id': fields.many2one('ir.actions.report.xml', 'Replace Report'),
         'wizard_id': fields.many2one('ir.actions.act_window', 'Wizard Action'),
+        'meta_title': fields.selection([
+            ('company_name', _('Company name')),
+            ('username', _('Username')),
+            ('module_name', _('Module name')),
+        ], 'Document property title', help='Document property title.'),
 
     }
 
@@ -694,6 +700,7 @@ class report_xml(osv.osv):
         'copies': 1,
         'deferred': 'off',
         'deferred_limit': 80,
+        'meta_title': 'module_name',
     }
 
 

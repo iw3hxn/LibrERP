@@ -67,6 +67,7 @@ import pooler
 import netsvc
 from lxml import etree
 import logging
+
 _logger = logging.getLogger(__name__)
 
 from ExtraFunctions import ExtraFunctions
@@ -416,7 +417,8 @@ class Aeroo_report(report_sxw):
         ################################################
         if not file_data:
             _logger.info(
-                "End process %s (%s), elapsed time: %s" % (self.name, self.table, time.time() - aeroo_print.start_time))  # debug mode
+                "End process %s (%s), elapsed time: %s" % (
+                    self.name, self.table, time.time() - aeroo_print.start_time))  # debug mode
             return False, output
 
         print_id = context.get('print_id', False)
@@ -444,7 +446,8 @@ class Aeroo_report(report_sxw):
         if report_xml.content_fname:
             output = report_xml.content_fname
         _logger.info(
-            "End process %s (%s), elapsed time: %s" % (self.name, self.table, time.time() - aeroo_print.start_time))  # debug mode
+            "End process %s (%s), elapsed time: %s" % (
+                self.name, self.table, time.time() - aeroo_print.start_time))  # debug mode
         return data, output
 
     def _generate_doc(self, DC, data, report_xml, print_id):
@@ -525,7 +528,8 @@ class Aeroo_report(report_sxw):
             file_data = self.get_other_template(cr, uid, data, oo_parser)
         if not file_data and not report_xml.report_sxw_content:
             _logger.info(
-                "End process %s (%s), elapsed time: %s" % (self.name, self.table, time.time() - aeroo_print.start_time))  # debug mode
+                "End process %s (%s), elapsed time: %s" % (
+                    self.name, self.table, time.time() - aeroo_print.start_time))  # debug mode
             return False, output
         # elif file_data:
         #    template_io = StringIO()
@@ -573,7 +577,19 @@ class Aeroo_report(report_sxw):
 
         # basic = Template(source=None, filepath=odt_path)
 
-        basic.Serializer.add_title(model_name)
+        # default title is model name
+        document_property_title = model_name
+
+        # other different choices
+        if report_xml.meta_title:
+            if report_xml.meta_title == 'username':
+                document_property_title = user_name
+            elif report_xml.meta_title == 'company_name':
+                company_id = pool.get('res.users')._get_company(cr, uid, context=context)
+                document_property_title = pool.get('res.partner').browse(cr, uid, company_id, context=context).name \
+                                          or model_name
+
+        basic.Serializer.add_title(document_property_title)
         basic.Serializer.add_creation_user(user_name)
         module_info = load_information_from_description_file('report_aeroo')
         version = module_info['version']
@@ -628,7 +644,8 @@ class Aeroo_report(report_sxw):
         if report_xml.content_fname:
             output = report_xml.content_fname
             _logger.info(
-            "End process %s (%s), elapsed time: %s" % (self.name, self.table, time.time() - aeroo_print.start_time))  # debug mode
+                "End process %s (%s), elapsed time: %s" % (
+                    self.name, self.table, time.time() - aeroo_print.start_time))  # debug mode
         return data, output
 
     # override needed to keep the attachments' storing procedure
