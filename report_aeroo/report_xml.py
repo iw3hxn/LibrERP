@@ -399,6 +399,7 @@ class report_xml(osv.osv):
             ('company_name', _('Company name')),
             ('username', _('Username')),
             ('module_name', _('Module name')),
+            ('document_field_name', _('Document reference')),
         ], 'Document property title', help='Document property title.'),
 
     }
