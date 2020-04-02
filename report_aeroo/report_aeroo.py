@@ -586,7 +586,7 @@ class Aeroo_report(report_sxw):
                 document_property_title = user_name
             elif report_xml.meta_title == 'company_name':
                 company_id = pool.get('res.users')._get_company(cr, uid, context=context)
-                document_property_title = pool.get('res.partner').browse(cr, uid, company_id, context=context).name \
+                document_property_title = pool.get('res.company').browse(cr, uid, company_id, context=context).name \
                                           or model_name
             elif report_xml.meta_title == 'document_field_name':
                 document_property_title = pool.get(data['model']).browse(cr, uid, ids[0], context=context).name \

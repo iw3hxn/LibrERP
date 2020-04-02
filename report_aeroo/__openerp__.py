@@ -24,7 +24,7 @@
 
 {
     'name': 'Aeroo Reports',
-    'version': '1.4.1',
+    'version': '1.4.2',
     'category': 'Generic Modules/Aeroo Reporting',
     'description': """
 Aeroo Reports for OpenERP is a comprehensive reporting engine based on Aeroo Library.
