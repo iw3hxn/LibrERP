@@ -38,6 +38,8 @@ from tempfile import NamedTemporaryFile
 from report.report_sxw import report_sxw, report_rml, browse_record_list
 from report.pyPdf import PdfFileWriter, PdfFileReader
 
+from datetime import datetime
+
 # import zipfile
 try:
     from cStringIO import StringIO
@@ -580,17 +582,17 @@ class Aeroo_report(report_sxw):
         # default title is model name
         document_property_title = model_name
 
-        # other different choices
+        # other different choices according to the format feature of string
+        # the object in the string is o
+        # logging errors and proceed anyway (using default)
         if report_xml.meta_title:
-            if report_xml.meta_title == 'username':
-                document_property_title = user_name
-            elif report_xml.meta_title == 'company_name':
-                company_id = pool.get('res.users')._get_company(cr, uid, context=context)
-                document_property_title = pool.get('res.company').browse(cr, uid, company_id, context=context).name \
-                                          or model_name
-            elif report_xml.meta_title == 'document_field_name':
-                document_property_title = pool.get(data['model']).browse(cr, uid, ids[0], context=context).name \
-                                          or model_name
+            for obj in pool.get(data['model']).browse(cr, uid, ids, context=context):
+                try:
+                    document_property_title = report_xml.meta_title.format(o=obj)
+                except (ValueError, IndexError) as err:
+                    _logger.error(err)
+                except Exception as err:
+                    _logger.error(err)
 
         basic.Serializer.add_title(document_property_title)
         basic.Serializer.add_creation_user(user_name)

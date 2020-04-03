@@ -395,12 +395,11 @@ class report_xml(osv.osv):
                                          help='Records limit at which you are invited to start the deferred process.'),
         'replace_report_id': fields.many2one('ir.actions.report.xml', 'Replace Report'),
         'wizard_id': fields.many2one('ir.actions.act_window', 'Wizard Action'),
-        'meta_title': fields.selection([
-            ('company_name', _('Company name')),
-            ('username', _('Username')),
-            ('module_name', _('Module name')),
-            ('document_field_name', _('Document reference')),
-        ], 'Document property title', help='Document property title.'),
+        'meta_title': fields.char('Document property title', size=255, help="Document metadata property title.\n"
+                                  "The inserted string is processed using the format() method.\n"
+                                  "Please use o. as object in string format.\n"
+                                  "Example: {o.name}_{o.date_order:4.4} COMPANY {o.partner_id.name}."
+                                  ),
 
     }
 
@@ -701,7 +700,7 @@ class report_xml(osv.osv):
         'copies': 1,
         'deferred': 'off',
         'deferred_limit': 80,
-        'meta_title': 'module_name',
+        'meta_title': '{o.name}',
     }
 
 
