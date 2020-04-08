@@ -33,7 +33,7 @@ class account_analytic_line(orm.Model):
     _inherit = 'account.analytic.line'
     
     def _get_selection_list(self, cr, uid, context=None):
-        #@return a list of tuples. tuples containing model name and name of the record
+        # @return a list of tuples. tuples containing model name and name of the record
         model_obj = self.pool['ir.model']
         ids = model_obj.search(cr, uid, [('name', 'not ilike', '.')], context=context)
         res = model_obj.read(cr, uid, ids, ['model', 'name'])
@@ -107,39 +107,26 @@ class account_analytic_line(orm.Model):
             
             analytic_line_ids = self.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id))], context=context)
 
+            analytic_line_vals = {
+                'amount': -amount,
+                'user_id': uid,
+                'name': values['name'],
+                'unit_amount': product_qty,  # What a strange idea to call product_qty unit_amount!!!
+                'date': line_date,
+                'company_id': user.company_id.id,
+                'account_id': values['account_id'],
+                'general_account_id': general_account_id,
+                'product_id': values['product'].id,
+                'product_uom_id': values.get('product_uom', values['product'].uom_id.id),
+                'journal_id': journal_id,
+                'amount_currency': 0.0,
+                'ref': values.get('ref', False),
+                'origin_document': '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id)
+            }
+
             if analytic_line_ids:
-                return self.write(cr, uid, analytic_line_ids, {
-                    'amount': -amount,
-                    'user_id': uid,
-                    'name': values['name'],
-                    'unit_amount': product_qty,  # What a strange idea to call product_qty unit_amount!!!
-                    'date': line_date,
-                    'company_id': user.company_id.id,
-                    'account_id': values['account_id'],
-                    'general_account_id': general_account_id,
-                    'product_id': values['product'].id,
-                    'product_uom_id': values.get('product_uom', values['product'].uom_id.id),
-                    'journal_id': journal_id,
-                    'amount_currency': 0.0,
-                    'ref': values.get('ref', False),
-                    'origin_document': '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id)
-                }, context)
+                return self.write(cr, uid, analytic_line_ids, analytic_line_vals, context)
             else:
-                return self.create(cr, uid, {
-                    'amount': -amount,
-                    'user_id': uid,
-                    'name': values['name'],
-                    'unit_amount': product_qty,
-                    'date': line_date,
-                    'company_id': user.company_id.id,
-                    'account_id': values['account_id'],
-                    'general_account_id': general_account_id,
-                    'product_id': values['product'].id,
-                    'product_uom_id': values.get('product_uom', values['product'].uom_id.id),
-                    'journal_id': journal_id,
-                    'amount_currency': 0.0,
-                    'ref': values.get('ref', False),
-                    'origin_document': '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id)
-                }, context)
+                return self.create(cr, uid, analytic_line_vals, context)
         else:
             return False
