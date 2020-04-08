@@ -703,9 +703,9 @@ class OrderRequirementLine(orm.Model):
         'production_orders_state': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
                                                    string='Prod. orders', readonly=True),
         'purchase_orders_approved': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
-                                                    string='Purch. orders approved', readonly=True),
+                                                    string='Purch. orders approved', readonly=True, help="Purchase in Draft/Approved"),
         'purchase_orders_state': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
-                                                 string='Deliveries', readonly=True),
+                                                 string='Deliveries', readonly=True, help="Approved Purchase Order Line Arrived/Total"),
         # 'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'), # TODO: needed?
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
@@ -1025,7 +1025,7 @@ class OrderRequirementLine(orm.Model):
             self.write(cr, uid, line_obj.id, {
                 'purchase_order_ids': [(4, purchase_id)],
                 'purchase_order_line_ids': [(4, purchase_line_id)]
-            }, ctx)
+            }, context)
 
             if is_temp_bom:
                 # If is a temp mrp bom, associate purchase line also to it
@@ -1118,6 +1118,12 @@ class OrderRequirementLine(orm.Model):
                     # If is a temp mrp bom, associate purchase line also to it
                     temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
                                                              'purchase_order_line_id': order_line_id}, context)
+
+            self.write(cr, uid, line_obj.id, {
+                'purchase_order_ids': [(4, present_order_id)],
+                'purchase_order_line_ids': [(4, order_line_id)]
+            }, context)
+
         return True
 
     def _manufacture_bom(self, cr, uid, temp, context):
