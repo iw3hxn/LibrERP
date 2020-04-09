@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
 #    Copyright (C) 2012 Pexego Sistemas Informáticos (<http://tiny.be>).
+#    Copyright (C) 2020 Didotech S.r.l. (<http://www.didotech.com/>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -22,7 +23,7 @@
 {
     "name": "Purchase Order Lines With Discounts",
     "author": "Tiny,Pexego",
-    "version": "1.0.4",
+    "version": "1.1.4",
     "category": "Generic Modules/Sales & Purchases",
     'description': """ """,
     "depends": [
@@ -34,5 +35,3 @@
     "active": False,
     "installable": True
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-

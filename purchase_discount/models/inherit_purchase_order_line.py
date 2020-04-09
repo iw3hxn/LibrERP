@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
 #    Copyright (C) 2012 Pexego Sistemas Informáticos (<http://tiny.be>).
+#    Copyright (C) 2020 Didotech S.r.l. (<http://www.didotech.com/>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -113,7 +114,10 @@ class purchase_order_line(orm.Model):
                                                                        po_pricelist.currency_id.id,
                                                                        new_list_price, context=ctx)
 
-                discount = (new_list_price - price) / new_list_price * 100
+                # divide by UoM factor
+                factor_inv = product.uom_po_id and product.uom_po_id.factor_inv or 1
+                discount_price = new_list_price / factor_inv
+                discount = (discount_price - price) / discount_price * 100
                 if discount >= 0:
                     result['price_unit'] = new_list_price
                     result['discount'] = discount
