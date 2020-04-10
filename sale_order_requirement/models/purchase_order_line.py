@@ -4,7 +4,7 @@
 from openerp.osv import orm, fields
 
 
-class purchase_order_line(orm.Model):
+class PurchaseOrderLine(orm.Model):
     _inherit = 'purchase.order.line'
 
     _columns = {
@@ -15,3 +15,22 @@ class purchase_order_line(orm.Model):
         # 'sale_order_ids': fields.related('order_requirement_ids', 'sale_order_id', string='Sale Orders',
         #                                  relation='sale.order', type='many2many', readonly=True, store=False)
     }
+
+    def copy(self, cr, uid, ids, default=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        default = default or {}
+        default.update({
+            'order_requirement_ids': [],
+            'order_requirement_line_ids': [],
+            'temp_mrp_bom_ids': []
+        })
+        return super(PurchaseOrderLine, self).copy(cr, uid, ids, default, context)
+
+    def copy_data(self, cr, uid, id, default=None, context=None):
+        default = default or {}
+        default.update({
+            'order_requirement_ids': [],
+            'order_requirement_line_ids': [],
+            'temp_mrp_bom_ids': []
+        })
+        return super(PurchaseOrderLine, self).copy_data(cr, uid, id, default, context=context)

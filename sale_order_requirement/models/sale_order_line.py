@@ -12,6 +12,21 @@ class SaleOrderLine(orm.Model):
         'order_requirement_line_ids': fields.one2many('order.requirement.line', 'sale_order_line_id', string='Order requirement lines'),
     }
 
+    def copy(self, cr, uid, ids, default=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        default = default or {}
+        default.update({
+            'order_requirement_line_ids': []
+        })
+        return super(SaleOrderLine, self).copy(cr, uid, ids, default, context)
+
+    def copy_data(self, cr, uid, id, default=None, context=None):
+        default = default or {}
+        default.update({
+            'order_requirement_line_ids': []
+        })
+        return super(SaleOrderLine, self).copy_data(cr, uid, id, default, context=context)
+
     # TODO: If needed, change the view and attach the button from sale_order_line <==> order_requirement_line
     # def action_open_order_requirement(self, cr, uid, ids, context=None):
     #     context = context or self.pool['res.users'].context_get(cr, uid)
