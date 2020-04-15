@@ -5,7 +5,7 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
 
-class sale_order(orm.Model):
+class SaleOrder(orm.Model):
     _inherit = 'sale.order'
 
     def _create_order_requirement(self, cr, uid, order, context):
@@ -21,7 +21,7 @@ class sale_order(orm.Model):
     def _create_pickings_and_procurements(self, cr, uid, order, order_lines, picking_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         context['stop_procurement'] = True
-        res = super(sale_order, self)._create_pickings_and_procurements(
+        res = super(SaleOrder, self)._create_pickings_and_procurements(
             cr, uid, order, order_lines, picking_id, context)
         if self.service_only(cr, uid, [order], context):
             return res
@@ -59,7 +59,7 @@ class sale_order(orm.Model):
         order_requirement_obj = self.pool['order.requirement']
         order_requirement_ids = order_requirement_obj.search(cr, uid, [('sale_order_id', 'in', ids)], context=context)
         order_requirement_obj.unlink(cr, uid, order_requirement_ids, context)
-        return super(sale_order, self).action_reopen(cr, uid, ids, context=context)
+        return super(SaleOrder, self).action_reopen(cr, uid, ids, context=context)
 
     def _get_production_order(self, cr, uid, ids, field_name, model_name, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -88,7 +88,16 @@ class sale_order(orm.Model):
     }
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
-        res = super(sale_order, self)._prepare_order_picking(cr, uid, order, context)
+        res = super(SaleOrder, self)._prepare_order_picking(cr, uid, order, context)
         if order.internal_note:
             res['internal_note'] = order.internal_note
         return res
+
+    def copy(self, cr, uid, ids, default=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        default = default or {}
+        default.update({
+            'purchase_order_ids': []
+        })
+        return super(SaleOrder, self).copy(cr, uid, ids, default, context)
+
