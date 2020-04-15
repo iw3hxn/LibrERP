@@ -982,6 +982,9 @@ class OrderRequirementLine(orm.Model):
                                                        [('partner_id', '=', supplier_id), ('shop_id', '=', shop_id),
                                                         ('state', '=', 'draft')], limit=1, context=context)
 
+        present_order_id = False
+        order_line_id = False
+
         if not purchase_order_ids:
             # Adding if no "similar" orders are presents
             ctx = self.pool['res.users'].context_get(cr, uid)
@@ -1119,10 +1122,13 @@ class OrderRequirementLine(orm.Model):
                     temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
                                                              'purchase_order_line_id': order_line_id}, context)
 
-            self.write(cr, uid, line_obj.id, {
-                'purchase_order_ids': [(4, present_order_id)],
-                'purchase_order_line_ids': [(4, order_line_id)]
-            }, context)
+            purchase_vals = {}
+            if present_order_id:
+                purchase_vals.update(purchase_order_ids=[(4, present_order_id)])
+            if order_line_id:
+                purchase_vals.update(purchase_order_line_ids=[(4, order_line_id)])
+
+            self.write(cr, uid, line_obj.id, purchase_vals, context)
 
         return True
 
