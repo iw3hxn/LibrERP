@@ -170,7 +170,6 @@ class crm_lead(orm.Model):
                 partner = self.pool['res.partner'].browse(cr, uid, partner_vat_all, context)[0]
                 raise orm.except_orm(u'Errore!',
                     u"Cliente {partner} con P.Iva {vat} già presente ed assegnato all'utente {user}!".format(vat=vat, partner=partner.name, user=partner.user_id.name or ''))
-                return False
             else:
                 vat_change = self.pool['res.partner'].vat_change(cr, uid, ids, vat, context)
                 vat_value = vat_change.get('value', False)
