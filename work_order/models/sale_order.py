@@ -203,7 +203,7 @@ class sale_order(orm.Model):
                                         task_number = int(bom.product_uom_qty)
                                     if task_number:
                                         task_vals = {
-                                            'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
+                                            'name': u"{0}: {1}".format(bom.product_id.name, order_line.product_id.name),
                                             'project_id': project_id,
                                             'partner_id': order.partner_id.id,
                                             'planned_hours': int(planned_hours / task_number),
