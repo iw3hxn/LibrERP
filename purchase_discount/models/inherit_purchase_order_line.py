@@ -73,10 +73,12 @@ class purchase_order_line(orm.Model):
                     # not supported:
                     # elif item_base == -1:
 
-            factor = 1.0
             if uom and uom != product.uom_id.id:
                 # the unit price is in a different uom
                 factor = product_uom_obj._compute_qty(cr, uid, uom, 1.0, product.uom_id.id)
+            else:
+                factor = 1.0
+
             return price * factor
 
         if not context:
@@ -114,13 +116,22 @@ class purchase_order_line(orm.Model):
                                                                        po_pricelist.currency_id.id,
                                                                        new_list_price, context=ctx)
 
+                if uom and uom != product.uom_id.id:
+                    # the unit price is in a different uom
+                    product_uom_obj = self.pool['product.uom']
+                    factor = product_uom_obj._compute_qty(cr, uid, uom, 1.0, product.uom_id.id)
+                else:
+                    factor = 1.0
+
                 # divide by UoM factor
-                factor_inv = product.uom_po_id and product.uom_po_id.factor_inv or 1
-                discount_price = new_list_price / factor_inv
+                discount_price = new_list_price / factor
                 discount = (discount_price - price) / discount_price * 100
                 if discount >= 0:
-                    result['price_unit'] = new_list_price
+                    # result['price_unit'] = discount_price
                     result['discount'] = discount
+
+                result['price_unit'] = new_list_price
+
         return res
 
     def _amount_line(self, cr, uid, ids, prop, unknow_none, unknow_dict):
