@@ -194,7 +194,6 @@
                         <field name="active"/>
                         <field name="day_open"/>
                         <field name="day_close"/>
-                        <field name="referred"/>
                     </group>
                     <separator colspan="4" string="References"/>
                     <field name="ref"/>

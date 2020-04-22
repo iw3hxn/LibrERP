@@ -165,7 +165,7 @@ class mgmtsystem_nonconformity(orm.Model):
     """
     _name = "mgmtsystem.nonconformity"
     _description = "Nonconformity of the management system"
-    _rec_name = "description"
+    _rec_name = "ref"
     _inherit = ['mail.thread']
     _order = "date desc"
 
