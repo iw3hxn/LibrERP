@@ -5,7 +5,7 @@ from openerp.addons.warning.warning import WARNING_MESSAGE, WARNING_HELP
 from openerp.osv import orm, fields
 
 
-class product_product(orm.Model):
+class ProductProduct(orm.Model):
     _inherit = 'product.product'
     _columns = {
         'mrp_bom_warn': fields.selection(WARNING_MESSAGE, 'Mrp Bom', help=WARNING_HELP, required=True),
