@@ -51,8 +51,17 @@ COLOR_SELECTION = [
 ]
 
 
-class crm_lead(orm.Model):
+class CrmLead(orm.Model):
     _inherit = 'crm.lead'
+
+    _index_name = 'crm_lead_partner_address_id_index'
+
+    def _auto_init(self, cr, context={}):
+        res = super(CrmLead, self)._auto_init(cr, context)
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (self._index_name,))
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON crm_lead (partner_address_id)'.format(name=self._index_name))
+        return res
 
     def stage_next(self, cr, uid, ids, context=None):
         """This function computes next stage for case from its current stage
@@ -62,7 +71,6 @@ class crm_lead(orm.Model):
             if crm.shop_id:
                 if crm.sale_order and crm.shop_id.crm_sale_stage_ids:
                     raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
-                    return False
         return self.stage_change(cr, uid, ids, '>', 'sequence', context)
 
     def stage_previous(self, cr, uid, ids, context=None):
@@ -73,7 +81,6 @@ class crm_lead(orm.Model):
             if crm.shop_id:
                 if crm.sale_order and crm.shop_id.crm_sale_stage_ids:
                     raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
-                    return False
         return self.stage_change(cr, uid, ids, '<', 'sequence desc', context)
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
@@ -101,18 +108,22 @@ class crm_lead(orm.Model):
                 result[lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id)], context=context)
 
         return result
-    
+
     def _get_crm_lead(self, cr, uid, ids, field_name, model_name, context=None):
         result = {}
         crm_lead_obj = self.pool['crm.lead']
-        for crm in crm_lead_obj.browse(cr, uid, ids, context):
-            name = crm.name
-            partner_id = crm.partner_id.id
-            contact_id = crm.partner_address_id.id
+        for crm in crm_lead_obj.read(cr, uid, ids, ['partner_id', 'partner_address_id'], context, load='_obj'):
+            # name = crm['name']
+            partner_id = crm['partner_id']
+            if not partner_id:
+                result[crm['id']] = []
+                continue
+            contact_id = crm['partner_address_id']
+            domain = [('partner_id', '=', partner_id)]
             if contact_id:
-                result[crm.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_address_id', '=', contact_id), ('name', '!=', name)], context=context)
-            else:
-                result[crm.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('name', '!=', name)], context=context)
+                domain.append(('partner_address_id', '=', contact_id))
+
+            result[crm['id']] = crm_lead_obj.search(cr, uid, domain, context=context)
         return result
 
     def _get_meeting_history(self, cr, uid, ids, field_name, model_name, context=None):
@@ -315,7 +326,7 @@ class crm_lead(orm.Model):
         return address_id
 
     def onchange_partner_id(self, cr, uid, ids, part, email=False, context=None):
-        res = super(crm_lead, self).onchange_partner_id(cr, uid, ids, part, email, context)
+        res = super(CrmLead, self).onchange_partner_id(cr, uid, ids, part, email, context)
         domain = {'contact_id': []}
         if part:
             domain = {'contact_id': [('partner_id', '=', part)]}
@@ -390,7 +401,7 @@ class crm_lead(orm.Model):
         if vals.get('vat', False):
             vals['vat'] = vals['vat'].upper()
 
-        result = super(crm_lead, self).create(cr, uid, vals, context=context)
+        result = super(CrmLead, self).create(cr, uid, vals, context=context)
 
         if vals.get('email_from', False) or vals.get('phone', False):
             self.check_address(cr, uid, [result], vals)
@@ -413,7 +424,7 @@ class crm_lead(orm.Model):
                         raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
                         return False
 
-        result = super(crm_lead, self).write(cr, uid, ids, vals, context=context)
+        result = super(CrmLead, self).write(cr, uid, ids, vals, context=context)
 
         if vals.get('email_from', False) or vals.get('phone', False):
             self.check_address(cr, uid, ids, vals)
@@ -428,7 +439,7 @@ class crm_lead(orm.Model):
         if context is None:
             context = {}
         default.update({'name': '/', 'sale_order': False})
-        return super(crm_lead, self).copy(cr, uid, ids, default, context)
+        return super(CrmLead, self).copy(cr, uid, ids, default, context)
 
 
 class crm_phonecall(orm.Model):

@@ -11,19 +11,40 @@ class MrpBom(orm.Model):
     
     _inherit = "mrp.bom"
 
-    def _get_color(self, cr, uid, ids, field_name, arg, context):
+    @staticmethod
+    def _get_color_product(qty):
+        if qty > 0:
+            return 'blue'
+        return 'red'
+
+    def _set_dummy(self, cr, uid, ids, name, value, arg, context=None):
+        return True
+
+    def _get_color(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid, context)
+
         res = {}
 
-        product_obsolete_ids = self.pool['product.product'].search(cr, uid, [('state', 'in', ('draft', 'end', 'obsolete'))], context=context)
-        for line in self.read(cr, uid, ids, ['product_id'], context=context, load='_obj'):
-            if line['product_id'] in product_obsolete_ids:
-                res[line['id']] = 'blue'
+        mrp_bom_read = self.read(cr, uid, ids, ['product_id'], context=context, load='_obj')
+        product_ids = list(set([line['product_id'] for line in mrp_bom_read]))
+
+        product_obj = self.pool['product.product']
+        product_obsolete_ids = product_obj.search(cr, uid, [('state', 'in', ('draft', 'end', 'obsolete'))], context=context)
+        product_used_obsolete_ids = list(set(product_ids).intersection(product_obsolete_ids))
+        product_obsolete = product_obj.read(cr, uid, product_used_obsolete_ids, ['qty_available'], context=context)
+        product_obsolete_available = {}
+        for product in product_obsolete:
+            product_obsolete_available[product['id']] = product['qty_available']
+
+        for line in mrp_bom_read:
+            if line['product_id'] in product_used_obsolete_ids:
+                res[line['id']] = self._get_color_product(product_obsolete_available[line['product_id']])
             else:
                 res[line['id']] = 'black'
         return res
 
     _columns = {
-        'row_color': fields.function(_get_color, string='Row color', type='char', readonly=True, method=True),
+        'row_color': fields.function(_get_color, fnct_inv=_set_dummy, string='Row color', type='char'),
     }
 
     def onchange_product_id(self, cr, uid, ids, product_id, name, context=None):
@@ -50,5 +71,9 @@ class MrpBom(orm.Model):
             warning['title'] = title and title + ' & ' + result['warning']['title'] or result['warning']['title']
             warning['message'] = message and message + '\n\n' + result['warning']['message'] or result['warning'][
                 'message']
+
+        # todo better code if write a single function
+        if product_info.state in ['draft', 'end', 'obsolete']:
+            result['value']['row_color'] = self._get_color_product(product_info.qty_available)
 
         return {'value': result.get('value', {}), 'warning': warning}

@@ -16,6 +16,8 @@ class product_product(orm.Model):
             if partner_name:
                 partner_obj = self.pool['res.partner']
                 partner_ids = partner_obj.search(cr, uid, [('name', '=', partner_name)], context=context)
+                pricelist_customer_version_ids = []
+                pricelist_version_ids = []
                 if partner_ids:
                     partner = partner_obj.browse(cr, uid, partner_ids[0], context=context)
                     product_pricelist_id = partner.property_product_pricelist and partner.property_product_pricelist.id or False
