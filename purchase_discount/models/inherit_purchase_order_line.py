@@ -54,6 +54,15 @@ class purchase_order_line(orm.Model):
                 if item_base > 0:
                     field_name = price_type_obj.browse(cr, uid, item_base, context).field
                     price = product[field_name]
+
+                    if uom and uom != product.uom_id.id:
+                        # the unit price is in a different uom
+                        factor = product_uom_obj._compute_qty(cr, uid, uom, 1.0, product.uom_id.id)
+                    else:
+                        factor = 1.0
+
+                    price *= factor
+
                 elif item_base == -2:
                     # _logger.debug('Checking item base is -2')
                     if context.get('partner_id', False):
@@ -73,13 +82,13 @@ class purchase_order_line(orm.Model):
                     # not supported:
                     # elif item_base == -1:
 
-            if uom and uom != product.uom_id.id:
-                # the unit price is in a different uom
-                factor = product_uom_obj._compute_qty(cr, uid, uom, 1.0, product.uom_id.id)
-            else:
-                factor = 1.0
+            # if uom and uom != product.uom_id.id:
+            #     # the unit price is in a different uom
+            #     factor = product_uom_obj._compute_qty(cr, uid, uom, 1.0, product.uom_id.id)
+            # else:
+            #     factor = 1.0
 
-            return price * factor
+            return price
 
         if not context:
             context = self.pool['res.users'].context_get(cr, uid)
@@ -111,30 +120,21 @@ class purchase_order_line(orm.Model):
                     # new_list_price is in company's currency while price in pricelist currency
                     ctx = context.copy()
                     ctx['date'] = date_order
-                    new_list_price = self.pool['res.currency'].compute(cr, uid,
-                                                                       product.company_id.currency_id.id,
-                                                                       po_pricelist.currency_id.id,
-                                                                       new_list_price, context=ctx)
+                    new_list_price = self.pool['res.currency'].compute(
+                        cr, uid,
+                        product.company_id.currency_id.id,
+                        po_pricelist.currency_id.id,
+                        new_list_price, context=ctx
+                    )
 
-                if uom and uom != product.uom_id.id:
-                    # the unit price is in a different uom
-                    product_uom_obj = self.pool['product.uom']
-                    factor = product_uom_obj._compute_qty(cr, uid, uom, 1.0, product.uom_id.id)
-                else:
-                    factor = 1.0
-
-                # divide by UoM factor
-                discount_price = new_list_price / factor
-                discount = (discount_price - price) / discount_price * 100
+                discount = (new_list_price - price) / new_list_price * 100
                 if discount >= 0:
-                    # result['price_unit'] = discount_price
+                    result['price_unit'] = new_list_price
                     result['discount'] = discount
-
-                result['price_unit'] = new_list_price
 
         return res
 
-    def _amount_line(self, cr, uid, ids, prop, unknow_none, unknow_dict):
+    def _amount_line(self, cr, uid, ids, prop, unknown_none, unknow_dict):
         res = {}
         cur_obj = self.pool['res.currency']
         for line in self.browse(cr, uid, ids):

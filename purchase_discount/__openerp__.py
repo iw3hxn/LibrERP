@@ -22,16 +22,20 @@
 ##############################################################################
 {
     "name": "Purchase Order Lines With Discounts",
-    "author": "Tiny,Pexego",
-    "version": "1.1.4",
+    "author": "Tiny, Pexego",
+    "version": "1.2.5",
     "category": "Generic Modules/Sales & Purchases",
     'description': """ """,
     "depends": [
         "stock",
+        'product',
         "purchase",
         "product_visible_discount"
     ],
-    "data": ["views/purchase_discount_view.xml"],
+    "data": [
+        "views/purchase_discount_view.xml",
+        'views/product_view.xml'
+    ],
     "active": False,
     "installable": True
 }
