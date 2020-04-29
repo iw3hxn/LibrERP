@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="product_product_location_tree_view" model="ir.ui.view">
+            <field name="name">product.product.location.tree</field>
+            <field name="model">product.product</field>
+            <field name="type">tree</field>
+<!--            <field eval="7" name="priority"/>-->
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="virtual_available" position="after">
+                    <field name="location_min_qty" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

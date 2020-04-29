@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_picking_out_form_colors" model="ir.ui.view">
+            <field name="name">view.picking.out.form.colors</field>
+            <field name="model">stock.picking</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock_move_extended.view_picking_out_form_inh_showpriceunit" />
+            <field name="arch" type="xml">
+                <xpath expr="//form//notebook//page//field[@name='move_lines']//tree" position="attributes">
+                    <attribute name="colors">grey:scrapped==True;red:product_available==False;</attribute>
+                </xpath>
+                <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_id']" position="after">
+                    <field name="product_available" invisible="True" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
