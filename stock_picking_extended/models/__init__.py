@@ -32,6 +32,8 @@ from . import inherit_stock_journal
 from . import inherit_stock_location
 from . import inherit_stock_move
 from . import inherit_stock_picking
+from . import stock_inventory
+from . import stock_inventory_line
 from . import stock_move_group
 from . import stock_picking_carriage_condition
 from . import stock_picking_goods_description

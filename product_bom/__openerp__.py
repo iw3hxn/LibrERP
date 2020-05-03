@@ -48,7 +48,7 @@
         "views/product.xml",
         "data/cron.xml",
         "views/mrp.xml",
-        "report/stock_inventory_webkit.xml"
+        # "report/stock_inventory_webkit.xml"
     ],
     "auto_install": False,
     "installable": True,
