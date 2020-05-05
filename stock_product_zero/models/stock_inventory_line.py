@@ -82,14 +82,31 @@ class StockInventoryLine(orm.Model):
         _logger.info(u'Inventory Line get in {duration}'.format(duration=duration))
         return value
 
+    def _get_evaluation(self, cr, uid, ids, field_name, arg, context):
+        start_time = datetime.datetime.now()
+        value = {}
+        for line in self.browse(cr, uid, ids, context):
+            product_value = self._get_product_value_hook(cr, uid, line, context)
+            value[line.id] = {
+                    'product_value': product_value,
+                    'total_value': line.product_qty * product_value,
+                    'total_value_computed': line.product_qty_calc * product_value
+                }
+
+        end_time = datetime.datetime.now()
+        duration_seconds = (end_time - start_time)
+        duration = '{sec}'.format(sec=duration_seconds)
+        _logger.info(u'Inventory Evaluation Line get in {duration}'.format(duration=duration))
+        return value
+
     _columns = {
         'row_color': fields.function(_get_value, string='Row color', type='char', readonly=True, method=True, store=False, multi="_get_value"),
         'product_qty_calc': fields.float('Quantity Calculated', digits_compute=dp.get_precision('Product UoM'), readonly=False),
         'prefered_supplier_id': fields.function(_get_value, string="Default Supplier", type="many2one", relation="res.partner", multi="_get_value"),
         'qty_diff': fields.function(_get_value, string="Diff", type="float",  multi="_get_value"),
-        'product_value':  fields.function(_get_value, string="Value", type="float", multi="_get_value"),
-        'total_value': fields.function(_get_value, string="Total Value counted", type="float",  multi="_get_value"),
-        'total_value_computed': fields.function(_get_value, string="Total Value computed", type="float",  multi="_get_value"),
+        'product_value':  fields.function(_get_value, string="Value", type="float", multi="_get_evaluation"),
+        'total_value': fields.function(_get_value, string="Total Value counted", type="float",  multi="_get_evaluation"),
+        'total_value_computed': fields.function(_get_value, string="Total Value computed", type="float",  multi="_get_evaluation"),
     }
 
     def on_change_product_id(self, cr, uid, ids, location_id, product, uom=False, to_date=False):

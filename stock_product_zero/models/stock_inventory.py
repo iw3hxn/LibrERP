@@ -176,4 +176,42 @@ class StockInventory(orm.Model):
         res = super(StockInventory, self).action_cancel_draft(cr, uid, ids, context)
         return res
 
+    def evaluation_inventory(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        stock_move_obj = self.pool['stock.move']
+        to_currency = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id.id
 
+        for inventory in self.browse(cr, uid, ids, context):
+            ctx = {
+                'date': inventory.date
+            }
+            for move in inventory.move_ids:
+                prefered_supplier_id = move.product_id.prefered_supplier or False
+                if not prefered_supplier_id:
+                    _logger.error("Product {} without Supplier".format(move.product_id.name_get()[0][1]))
+                    continue
+                pricelist = prefered_supplier_id.property_product_pricelist_purchase
+                if not pricelist:
+                    continue
+                try:
+                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], move.product_id.id, 1,
+                                                             prefered_supplier_id.id, context=ctx)[pricelist.id] or False
+                except Exception as e:
+                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], move.product_id.id, 1,
+                                                                     prefered_supplier_id.id, context=context)[pricelist.id] or False
+                if not price:
+                    _logger.error("Product {} without Price".format(move.product_id.name_get()[0][1]))
+                    continue
+                from_currency = pricelist.currency_id.id
+
+                price_subtotal = self.pool['res.currency'].compute(
+                            cr, uid, round=False,
+                            from_currency_id=from_currency,
+                            to_currency_id=to_currency,
+                            from_amount=price,
+                            context=context
+                        )
+                price_unit = price_subtotal
+                move.write({
+                    'price_unit': price_subtotal
+                })
