@@ -69,7 +69,7 @@ class CrmLead(orm.Model):
         """
         for crm in self.browse(cr, uid, ids, context=context):
             if crm.shop_id:
-                if crm.sale_order and crm.shop_id.crm_sale_stage_ids:
+                if crm.sale_order_id and crm.shop_id.crm_sale_stage_ids:
                     raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
         return self.stage_change(cr, uid, ids, '>', 'sequence', context)
 
@@ -79,7 +79,7 @@ class CrmLead(orm.Model):
         """
         for crm in self.browse(cr, uid, ids, context=context):
             if crm.shop_id:
-                if crm.sale_order and crm.shop_id.crm_sale_stage_ids:
+                if crm.sale_order_id and crm.shop_id.crm_sale_stage_ids:
                     raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
         return self.stage_change(cr, uid, ids, '<', 'sequence desc', context)
 
@@ -107,6 +107,20 @@ class CrmLead(orm.Model):
             else:
                 result[lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id)], context=context)
 
+        return result
+
+    def _get_visible_sale_order_id(self,cr, uid, ids, field_name, model_name, context=None):
+        result = {}
+        # crm_lead_obj = self.pool['crm.lead']
+        sale_order_obj = self.pool['sale.order']
+
+        for lead in self.browse(cr, uid, ids, context):
+            res = False
+            if lead.partner_id:
+                so_number = sale_order_obj.search(cr, uid, [('partner_id', '=', lead.partner_id.id)], context=context, count=True)
+                if so_number:
+                    res = True
+            result[lead.id] = res
         return result
 
     def _get_crm_lead(self, cr, uid, ids, field_name, model_name, context=None):
@@ -219,7 +233,7 @@ class CrmLead(orm.Model):
         sale_ids = []
 
         for crm in self.browse(cr, uid, ids, context=context):
-            sale_ids += [crm.sale_order.id]
+            sale_ids += [crm.sale_order_id.id]
 
         if self.pool['sale.order']._columns.get('sale_version_id', False):
             sale_ids = self.pool['sale.order'].search(cr, uid, ['|', ('sale_version_id', 'in', sale_ids), ('id', '=', sale_ids)], context=context)
@@ -252,7 +266,8 @@ class CrmLead(orm.Model):
         'sale_order_ids': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order", readonly=True, method=True),
         'crm_lead_ids': fields.function(_get_crm_lead, 'Opportunity', type='one2many', relation="crm.lead", readonly=True, method=True),
         'vat': fields.char('VAT', size=64),
-        'sale_order': fields.many2one('sale.order', string='Created Sale Order'),
+        'visible_sale_order_id': fields.function(_get_visible_sale_order_id, type='boolean'),
+        'sale_order_id': fields.many2one('sale.order', string='Created Sale Order', oldname='sale_order'),
         'shop_id': fields.many2one('sale.shop', 'Shop', required=False, readonly=True, states={'draft': [('readonly', False)]}),
         'meeting_smart_history': fields.function(_get_meeting_history, string='Meeting', type='text', readonly=True, multi='sums'),
         'last_meeting_date': fields.function(_get_meeting_history, string='Last Meeting Date', type='date', readonly=True, multi='sums', store=True),
@@ -331,6 +346,17 @@ class CrmLead(orm.Model):
         if part:
             domain = {'contact_id': [('partner_id', '=', part)]}
         res['domain'] = domain
+        return res
+
+    def onchange_sale_order_id(self, cr, uid, ids, sale_order_id, context=None):
+        ref = False
+        if sale_order_id:
+            ref = 'sale.order,{}'.format(sale_order_id)
+        res = {
+            'value': {
+                'ref': ref
+            },
+        }
         return res
 
     def onchange_contact_id(self, cr, uid, ids, contact_id):
@@ -420,7 +446,7 @@ class CrmLead(orm.Model):
         if vals.get('stage_id', False) and not context.get('force_stage_id', False):
             for crm in self.browse(cr, uid, ids, context=context):
                 if crm.shop_id:
-                    if crm.sale_order and crm.shop_id.crm_sale_stage_ids:
+                    if crm.sale_order_id and crm.shop_id.crm_sale_stage_ids:
                         raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
                         return False
 
@@ -438,7 +464,7 @@ class CrmLead(orm.Model):
             default = {}
         if context is None:
             context = {}
-        default.update({'name': '/', 'sale_order': False})
+        default.update({'name': '/', 'sale_order_id': False})
         return super(CrmLead, self).copy(cr, uid, ids, default, context)
 
 

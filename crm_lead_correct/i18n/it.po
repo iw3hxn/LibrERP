@@ -340,11 +340,6 @@ msgstr "Contatto"
 
 #. module: crm
 #: view:crm.lead:0
-msgid "Sale Order"
-msgstr "Offerte / Ordini"
-
-#. module: crm
-#: view:crm.lead:0
 msgid "Opportunity History"
 msgstr "Storico Opportunità"
 
@@ -475,3 +470,15 @@ msgstr "Tipo"
 #: selection:crm.super.calendar,type:0
 msgid "Meeting"
 msgstr "Riunione"
+
+#. module: crm_lead_correct
+#: field:crm.lead,sale_order_id:0
+msgid "Created Sale Order"
+msgstr "Ordine di Vendita Collegato"
+
+#. modules: crm_lead_correct, crm
+#: view:crm.lead:0
+#: selection:crm.super.calendar,source_id:0
+#: selection:crm.super.calendar,type:0
+msgid "Sale Order"
+msgstr "Offerte / Ordini"
