@@ -3,6 +3,11 @@
 
 {
     'name': 'Stock Min Qty Alert in DDT',
+    'description': """
+    Module ad column Location Min Qty in tree view of the product with quantity for every Location
+
+It also turns DDT line red if product quantity in DDT is superior to products in Source Location
+    """,
     'author': "Didotech SRL",
     'version': '4.0.0.0',
     'category': 'Profiling',
