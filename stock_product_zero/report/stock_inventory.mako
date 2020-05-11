@@ -118,16 +118,16 @@
                             %endif
                             <td style="text-align:right;white-space:nowrap">${line.product_qty - line.product_qty_calc}</td>
                             <td style="text-align:left;white-space:nowrap">${line.product_uom.name}</td>
-                            <td style="text-align:right;white-space:nowrap">${formatLang(line.product_id.standard_price)}</td>
-                            <td style="text-align:right;white-space:nowrap">${formatLang(line.product_qty*line.product_id.standard_price)}</td>
-                            <td style="text-align:right;white-space:nowrap">${formatLang(line.product_qty_calc*line.product_id.standard_price)}</td>
+                            <td style="text-align:right;white-space:nowrap">${formatLang(line.product_value)}</td>
+                            <td style="text-align:right;white-space:nowrap">${formatLang(line.total_value)}</td>
+                            <td style="text-align:right;white-space:nowrap">${formatLang(line.total_value_computed)}</td>
 
                         </tr>
                         <%
                             total_product_qty+=line.product_qty
                             total_product_qty_calc+=line.product_qty_calc
-                            total_value+=line.product_qty*line.product_id.standard_price
-                            total_value_computed+=line.product_qty_calc*line.product_id.standard_price
+                            total_value+=line.total_value
+                            total_value_computed+=line.total_value_computed
                         %>
                     %endfor
                 <tr>

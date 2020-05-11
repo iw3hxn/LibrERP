@@ -88,7 +88,7 @@ class crm_make_sale(orm.TransientModel):
                 sale_order = sale_obj.browse(cr, uid, new_id, context=context)
                 lead_obj.write(cr, uid, [lead.id], {
                     'ref': 'sale.order,%s' % new_id,
-                    'sale_order': new_id
+                    'sale_order_id': new_id
                 }, context)
                 new_ids.append(new_id)
                 message = _("Opportunity  '%s' is converted to Quotation.") % (lead.name)

@@ -101,6 +101,10 @@
                     <field name="total_value_computed" sum="total_value_computed"/>
                 </field>
 
+                <button name="action_cancel_draft" position="after">
+                    <button name="evaluation_inventory"  string="Evaluation Inventory" type="object" class="oe_highlight"/>
+                </button>
+
                 <xpath expr="/form/notebook/page[@string='General Informations']" position="after">
                     <page string="Order by Location, Product" position="after">
                         <field colspan="4" name="inventory_line_loc_id" nolabel="1" widget="one2many_list" readonly="1">

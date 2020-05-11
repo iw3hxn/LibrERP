@@ -19,18 +19,19 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import fields, orm
+import datetime
+import logging
+
 import decimal_precision as dp
 import one2many_sorted
-import datetime
+from openerp.osv import fields, orm
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
-import logging
+
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 
-
-class stock_inventory(orm.Model):
+class StockInventory(orm.Model):
     _inherit = "stock.inventory"
 
     def _total_account(self, cr, uid, ids, field_name, arg, context=None):
@@ -146,7 +147,7 @@ class stock_inventory(orm.Model):
             else:
                 new_args.append(arg)
 
-        return super(stock_inventory, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order,
+        return super(StockInventory, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order,
                                                  context=context, count=count)
 
     def unlink(self, cr, uid, ids, context=None):
@@ -159,7 +160,7 @@ class stock_inventory(orm.Model):
             ctx = context.copy()
             ctx['call_unlink'] = True
             self.pool['stock.move'].unlink(cr, uid, move_to_unlink_ids, ctx)
-        res = super(stock_inventory, self).unlink(cr, uid, ids, context)
+        res = super(StockInventory, self).unlink(cr, uid, ids, context)
         return res
 
     def action_cancel_draft(self, cr, uid, ids, context=None):
@@ -172,111 +173,45 @@ class stock_inventory(orm.Model):
             ctx = context.copy()
             ctx['call_unlink'] = True
             self.pool['stock.move'].unlink(cr, uid, move_to_unlink_ids, ctx)
-        res = super(stock_inventory, self).action_cancel_draft(cr, uid, ids, context)
+        res = super(StockInventory, self).action_cancel_draft(cr, uid, ids, context)
         return res
 
+    def evaluation_inventory(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        stock_move_obj = self.pool['stock.move']
+        to_currency = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id.id
 
-class stock_inventory_line(orm.Model):
-    _inherit = "stock.inventory.line"
-
-    _index_name = 'stock_inventory_line_prod_lot_id_index'
-
-    def _auto_init(self, cr, context={}):
-        super(stock_inventory_line, self)._auto_init(cr, context)
-        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s',
-                   (self._index_name,))
-
-        if not cr.fetchone():
-            cr.execute('CREATE INDEX {name} ON stock_inventory_line (prod_lot_id)'.format(name=self._index_name))
-        return
-
-    def _get_value(self, cr, uid, ids, field_name, arg, context):
-        start_time = datetime.datetime.now()
-        value = {}
-        for line in self.browse(cr, uid, ids, context):
-            row_color = 'black'
-            if line.product_qty_calc < 0:
-                row_color = 'fuchsia'
-            elif line.product_qty_calc > line.product_qty:
-                row_color = 'red'
-            elif line.product_qty_calc < line.product_qty:
-                row_color = 'orange'
-
-            value[line.id] = {
-                'row_color': row_color,
-                'prefered_supplier_id': line.product_id.prefered_supplier and line.product_id.prefered_supplier.id or False,
-                'qty_diff': line.product_qty - line.product_qty_calc,
+        for inventory in self.browse(cr, uid, ids, context):
+            ctx = {
+                'date': inventory.date
             }
+            for move in inventory.move_ids:
+                prefered_supplier_id = move.product_id.prefered_supplier or False
+                if not prefered_supplier_id:
+                    _logger.error("Product {} without Supplier".format(move.product_id.name_get()[0][1]))
+                    continue
+                pricelist = prefered_supplier_id.property_product_pricelist_purchase
+                if not pricelist:
+                    continue
+                try:
+                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], move.product_id.id, 1,
+                                                             prefered_supplier_id.id, context=ctx)[pricelist.id] or False
+                except Exception as e:
+                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], move.product_id.id, 1,
+                                                                     prefered_supplier_id.id, context=context)[pricelist.id] or False
+                if not price:
+                    _logger.error("Product {} without Price".format(move.product_id.name_get()[0][1]))
+                    continue
+                from_currency = pricelist.currency_id.id
 
-            if line.product_id.is_kit:
-                value[line.id].update(
-                    {
-                        'product_value': line.product_id.cost_price,
-                        'total_value': line.product_qty * line.product_id.cost_price,
-                        'total_value_computed': line.product_qty_calc * line.product_id.cost_price
-                    })
-            else:
-                value[line.id].update(
-                    {
-                        'product_value': line.product_id.standard_price,
-                        'total_value': line.product_qty * line.product_id.standard_price,
-                        'total_value_computed': line.product_qty_calc * line.product_id.standard_price
-                    })
-
-        end_time = datetime.datetime.now()
-        duration_seconds = (end_time - start_time)
-        duration = '{sec}'.format(sec=duration_seconds)
-        _logger.info(u'Inventory Line get in {duration}'.format(duration=duration))
-        return value
-
-    _columns = {
-        'row_color': fields.function(_get_value, string='Row color', type='char', readonly=True, method=True, store=False, multi="_get_value"),
-        'product_qty_calc': fields.float('Quantity Calculated', digits_compute=dp.get_precision('Product UoM'), readonly=False),
-        'prefered_supplier_id': fields.function(_get_value, string="Default Supplier", type="many2one", relation="res.partner", multi="_get_value"),
-        'qty_diff': fields.function(_get_value, string="Diff", type="float",  multi="_get_value"),
-        'product_value':  fields.function(_get_value, string="Value", type="float", multi="_get_value"),
-        'total_value': fields.function(_get_value, string="Total Value counted", type="float",  multi="_get_value"),
-        'total_value_computed': fields.function(_get_value, string="Total Value computed", type="float",  multi="_get_value"),
-    }
-
-    def on_change_product_id(self, cr, uid, ids, location_id, product, uom=False, to_date=False):
-        res = super(stock_inventory_line, self).on_change_product_id(cr, uid, ids, location_id, product, uom, to_date)
-        if 'product_qty' in res.get('value', []):
-            res['value']['product_qty_calc'] = res['value']['product_qty']
-        return res
-
-
-class stock_fill_inventory(orm.TransientModel):
-    _inherit = "stock.fill.inventory"
-    _logger = logging.getLogger(__name__)
-    _columns = {
-        'display_with_zero_qty': fields.boolean('Display lines with zero')
-    }
-
-    def view_init(self, cr, uid, fields_list, context=None):
-        super(stock_fill_inventory, self).view_init(cr, uid, fields_list, context=context)
-        return True
-
-    def fill_inventory(self, cr, uid, ids, context=None):
-        # unfortunately not hook
-        inventory_id = context['id']
-        self._logger.debug('FGF fill inventory ids, context %s, %s' % (ids, context))
-        # display_with_zero_qty = None
-        # FIXME - display_with_zero_qty access not possible
-        fill_inventory = self.browse(cr, uid, ids[0], context=context)
-        display_with_zero_qty = fill_inventory.display_with_zero_qty
-
-        res_all = super(stock_fill_inventory, self).fill_inventory(cr, uid, ids, context)
-
-        inventory_line_obj = self.pool.get('stock.inventory.line')
-        if not display_with_zero_qty:
-            ids_zero = inventory_line_obj.search(cr, uid,
-                                                 [('inventory_id', '=', inventory_id), ('product_qty', '=', '0')])
-            inventory_line_obj.unlink(cr, uid, ids_zero)
-        ids_update = inventory_line_obj.search(cr, uid, [('inventory_id', '=', inventory_id)])
-        ids2 = ','.join([str(id) for id in ids_update])
-        if ids_update:
-            cr.execute("""update stock_inventory_line
-                         set product_qty_calc = product_qty
-                       where id in (%s)""" % ids2)
-        return res_all
+                price_subtotal = self.pool['res.currency'].compute(
+                            cr, uid, round=False,
+                            from_currency_id=from_currency,
+                            to_currency_id=to_currency,
+                            from_amount=price,
+                            context=context
+                        )
+                price_unit = price_subtotal
+                move.write({
+                    'price_unit': price_subtotal
+                })

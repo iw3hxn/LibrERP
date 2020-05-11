@@ -61,7 +61,7 @@ class sale_order(orm.Model):
         crm_sale_stage_obj = self.pool['crm.sale.stage']
         state = vals.get('state', False)
         for order in orders:
-            lead_ids = crm_obj.search(cr, uid, [('sale_order', '=', order.id)], context=context)
+            lead_ids = crm_obj.search(cr, uid, [('sale_order_id', '=', order.id)], context=context)
             if context.get('active_model', '') == 'crm.lead':
                 lead_ids.append(context.get('active_id'))
                 lead_ids = list(set(lead_ids))
