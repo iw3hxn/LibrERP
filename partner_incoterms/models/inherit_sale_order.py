@@ -25,6 +25,6 @@ class sale_order(orm.Model):
     def _prepare_order_picking(self, cr, uid, order, context=None):
         res = super(sale_order, self)._prepare_order_picking(cr, uid, order, context)
         res.update({
-            'incoterm_id': order.incoterm_id and order.incoterm_id.id or False,
+            'incoterm_id': (order.incoterm and order.incoterm.id) or (order.incoterm_id and order.incoterm_id.id) or False,
         })
         return res
