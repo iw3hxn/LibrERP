@@ -4,7 +4,7 @@
 
 {
     'name': 'Partner Incoterms',
-    'version': '3.1.1.1',
+    'version': '3.1.2.1',
     'author': 'Didotech SRL',
     'website': 'http://www.didotech.com',
     'depends': [
