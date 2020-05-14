@@ -43,13 +43,13 @@ class account_analytic_line(orm.Model):
         'origin_document': fields.reference("Origin Document", selection=_get_selection_list, size=None)
     }
     
-    def get_cost_amount(self, cr, uid, product, product_qty, context=None):
+    def get_cost_amount(self, cr, uid, product, product_qty, product_uom, context=None):
+        product_uom_obj = self.pool['product.uom']
         price_unit_precision = self.pool['decimal.precision'].precision_get(cr, uid, 'Sale Price')
-        if product.is_kit:
-            amount = product.cost_price
-        else:
-            amount = product.standard_price
-        return rounding(amount * product_qty, 10 ** - price_unit_precision)
+        amount = product.cost_price
+        ratio = product_uom_obj._compute_qty(cr, uid, product.uom_id.id, 1, to_uom_id=product_uom)
+
+        return rounding((amount * product_qty) / ratio, 10 ** - price_unit_precision)
     
     def update_or_create_line(self, cr, uid, move, values, context=None):
         '''
@@ -65,7 +65,7 @@ class account_analytic_line(orm.Model):
                 'origin_document': expense_line
             }
         '''
-        
+        product_uom_obj = self.pool['product.uom']
         journals = {
             'hr.expense.line': {'journal': 'expense_journal_id', 'name': _('Expense Journal')},
             'stock.move': {'journal': 'delivery_note_journal_id', 'name': _('Delivery Note Journal')}
@@ -86,7 +86,7 @@ class account_analytic_line(orm.Model):
             if values.get('unit_amount', False):
                 amount = rounding(values['unit_amount'] * product_qty, 10 ** - price_unit_precision)
             elif values.get('product', False):
-                amount = self.get_cost_amount(cr, uid, values['product'], product_qty, context)
+                amount = self.get_cost_amount(cr, uid, values['product'], product_qty, values.get('product_uom_id', 1), context)
             else:
                 return False
             
@@ -106,6 +106,7 @@ class account_analytic_line(orm.Model):
             line_date = datetime.date(year=line_date.year, month=line_date.month, day=line_date.day)
             
             analytic_line_ids = self.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id))], context=context)
+
 
             analytic_line_vals = {
                 'amount': -amount,
