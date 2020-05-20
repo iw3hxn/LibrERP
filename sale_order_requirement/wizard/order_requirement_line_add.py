@@ -32,12 +32,14 @@ class OrderRequirementLineAdd(orm.TransientModel):
         return res
 
     def _get_order_line(self, cr, uid, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         sale_order_line_obj = self.pool['sale.order.line']
 
-        line = self.pool['order.requirement'].browse(cr, uid, context['order_id'], context=context)
-        order_id = line.sale_order_id.id
-
-        sale_order_line_ids = sale_order_line_obj.search(cr, uid, [('order_id', '=', order_id)], context=context)
+        sale_order_line_ids = []
+        if context.get('order_id'):
+            line = self.pool['order.requirement'].browse(cr, uid, context['order_id'], context=context)
+            order_id = line.sale_order_id.id
+            sale_order_line_ids = sale_order_line_obj.search(cr, uid, [('order_id', '=', order_id)], context=context)
         res = sale_order_line_obj.name_get(cr, uid, sale_order_line_ids, context=context)
 
         return res

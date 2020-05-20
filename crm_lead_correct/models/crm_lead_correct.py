@@ -267,7 +267,7 @@ class CrmLead(orm.Model):
         'crm_lead_ids': fields.function(_get_crm_lead, 'Opportunity', type='one2many', relation="crm.lead", readonly=True, method=True),
         'vat': fields.char('VAT', size=64),
         'visible_sale_order_id': fields.function(_get_visible_sale_order_id, type='boolean'),
-        'sale_order_id': fields.many2one('sale.order', string='Created Sale Order', oldname='sale_order'),
+        'sale_order_id': fields.many2one('sale.order', string='Created Sale Order', oldname='sale_order', index=True),
         'shop_id': fields.many2one('sale.shop', 'Shop', required=False, readonly=True, states={'draft': [('readonly', False)]}),
         'meeting_smart_history': fields.function(_get_meeting_history, string='Meeting', type='text', readonly=True, multi='sums'),
         'last_meeting_date': fields.function(_get_meeting_history, string='Last Meeting Date', type='date', readonly=True, multi='sums', store=True),

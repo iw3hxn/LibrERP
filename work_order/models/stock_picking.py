@@ -65,7 +65,7 @@ class stock_picking(orm.Model):
                         'name': move.name,
                         'product': move.product_id,
                         'product_qty': move.product_qty,
-                        'product_uom_id': move.product_uom,
+                        'product_uom_id': move.product_uom and move.product_uom.id,
                         'account_id': picking.account_id and picking.account_id.id or picking.project_id and picking.project_id.analytic_account_id.id or picking.sale_project.analytic_account_id.id,
                         'date': move.date,
                         'ref': picking.name,
