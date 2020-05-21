@@ -100,13 +100,21 @@ class StockInventoryLine(orm.Model):
         return value
 
     _columns = {
-        'row_color': fields.function(_get_value, string='Row color', type='char', readonly=True, method=True, store=False, multi="_get_value"),
-        'product_qty_calc': fields.float('Quantity Calculated', digits_compute=dp.get_precision('Product UoM'), readonly=False),
-        'prefered_supplier_id': fields.function(_get_value, string="Default Supplier", type="many2one", relation="res.partner", multi="_get_value"),
-        'qty_diff': fields.function(_get_value, string="Diff", type="float",  multi="_get_value"),
-        'product_value':  fields.function(_get_value, string="Value", type="float", multi="_get_evaluation"),
-        'total_value': fields.function(_get_value, string="Total Value counted", type="float",  multi="_get_evaluation"),
-        'total_value_computed': fields.function(_get_value, string="Total Value computed", type="float",  multi="_get_evaluation"),
+        'row_color': fields.function(
+            _get_value, string='Row color', type='char', readonly=True, method=True, store=True, multi="_get_value"),
+        'product_qty_calc': fields.float(
+            'Quantity Calculated', digits_compute=dp.get_precision('Product UoM'), readonly=False),
+        'prefered_supplier_id': fields.function(
+            _get_value, string="Default Supplier", type="many2one", relation="res.partner", multi="_get_value",
+            store=True
+        ),
+        'qty_diff': fields.function(_get_value, string="Diff", type="float",  multi="_get_value", store=True),
+        'product_value':  fields.function(
+            _get_value, string="Value", type="float", multi="_get_evaluation", store=True),
+        'total_value': fields.function(
+            _get_value, string="Total Value counted", type="float",  multi="_get_evaluation", store=True),
+        'total_value_computed': fields.function(
+            _get_value, string="Total Value computed", type="float",  multi="_get_evaluation", store=True)
     }
 
     def on_change_product_id(self, cr, uid, ids, location_id, product, uom=False, to_date=False):

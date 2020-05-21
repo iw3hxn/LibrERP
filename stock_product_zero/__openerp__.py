@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
 #    Copyright (C) 2010-2012 Camptocamp Austria (<http://www.camptocamp.at>)
+#    Copyright (C) 2020 Didotech S.r.l (<http://www.didotech.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -23,7 +24,7 @@
 
 {
     'name': 'Stock suppress all zero lines',
-    'version': '3.2.4.6',
+    'version': '3.3.4.6',
     'category': 'Warehouse Management',
     'description': """
 This module will not print/display products with zero quantity values in many reports and tree lists.
@@ -48,4 +49,3 @@ Adds a nice inventory report based on webkit
     'installable': True,
     'active': False,
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
