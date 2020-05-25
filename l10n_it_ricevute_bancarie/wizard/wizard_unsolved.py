@@ -200,9 +200,10 @@ class RibaUnsolved(orm.TransientModel):
             account_id = self.pool['account.fiscal.position'].map_account(cr, uid, fpos, account_id)
             if move_line.account_id.id == account_id and move_line.partner_id:  # wizard.overdue_effects_account_id.id:
                 for riba_move_line in distinta_line.move_line_ids:
-                    invoice_pool.write(cr, uid, riba_move_line.move_line_id.invoice.id, {
-                        'unsolved_move_line_ids': [(4, move_line.id)],
-                        }, context=context)
+                    if riba_move_line.move_line_id.invoice.id:
+                        invoice_pool.write(cr, uid, riba_move_line.move_line_id.invoice.id, {
+                            'unsolved_move_line_ids': [(4, move_line.id)],
+                            }, context=context)
 
         distinta_line.write({
             'unsolved_move_id': move_id,
