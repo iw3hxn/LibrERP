@@ -116,16 +116,16 @@ class purchase_order_line(orm.Model):
             result['rules'] = list_price[pricelist_id][1]
             new_list_price = get_real_price(list_price, product_id, qty, uom, pricelist_id)
             if po_pricelist.visible_discount and list_price[pricelist_id][0] != 0 and new_list_price != 0:
-                if product.company_id and po_pricelist.currency_id.id != product.company_id.currency_id.id:
-                    # new_list_price is in company's currency while price in pricelist currency
-                    ctx = context.copy()
-                    ctx['date'] = date_order
-                    new_list_price = self.pool['res.currency'].compute(
-                        cr, uid,
-                        product.company_id.currency_id.id,
-                        po_pricelist.currency_id.id,
-                        new_list_price, context=ctx
-                    )
+                # if product.company_id and po_pricelist.currency_id.id != product.company_id.currency_id.id:
+                #     # new_list_price is in company's currency while price is in pricelist currency
+                #     ctx = context.copy()
+                #     ctx['date'] = date_order
+                #     new_list_price = self.pool['res.currency'].compute(
+                #         cr, uid,
+                #         product.company_id.currency_id.id,
+                #         po_pricelist.currency_id.id,
+                #         new_list_price, context=ctx
+                #     )
 
                 discount = (new_list_price - price) / new_list_price * 100
                 if discount >= 0:
