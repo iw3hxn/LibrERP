@@ -91,9 +91,10 @@ class action_move(orm.Model):
                     if move_line.account_id.id == account_id and move_line.partner_id:  # wizard.over
                         # due_effects_account_id.id:
                         for riba_move_line in distinta_line.move_line_ids:
-                            invoice_pool.write(cr, uid, riba_move_line.move_line_id.invoice.id, {
-                                'unsolved_move_line_ids': [(4, move_line.id)],
-                            }, context=context)
+                            if riba_move_line.move_line_id.invoice:
+                                invoice_pool.write(cr, uid, riba_move_line.move_line_id.invoice.id, {
+                                    'unsolved_move_line_ids': [(4, move_line.id)],
+                                }, context=context)
 
         return res
 
