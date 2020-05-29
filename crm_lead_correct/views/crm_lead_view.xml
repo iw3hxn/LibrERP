@@ -281,7 +281,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="referred" position="after">
-                    <field name="partner_category_id" widget="selection"/>
+                    <field name="partner_category_id" context="{'no_create': True}"/>
                 </field>
                 <field name="description" position="after">
                     <field name="phonecall_ids" context="{'default_partner_id' : partner_id}" nolabel="1" colspan="4"/>

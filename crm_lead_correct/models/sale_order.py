@@ -30,7 +30,7 @@
 from openerp.osv import orm, fields
 
 
-class sale_order(orm.Model):
+class SaleOrder(orm.Model):
     _inherit = 'sale.order'
 
     def _get_connected_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
@@ -52,7 +52,7 @@ class sale_order(orm.Model):
     }
 
     def onchange_partner_id(self, cr, uid, ids, part):
-        res = super(sale_order, self).onchange_partner_id(cr, uid, ids, part)
+        res = super(SaleOrder, self).onchange_partner_id(cr, uid, ids, part)
         res['value']['contact_id'] = False
         return res
 
@@ -70,4 +70,4 @@ class sale_order(orm.Model):
                 if crm_sale_stage_ids:
                     stage_id = crm_sale_stage_obj.read(cr, uid, crm_sale_stage_ids[0], ['stage_id'], load='_obj')['stage_id']
                     crm_obj.write(cr, uid, lead_ids, {'stage_id': stage_id}, context.update({'force_stage_id': True}))
-        return super(sale_order, self).hook_sale_state(cr, uid, orders, vals, context)
+        return super(SaleOrder, self).hook_sale_state(cr, uid, orders, vals, context)

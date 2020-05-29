@@ -30,7 +30,7 @@
 from openerp.osv import orm, fields
 
 
-class crm_sale_stage(orm.Model):
+class CrmSaleStage(orm.Model):
     _name = 'crm.sale.stage'
     _description = 'CRM Sale Stage'
 
