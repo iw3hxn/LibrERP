@@ -18,12 +18,18 @@
                         <field name="categ_id"
                                widget="selection"
                                domain="[('object_id.model','=','crm.lead')]"/>
-                        <button
-                                name="%(crm.action_crm_lead2opportunity_partner)d"
-                                string="Convert to Opportunity"
-                                help="Convert to Opportunity" icon="gtk-go-forward"
-                                type="action"
-                                />
+                        <group>
+                            <button
+                                    name="%(crm.action_crm_lead2opportunity_partner)d"
+                                    string="Convert to Opportunity"
+                                    help="Convert to Opportunity" icon="gtk-go-forward"
+                                    type="action"
+                                    />
+                            <button string="Schedule/Log Call"
+                                    name="%(crm.opportunity2phonecall_act)d" icon="terp-call-start"
+                                    type="action"
+                            />
+                        </group>
                         <newline/>
                         <field name="user_id"/>
                         <field name="section_id" widget="selection"/>
