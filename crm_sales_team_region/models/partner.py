@@ -10,8 +10,8 @@ class ResPartner(orm.Model):
     def _get_regional_user_ids(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for partner in self.browse(cr, uid, ids, context):
+            user_ids = []
             if partner.region_id:
-                user_ids = []
                 for section in partner.region_id.crm_case_section_ids:
                     if section.user_id:
                         user_ids.append(section.user_id.id)
