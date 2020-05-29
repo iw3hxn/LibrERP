@@ -32,8 +32,9 @@
 
                 <page string="Other Information" position="after">
                     <page string="Versions" attrs="{'invisible':[('sale_version_id','=',False)]}">
-                        <field name="version_ids" colspan="4" nolabel="1" readonly="1">
+                        <field name="version_ids" colspan="4" nolabel="1" readonly="1" context="{'order_state': state}">
                             <tree string="">
+                                <field name="id" />
                                 <field name="name"/>
                                 <field name="date_order"/>
                                 <field name="user_id"/>
@@ -43,6 +44,7 @@
                                 <field name="sale_version_id"/>
                                 <field name="revision_note"/>
                                 <button name="print_order" string="Print" type="object" icon="gtk-print" />
+                                <button name="action_reactivate_version" string="Restore Version" type="object" icon="terp-stage"/>
                             </tree>
                         </field>
                     </page>

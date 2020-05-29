@@ -135,3 +135,14 @@ msgstr "Sequenza Ordine Confermato"
 #: view:sale.shop:0
 msgid "Sale Order"
 msgstr "Ordini di Vendita"
+
+#. module: sale_order_version
+#: code:addons/sale_order_version/models/sale_order.py:53
+#, python-format
+msgid "Not correct state in Order to Resume Version"
+msgstr "L'Ordine principale non permette un ripristino di Versione"
+
+#. module: sale_order_version
+#: view:sale.order:0
+msgid "Restore Version"
+msgstr "Recupera la Versione"
