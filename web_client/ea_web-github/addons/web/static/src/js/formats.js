@@ -138,11 +138,16 @@ openerp.web.format_value = function (value, descriptor, value_if_empty) {
                 pattern = '-' + pattern;
             }
 
-            var hours = Math.floor(value);
-            var minutes = Math.round((value - hours) * 60);
-            var seconds = parseInt(((value - hours) * 3600) - (minutes * 60));
+            var num = value * 3600
+            var size = 2
+            var pad = function(num, size) { return ('000' + num).slice(size * -1); },
+            time = parseFloat(value * 3600).toFixed(3),
+            hours = Math.floor(time / 60 / 60),
+            minutes = Math.floor(time / 60) % 60,
+            seconds = Math.floor(time - minutes * 60),
+            milliseconds = time.slice(-3);
 
-            return _.str.sprintf(pattern, hours, minutes, seconds);
+            return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
         case 'many2one':
             // name_get value format
             return value[1];
