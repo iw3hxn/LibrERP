@@ -444,7 +444,8 @@ class CrmLead(orm.Model):
         return result
 
     def write(self, cr, uid, ids, vals, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid).update({'force_stage_id': True})
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        context.update({'force_stage_id': True})
         if isinstance(ids, (int, long)):
             ids = [ids]
 
