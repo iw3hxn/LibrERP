@@ -58,7 +58,7 @@
                             <group colspan="3" col="6">
                                 <field name="partner_name" string="Partner Name"/>
                                 <field name="vat" on_change="vat_change(vat)" />
-                                <field name="partner_category_id" widget="selection"/>
+                                <field name="partner_category_id" context="{'no_create': True}"/>
                             </group>
                             <group colspan="2" col="4">
                                 <separator string="Contact" colspan="4" col="4"/>
