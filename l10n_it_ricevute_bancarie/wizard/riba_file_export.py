@@ -141,6 +141,17 @@ class riba_file_export(orm.TransientModel):
         self._totale = 0
         return accumulatore.replace(u'�', ' ')
 
+    def encode_latin_1(self, text):
+        text_latin_1 = ''
+        for row in text.split('\n'):
+            print(row)
+            try:
+                text += row.encode("iso-8859-1") + '\n'
+            except UnicodeEncodeError:
+                raise orm.except_orm(_('Error'), u"Row '{}' contains non ASCII charachters".format(row))
+
+        return text_latin_1
+
     def act_getfile(self, cr, uid, ids, context=None):
 
         self._progressivo = 0
@@ -283,6 +294,11 @@ class riba_file_export(orm.TransientModel):
             if not debit_abi and not debit_cab:
                 import pdb;pdb.set_trace()
             arrayRiba.append(Riba)
+
+        # Uncomment this lines if you have problems with Unicode characters and want to know the line
+        # (DEBUG only)
+        # out = self.encode_latin_1(self._creaFile(array_testata, arrayRiba))
+        # out = base64.encodestring(out)
 
         out = base64.encodestring(self._creaFile(array_testata, arrayRiba).encode("iso-8859-1"))
         file_name = '{0}.txt'.format(order_obj.name.replace(' ', '').replace('/', '_'))

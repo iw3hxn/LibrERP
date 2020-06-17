@@ -4,7 +4,7 @@
 #    Copyright (C) 2012 Andrea Cometa.
 #    Email: info@andreacometa.it
 #    Web site: http://www.andreacometa.it
-#    Copyright (C) 2014 Didotech SRL (<http://www.didotechsrl.com>)
+#    Copyright (C) 2014-2020 Didotech SRL (<http://www.didotechsrl.com>)
 #    Copyright (C) 2012 Agile Business Group sagl (<http://www.agilebg.com>)
 #    Copyright (C) 2012 Domsense srl (<http://www.domsense.com>)
 #    Copyright (C) 2012 Associazione OpenERP Italia
@@ -27,7 +27,7 @@
 
 {
     "name": "Ricevute Bancarie",
-    "version": "2.14.34.32",
+    "version": "2.14.35.32",
     "author": "OpenERP Italian Community",
     "category": "Accounting & Finance",
     "website": "http://www.openerp-italia.org",
