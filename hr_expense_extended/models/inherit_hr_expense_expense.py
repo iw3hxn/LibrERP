@@ -102,7 +102,7 @@ class hr_expense_expense(orm.Model):
                     'ref': hr_expense.name,
                     'origin_document': expense_line
                 }
-                self.pool['account.analytic.line'].update_or_create_line(cr, uid, analytic_values, context)
+                self.pool['account.analytic.line'].update_or_create_line(cr, uid, move=False, values=analytic_values, context=context)
         return hr_expense_id
 
     def write(self, cr, uid, ids, values, context=None):
@@ -121,7 +121,7 @@ class hr_expense_expense(orm.Model):
                         'ref': hr_expense.name,
                         'origin_document': expense_line
                     }
-                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, analytic_values, context)
+                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, move=False, values=analytic_values, context=context)
         return result
 
 
