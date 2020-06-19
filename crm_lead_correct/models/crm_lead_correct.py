@@ -246,10 +246,14 @@ class CrmLead(orm.Model):
         if sale_order_obj._columns.get('sale_version_id', False):
             original_sale_ids = []
             for order in sale_order_obj.read(cr, uid, sale_ids, ['sale_version_id'], load='_obj'):
-                original_sale_ids.append(order['sale_version_id'])
+                if order['sale_version_id']:
+                    original_sale_ids.append(order['sale_version_id'])
             original_sale_ids = list(set(original_sale_ids))
-
-            sale_ids = sale_order_obj.search(cr, uid, ['|', ('sale_version_id', 'in', original_sale_ids), ('id', 'in', sale_ids)], context=context)
+            if original_sale_ids:
+                search_domain = ['|', ('sale_version_id', 'in', original_sale_ids), ('id', 'in', sale_ids)]
+            else:
+                search_domain = [('id', 'in', sale_ids)]
+            sale_ids = sale_order_obj.search(cr, uid, search_domain, context=context)
 
         # choose the view_mode accordingly
         if len(sale_ids) > 1:
