@@ -8,9 +8,9 @@ class mrp_routing_workcenter(osv.Model):
 
     def _workcenter_total_cost(self, cr, uid, ids, field_name, arg, context):
         res = {}
-        for line in self.browse(cr, uid, ids, context):
-            cost = line.hour_nbr * line.costs_hour
-            res[line.id] = cost
+        for line in self.read(cr, uid, ids, ['hour_nbr', 'costs_hour', 'cycle_nbr'], context):
+            cost = line['hour_nbr'] * line['costs_hour'] * line['cycle_nbr']
+            res[line['id']] = cost
         return res
 
     _columns = {
