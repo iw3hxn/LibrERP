@@ -9,7 +9,7 @@ class AccountAnalyticLine(orm.Model):
     def update_or_create_line(self, cr, uid, move, values, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         production_order_ids = False
-        if not context.get('force_commit', False):
+        if not context.get('force_commit', False) and move:
             production_order_ids = move.production_order_ids
         res = False
         if not production_order_ids:
