@@ -231,6 +231,7 @@ class CrmLead(orm.Model):
 
         mod_obj = self.pool['ir.model.data']
         act_obj = self.pool['ir.actions.act_window']
+        sale_order_obj = self.pool['sale.order']
 
         result = mod_obj.get_object_reference(cr, uid, 'sale', 'action_order_form')
         id = result and result[1] or False
@@ -242,8 +243,13 @@ class CrmLead(orm.Model):
         for crm in self.browse(cr, uid, ids, context=context):
             sale_ids += [crm.sale_order_id.id]
 
-        if self.pool['sale.order']._columns.get('sale_version_id', False):
-            sale_ids = self.pool['sale.order'].search(cr, uid, ['|', ('sale_version_id', 'in', sale_ids), ('id', '=', sale_ids)], context=context)
+        if sale_order_obj._columns.get('sale_version_id', False):
+            original_sale_ids = []
+            for order in sale_order_obj.read(cr, uid, sale_ids, ['sale_version_id'], load='_obj'):
+                original_sale_ids.append(order['sale_version_id'])
+            original_sale_ids = list(set(original_sale_ids))
+
+            sale_ids = sale_order_obj.search(cr, uid, ['|', ('sale_version_id', 'in', original_sale_ids), ('id', 'in', sale_ids)], context=context)
 
         # choose the view_mode accordingly
         if len(sale_ids) > 1:
