@@ -244,7 +244,7 @@ class CrmLead(orm.Model):
             sale_ids += [crm.sale_order_id.id]
 
         if sale_order_obj._columns.get('sale_version_id', False):
-            original_sale_ids = []
+            original_sale_ids = sale_ids
             for order in sale_order_obj.read(cr, uid, sale_ids, ['sale_version_id'], load='_obj'):
                 if order['sale_version_id']:
                     original_sale_ids.append(order['sale_version_id'])
