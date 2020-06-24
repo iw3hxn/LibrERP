@@ -30,7 +30,7 @@
 from openerp.osv import orm, fields
 
 
-class sale_shop(orm.Model):
+class SaleShop(orm.Model):
     _inherit = 'sale.shop'
     _columns = {
         'crm_sale_stage_ids': fields.one2many('crm.sale.stage', 'shop_id', string='CRM Sale Stage'),

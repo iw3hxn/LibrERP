@@ -27,12 +27,12 @@ from tools import ustr
 from tools.translate import _
 
 
-class sale_order(orm.Model):
+class SaleOrder(orm.Model):
     """ Modificaciones de sale order para añadir la posibilidad de versionar el pedido de venta. """
     _inherit = "sale.order"
 
     def action_wait(self, cr, uid, ids, *args):
-        res = super(sale_order, self).action_wait(cr, uid, ids, *args)
+        res = super(SaleOrder, self).action_wait(cr, uid, ids, *args)
         context = self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context):
             if order.shop_id and order.shop_id.sale_order_sequence_id:
@@ -44,6 +44,42 @@ class sale_order(orm.Model):
                 }
                 order.write(new_order_vals)
         return res
+
+    def action_reactivate_version(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        order_state = context.get('order_state', '')
+        if order_state not in ['draft', 'cancel', 'tech_validation', 'manager_validation', 'customer_validation', 'email_sent_validation', 'supervisor_validation']:
+            raise orm.except_orm(_('Error!'),
+                                 _("Not correct state in Order to Resume Version"))
+
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        order_ids = []
+        for sale in self.browse(cr, uid, ids, context):
+            order_ids += self.search(cr, uid, ['|', ('sale_version_id', '=', sale.sale_version_id.id),
+                                               ('id', '=', sale.sale_version_id.id), '|', ('active', '=', False),
+                                               ('active', '=', True)], context=context)
+            version = self.read(cr, uid, order_ids[0], ['version'])['version']
+            sale.write({'active': True, 'version': version})
+
+        order_ids_deactivate = list(set(order_ids) - set(ids))
+        self.write(cr, uid, order_ids_deactivate, {'active': False}, context=context)
+
+        mod_obj = self.pool['ir.model.data']
+        res = mod_obj.get_object_reference(cr, uid, 'sale', 'view_order_form')
+        res_id = res and res[1] or False,
+
+        return {
+            'name': _('Sale Order'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': res_id,
+            'res_model': 'sale.order',
+            'type': 'ir.actions.act_window',
+            'nodestroy': True,
+            'target': 'current',
+            'res_id': ids and ids[0] or False,
+        }
 
     def action_previous_version(self, cr, uid, ids, default=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -69,7 +105,8 @@ class sale_order(orm.Model):
                 vals['sale_version_id'] = order.id
 
             context['versioning'] = True
-            vals['name'] = (order.sale_version_id and order.sale_version_id.name or order.name) + u" V." + ustr(vals['version'])
+            vals['name'] = (order.sale_version_id and order.sale_version_id.name or order.name) + u" V." + ustr(
+                vals['version'])
 
             new_order_id = self.copy(cr, uid, order.id, vals, context=context)
 
@@ -78,9 +115,11 @@ class sale_order(orm.Model):
                 sale_order_line_obj.copy(cr, uid, order_line_id, {'order_id': new_order_id}, context=context)
 
             attachment_ids = attachment_obj.search(cr, uid,
-                                                   [('res_model', '=', 'sale.order'), ('res_id', '=', order.id)], context=context)
+                                                   [('res_model', '=', 'sale.order'), ('res_id', '=', order.id)],
+                                                   context=context)
             if attachment_ids:
-                attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': vals['name']}, context)
+                attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': vals['name']},
+                                     context)
 
             order.write({'active': False})
             order_ids.append(new_order_id)
@@ -133,7 +172,8 @@ class sale_order(orm.Model):
         'active': fields.boolean('Active', readonly=False, help="It indicates that the sales order is active."),
         'version_ids': fields.function(_get_version_ids, method=True, type="one2many", relation='sale.order',
                                        string='Versions', readonly=True),
-        'visible_original_quotation': fields.function(_get_visible_original_quotation, type="boolean", string="visible original quotation")
+        'visible_original_quotation': fields.function(_get_visible_original_quotation, type="boolean",
+                                                      string="visible original quotation")
     }
 
     _defaults = {
@@ -158,7 +198,7 @@ class sale_order(orm.Model):
             del vals['sale_version_id']
             vals['version'] = 0
 
-        return super(sale_order, self).create(cr, uid, vals, context)
+        return super(SaleOrder, self).create(cr, uid, vals, context)
 
     def copy(self, cr, uid, id, default=None, context=None):
         default = default or {}
@@ -166,7 +206,7 @@ class sale_order(orm.Model):
             'original_quotation_name': False,
             'original_quotation_date': False,
         })
-        return super(sale_order, self).copy(cr, uid, id, default, context)
+        return super(SaleOrder, self).copy(cr, uid, id, default, context)
 
     def print_report(self, cr, uid, ids, xml_id, context):
         def id_from_xml_id():

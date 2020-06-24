@@ -107,7 +107,7 @@ class project_task(orm.Model):
                         'ref': task.name,
                         'origin_document': expense_line
                     }
-                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, analytic_values, context)
+                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, move=False, values=analytic_values, context=context)
         return result
     #
     # def unlink(self, cr, uid, ids, context=None):

@@ -59,7 +59,7 @@ class crm_meeting_report_by_province(report_sxw.rml_parse):
                     province_id = 0
                     province_name = 'unknown'
                     
-                if not province_id in provinces:
+                if province_id not in provinces:
                     provinces[province_id] = {
                         'id': province_id,
                         'name': province_name,

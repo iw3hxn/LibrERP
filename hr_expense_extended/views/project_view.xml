@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
                 <page string="Extra Info" position="after">
                     <page string="Expenses" groups="base.group_user" >
-                        <field name="expense_line_ids" nolabel="1" context="{}">
+                        <field name="expense_line_ids" nolabel="1" context="{}" readonly="1">
                             <form string="Expense">
                                 <group colspan="4" col="6">
                                     <!--<field name="user_id" groups="project.group_project_manager" />-->

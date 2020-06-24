@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 
-class crm_super_calendar(orm.Model):
+class CrmSuperCalendar(orm.Model):
     _description = "Super Calendar"
     _name = 'crm.super.calendar'
     _auto = False

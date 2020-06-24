@@ -29,14 +29,15 @@
 from openerp.osv import orm, fields
 
 
-class crm_phonecall(orm.Model):
+class CrmPhonecall(orm.Model):
     _inherit = 'crm.phonecall'
 
     _defaults = {
         'partner_id': lambda self, cr, uid, context: context.get('partner_id', False),
     }
 
-class crm_meeting(orm.Model):
+
+class CrmMeeting(orm.Model):
     _description = "Meeting"
     _inherit = 'crm.meeting'
     _columns = {

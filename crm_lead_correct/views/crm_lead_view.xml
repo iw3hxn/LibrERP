@@ -18,12 +18,18 @@
                         <field name="categ_id"
                                widget="selection"
                                domain="[('object_id.model','=','crm.lead')]"/>
-                        <button
-                                name="%(crm.action_crm_lead2opportunity_partner)d"
-                                string="Convert to Opportunity"
-                                help="Convert to Opportunity" icon="gtk-go-forward"
-                                type="action"
-                                />
+                        <group>
+                            <button
+                                    name="%(crm.action_crm_lead2opportunity_partner)d"
+                                    string="Convert to Opportunity"
+                                    help="Convert to Opportunity" icon="gtk-go-forward"
+                                    type="action"
+                                    />
+                            <button string="Schedule/Log Call"
+                                    name="%(crm.opportunity2phonecall_act)d" icon="terp-call-start"
+                                    type="action"
+                            />
+                        </group>
                         <newline/>
                         <field name="user_id"/>
                         <field name="section_id" widget="selection"/>
@@ -52,7 +58,7 @@
                             <group colspan="3" col="6">
                                 <field name="partner_name" string="Partner Name"/>
                                 <field name="vat" on_change="vat_change(vat)" />
-                                <field name="partner_category_id" widget="selection"/>
+                                <field name="partner_category_id" context="{'no_create': True}"/>
                             </group>
                             <group colspan="2" col="4">
                                 <separator string="Contact" colspan="4" col="4"/>
@@ -281,7 +287,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="referred" position="after">
-                    <field name="partner_category_id" widget="selection"/>
+                    <field name="partner_category_id" context="{'no_create': True}"/>
                 </field>
                 <field name="description" position="after">
                     <field name="phonecall_ids" context="{'default_partner_id' : partner_id}" nolabel="1" colspan="4"/>

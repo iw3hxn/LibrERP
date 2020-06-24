@@ -67,6 +67,7 @@ class CrmLead(orm.Model):
         """This function computes next stage for case from its current stage
         using available stage for that case type
         """
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for crm in self.browse(cr, uid, ids, context=context):
             if crm.shop_id:
                 if crm.sale_order_id and crm.shop_id.crm_sale_stage_ids:
@@ -77,6 +78,7 @@ class CrmLead(orm.Model):
         """This function computes previous stage for case from its current
         stage using available stage for that case type
         """
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for crm in self.browse(cr, uid, ids, context=context):
             if crm.shop_id:
                 if crm.sale_order_id and crm.shop_id.crm_sale_stage_ids:
@@ -95,6 +97,7 @@ class CrmLead(orm.Model):
         return value
    
     def _get_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         # crm_lead_obj = self.pool['crm.lead']
         sale_order_obj = self.pool['sale.order']
@@ -110,6 +113,7 @@ class CrmLead(orm.Model):
         return result
 
     def _get_visible_sale_order_id(self,cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         # crm_lead_obj = self.pool['crm.lead']
         sale_order_obj = self.pool['sale.order']
@@ -124,6 +128,7 @@ class CrmLead(orm.Model):
         return result
 
     def _get_crm_lead(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         crm_lead_obj = self.pool['crm.lead']
         for crm in crm_lead_obj.read(cr, uid, ids, ['partner_id', 'partner_address_id'], context, load='_obj'):
@@ -141,6 +146,7 @@ class CrmLead(orm.Model):
         return result
 
     def _get_meeting_history(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         meeting_history = []
         for crm in self.browse(cr, uid, ids, context):
@@ -164,6 +170,7 @@ class CrmLead(orm.Model):
         return result
 
     def vat_change(self, cr, uid, ids, vat, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         if not vat:
             return False
@@ -224,6 +231,7 @@ class CrmLead(orm.Model):
 
         mod_obj = self.pool['ir.model.data']
         act_obj = self.pool['ir.actions.act_window']
+        sale_order_obj = self.pool['sale.order']
 
         result = mod_obj.get_object_reference(cr, uid, 'sale', 'action_order_form')
         id = result and result[1] or False
@@ -235,8 +243,17 @@ class CrmLead(orm.Model):
         for crm in self.browse(cr, uid, ids, context=context):
             sale_ids += [crm.sale_order_id.id]
 
-        if self.pool['sale.order']._columns.get('sale_version_id', False):
-            sale_ids = self.pool['sale.order'].search(cr, uid, ['|', ('sale_version_id', 'in', sale_ids), ('id', '=', sale_ids)], context=context)
+        if sale_order_obj._columns.get('sale_version_id', False):
+            original_sale_ids = sale_ids
+            for order in sale_order_obj.read(cr, uid, sale_ids, ['sale_version_id'], load='_obj'):
+                if order['sale_version_id']:
+                    original_sale_ids.append(order['sale_version_id'])
+            original_sale_ids = list(set(original_sale_ids))
+            if original_sale_ids:
+                search_domain = ['|', ('sale_version_id', 'in', original_sale_ids), ('id', 'in', sale_ids)]
+            else:
+                search_domain = [('id', 'in', sale_ids)]
+            sale_ids = sale_order_obj.search(cr, uid, search_domain, context=context)
 
         # choose the view_mode accordingly
         if len(sale_ids) > 1:
@@ -280,6 +297,7 @@ class CrmLead(orm.Model):
     _order = "create_date desc"
 
     def _lead_create_partner(self, cr, uid, lead, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         # todo check on company if required vat on partner creation from lead
         partner_obj = self.pool['res.partner']
 
@@ -302,8 +320,9 @@ class CrmLead(orm.Model):
         return partner_id
 
     def _lead_create_partner_address(self, cr, uid, lead, partner_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         address_obj = self.pool['res.partner.address']
-        address_ids = address_obj.search(cr, uid, [('partner_id', '=', partner_id), ('type', '=', 'default')])
+        address_ids = address_obj.search(cr, uid, [('partner_id', '=', partner_id), ('type', '=', 'default')], context=context)
         if address_ids:
             address_id = address_ids[0]
         else:
@@ -322,7 +341,7 @@ class CrmLead(orm.Model):
                 'city': lead.city,
                 'country_id': lead.country_id and lead.country_id.id or False,
                 'state_id': lead.state_id and lead.state_id.id or False,
-            })
+            }, context)
 
         if lead.contact_name:
             vals = {
@@ -390,10 +409,9 @@ class CrmLead(orm.Model):
     def on_change_region(self, cr, uid, ids, region):
         return self.pool['res.partner.address'].on_change_region(cr, uid, ids, region)
 
-    def check_address(self, cr, uid, ids, vals):
+    def check_address(self, cr, uid, ids, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         address_obj = self.pool['res.partner.address']
-        context = self.pool['res.users'].context_get(cr, uid)
-
         for lead in self.browse(cr, uid, ids, context):
             partner_vals = {}
             if lead.partner_id:
@@ -415,6 +433,7 @@ class CrmLead(orm.Model):
         return True
 
     def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         vals = self.pool['res.partner.address']._set_vals_city_data(cr, uid, vals)
 
@@ -430,14 +449,13 @@ class CrmLead(orm.Model):
         result = super(CrmLead, self).create(cr, uid, vals, context=context)
 
         if vals.get('email_from', False) or vals.get('phone', False):
-            self.check_address(cr, uid, [result], vals)
+            self.check_address(cr, uid, [result], vals, context)
 
         return result
 
     def write(self, cr, uid, ids, vals, context=None):
-        if not context:
-            context = {'force_stage_id': True}
-
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        context.update({'force_stage_id': True})
         if isinstance(ids, (int, long)):
             ids = [ids]
 
@@ -448,22 +466,20 @@ class CrmLead(orm.Model):
                 if crm.shop_id:
                     if crm.sale_order_id and crm.shop_id.crm_sale_stage_ids:
                         raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
-                        return False
 
         result = super(CrmLead, self).write(cr, uid, ids, vals, context=context)
 
         if vals.get('email_from', False) or vals.get('phone', False):
-            self.check_address(cr, uid, ids, vals)
+            self.check_address(cr, uid, ids, vals, context)
         if vals.get('vat', False):
             vals['vat'] = vals['vat'].upper()
 
         return result
 
     def copy(self, cr, uid, ids, default, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if default is None:
             default = {}
-        if context is None:
-            context = {}
         default.update({'name': '/', 'sale_order_id': False})
         return super(CrmLead, self).copy(cr, uid, ids, default, context)
 

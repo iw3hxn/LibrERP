@@ -44,7 +44,7 @@ COLOR_SELECTION = [('aqua', (u"Aqua")),
                    ]
 
 
-class crm_case_categ(orm.Model):
+class CrmCaseCateg(orm.Model):
     _inherit = 'crm.case.categ'
 
     def get_color(self, cr, uid, ids, field_name, arg, context):

@@ -30,7 +30,7 @@
 from openerp.osv import orm, fields
 
 
-class crm_case_stage(orm.Model):
+class CrmCaseStage(orm.Model):
     _inherit = 'crm.case.stage'
 
     _columns = {

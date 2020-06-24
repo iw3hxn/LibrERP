@@ -27,9 +27,18 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
+from openerp.osv import orm
+from tools.translate import _
 
 
-class res_partner_category(orm.Model):
+class ResPartnerCategory(orm.Model):
     _inherit = 'res.partner.category'
     _order = "name"
+
+    def create(self, cr, uid, values, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if context.get('no_create', False):
+            raise orm.except_orm(
+                'Errore',
+                _('Here is not allow to create category'))
+        return super(ResPartnerCategory, self).create(values)

@@ -21,6 +21,9 @@ class ProductPricelist(orm.Model):
                 else:
                     code = line.partner_id.property_supplier_ref
                 name = '{0} {1}'.format(code, line.name)
+                if line.partner_id.company_id.currency_id.id != line.currency_id.id:
+                    name = '{0} ({1})'.format(name, line.currency_id.symbol)
+
                 result.append((line.id, name))
             else:
                 result.append((line.id, line.name))

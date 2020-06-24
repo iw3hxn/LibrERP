@@ -482,3 +482,9 @@ msgstr "Ordine di Vendita Collegato"
 #: selection:crm.super.calendar,type:0
 msgid "Sale Order"
 msgstr "Offerte / Ordini"
+
+#. module: crm_lead_correct
+#: code:addons/crm_lead_correct/models/res_partner_category.py:43
+#, python-format
+msgid "Here is not allow to create category"
+msgstr "Qui non si può creare una categoria"
