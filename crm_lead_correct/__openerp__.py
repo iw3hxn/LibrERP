@@ -29,7 +29,7 @@
 
 {
     'name': 'Module corrects a bug in crm_lead, when creating a partner. Parameter customer is True.',
-    'version': '4.11.29.29',
+    'version': '4.12.29.29',
     'category': 'Customer Relationship Management',
     'description': """A module for crm. Extended by Didotech """,
     "author": "Didotech SRL",
@@ -41,6 +41,7 @@
         'l10n_it_base',
         'sale_crm',
         'sale_order_confirm',
+        'res_users_helper_functions',
         'web_support',  # because of field email_from created there
     ],
     'init_xml': [],

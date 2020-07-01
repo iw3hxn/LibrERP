@@ -30,13 +30,14 @@ import time
 from openerp.osv import orm, fields
 
 
-class crm_meeting_by_province(orm.TransientModel):
+class CrmMeetingByProvince(orm.TransientModel):
     _name = 'crm.meeting.by.province'
     _description = 'Print Zone wise Report'
     _columns = {
-        'date_from': fields.date("Start Date"),
-        'date_to': fields.date("End Date"),
-        "province": fields.many2one("res.province", "Province"),
+        'date_from': fields.date('Start Date'),
+        'date_to': fields.date('End Date'),
+        'province_id': fields.many2one('res.province', "Province"),
+        'user_id': fields.many2one('res.users', 'User')
     }
 
     _defaults = {
@@ -44,11 +45,21 @@ class crm_meeting_by_province(orm.TransientModel):
         'date_to': lambda *a: time.strftime('%Y-%m-%d'),
     }
 
+    def default_get(self, cr, uid, fields, context=None):
+        res = super(CrmMeetingByProvince, self).default_get(cr, uid, fields, context)
+        users_obj = self.pool['res.users']
+        if users_obj.has_group(cr, uid, 'base.group_sale_salesman') and not users_obj.has_group(cr, uid, 'base.group_sale_salesman_all_leads'):
+            res.update({
+                'user_id': uid
+            })
+
+        return res
+
     def print_report(self, cr, uid, ids, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         datas = {'ids': context.get('active_ids', [])}
-        res = self.read(cr, uid, ids, ['date_from', 'date_to', 'province'], context=context)
+        res = self.read(cr, uid, ids, ['date_from', 'date_to', 'province_id', 'user_id'], context=context)
         res = res and res[0] or {}
         datas['form'] = res
         datas['form']['ids'] = context.get('active_ids', [])

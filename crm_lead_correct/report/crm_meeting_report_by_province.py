@@ -41,16 +41,46 @@ class crm_meeting_report_by_province(report_sxw.rml_parse):
         self.localcontext.update({
             'time': time,
             'get_provinces': self.get_provinces,
+            'truck_description': self.truck_description,
         })
+        self.context = context
+
+    def _line_to_array(self, text, size=60):
+        text_array = []
+
+        for k in range(0, len(text), size):
+            text_array.append(text[k:k+size])
+        return text_array
+
+    def _text_to_array(self, text, max_length=60):
+        return_description = []
+        if text:
+            for line in text.split('\n'):
+                line = line.strip()
+                if len(line) > max_length:
+                    return_description += self._line_to_array(line, max_length)
+                elif line:
+                    return_description.append(line)
+        else:
+            return_description = ['']
+        return return_description
+
+    def truck_description(self, name):
+        caus_list = self._text_to_array(name, 100)
+        return '\n'.join(caus_list)
 
     def get_provinces(self, form):
         meeting_obj = pooler.get_pool(self.cr.dbname).get('crm.meeting')
         provinces = {}
-        
-        meeting_ids = meeting_obj.search(self.cr, self.uid, [('date', '>=', form['date_from']), ('date', '<=', form['date_to'])])
+
+        meeting_search = [('date', '>=', form['date_from']), ('date', '<=', form['date_to'])]
+        if form['user_id']:
+            meeting_search.append(('user_id', '=', form['user_id'][0]))
+
+        meeting_ids = meeting_obj.search(self.cr, self.uid, meeting_search, context=self.context)
         
         if meeting_ids:
-            for meeting in meeting_obj.browse(self.cr, self.uid, meeting_ids):
+            for meeting in meeting_obj.browse(self.cr, self.uid, meeting_ids, self.context):
                 if meeting.partner_address_id.province:
                     province = meeting.partner_address_id.province
                     province_id = province.id
