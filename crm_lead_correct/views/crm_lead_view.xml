@@ -33,15 +33,15 @@
                         <newline/>
                         <field name="user_id"/>
                         <field name="section_id" widget="selection"/>
-                        <field name="stage_id" domain="section_id and [('section_ids', '=', section_id)] or []"/>
-                        <group col="2" colspan="1">
-                            <button name="stage_previous" string=""
-                                    states="open,pending,draft" type="object"
-                                    icon="gtk-go-back" context="{'stage_type': 'lead'}"/>
-                            <button name="stage_next" string=""
-                                    states="open,pending,draft" type="object"
-                                    icon="gtk-go-forward" context="{'stage_type': 'lead'}"/>
-                        </group>
+<!--                        <field name="stage_id" domain="section_id and [('section_ids', '=', section_id)] or []"/>-->
+<!--                        <group col="2" colspan="1">-->
+<!--                            <button name="stage_previous" string=""-->
+<!--                                    states="open,pending,draft" type="object"-->
+<!--                                    icon="gtk-go-back" context="{'stage_type': 'lead'}"/>-->
+<!--                            <button name="stage_next" string=""-->
+<!--                                    states="open,pending,draft" type="object"-->
+<!--                                    icon="gtk-go-forward" context="{'stage_type': 'lead'}"/>-->
+<!--                        </group>-->
                         <field name="type" invisible="1"/>
                     </group>
                     <group colspan="4" col="7">
@@ -252,12 +252,12 @@
                     <field name="channel_id"/>
                     <field name="subjects" invisible="1"/>
 
-                    <field name="stage_id"/>
-                    <button name="stage_previous" string="Previous Stage"
-                            states="open,pending" type="object" icon="gtk-go-back"/>
-                    <button name="stage_next" string="Next Stage"
-                            states="open,pending" type="object"
-                            icon="gtk-go-forward"/>
+<!--                    <field name="stage_id"/>-->
+<!--                    <button name="stage_previous" string="Previous Stage"-->
+<!--                            states="open,pending" type="object" icon="gtk-go-back"/>-->
+<!--                    <button name="stage_next" string="Next Stage"-->
+<!--                            states="open,pending" type="object"-->
+<!--                            icon="gtk-go-forward"/>-->
                     <field name="section_id" invisible="context.get('invisible_section', True)"/>
                     <field name="user_id"/>
                     <field name="state"/>

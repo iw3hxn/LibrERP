@@ -10,6 +10,10 @@
         id="crm.menu_crm_case_categ0_act_leads"
         action="crm.crm_case_category_act_leads_all" sequence="1"
               groups="crm.view_lead" />
+
+    <record model="ir.actions.act_window" id="crm.crm_case_category_act_leads_all">
+        <field name="view_mode">tree,form,calendar</field>
+    </record>
     
     <menuitem parent="base.menu_crm" name="Opportunities"
         id="crm.menu_crm_case_opp"
