@@ -4,7 +4,7 @@
 
 {
     "name": "Database Auto-Backup & Backup Auto-Transfer to FTP server",
-    "version": "6.2.2.1",
+    "version": "6.2.2.2",
     "author": "Emipro Technologies",
     "website": "http://www.emiprotechnologies.com",
     "category": "Generic Modules",

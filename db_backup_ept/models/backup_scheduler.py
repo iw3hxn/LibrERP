@@ -234,28 +234,45 @@ class db_backup_ept(orm.Model):
     def ept_backup(self, cr, uid, ids, db_name, bkup_dir, automatic, ftp_enable, FTP_id, bak_conf, keep_backup_local, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         self._set_pg_psw_env_var()
-        bkp_file = '%s_%s.sql' % (db_name, time.strftime('%Y%m%d_%H_%M_%S'))
+
+        bkp_file_name = '%s_%s.sql' % (db_name, time.strftime('%Y%m%d_%H_%M_%S'))
         tar_file_name = '%s_%s.tar.gz' % (db_name, time.strftime('%Y%m%d_%H_%M_%S'))
-        file_path = os.path.join(bkup_dir, bkp_file)
-        tar_file_path = os.path.join(bkup_dir, tar_file_name)
-        tar_obj = tarfile.open(tar_file_path, 'w:gz')
-        fp = codecs.open(file_path, 'wb')
+
+        bck_file_path = os.path.join(bkup_dir, bkp_file_name)
+
+        # - - - - - - - - - - - - - - - - - - - -
+        # Build the pg_dump command line
+        # - - - - - - - - - - - - - - - - - - - -
         cmd = ['pg_dump', '--format=p', '--no-owner']
+
+        # Get DB connection parameters from OpenERP configuration
         if tools.config['db_user']:
             cmd.append('--username=' + tools.config['db_user'])
+        # end if
         if tools.config['db_host']:
             cmd.append('--host=' + tools.config['db_host'])
+        # end if
         if tools.config['db_port']:
             cmd.append('--port=' + str(tools.config['db_port']))
+        # end if
+
+        # Add the output file path
+        cmd.append("--file=" + bck_file_path)
+
+        # Add the DB name
         cmd.append(db_name)
+
+        # Run the backup
         stdin, stdout = tools.exec_pg_command_pipe(*tuple(cmd))
         stdin.close()
-        data = stdout.read()
-        fp.write(data)
-        fp.close()
-        tar_obj.add(file_path, bkp_file)
-        tar_obj.close()
+        data = stdout.read()  # NB: the this is not the data from the DB dump, just the pg_dump output text
         res = stdout.close()
+
+        tar_file_path = os.path.join(bkup_dir, tar_file_name)
+        tar_obj = tarfile.open(tar_file_path, 'w:gz')
+        tar_obj.add(bck_file_path, bkp_file_name)
+        tar_obj.close()
+
         user_id = None
         user_name = ''
         backup_status = ''
@@ -294,7 +311,7 @@ class db_backup_ept(orm.Model):
                                 'automatic': automatic,
                             }, context)
                         backup_status = 'Could not create back up of database. Backup Failed. Invalid FTP Credentials'
-                        os.remove(file_path)
+                        os.remove(bck_file_path)
                         return True
                     try:
                         if ept_ftp.is_ftp_active:
@@ -392,7 +409,7 @@ class db_backup_ept(orm.Model):
                                 cr, uid, email_from.value or '', [email_to], email_subject,
                                 report_body, model=model, subtype='html'
                             )
-        os.remove(file_path)
+        os.remove(bck_file_path)
         return True
 
 
