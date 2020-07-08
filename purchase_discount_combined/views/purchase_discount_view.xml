@@ -1,0 +1,43 @@
+<openerp>
+<data>
+    <record id="purchase_discount_combined_order_line_form" model="ir.ui.view" >
+        <field name="name">purchase_discount.order.line.form</field>
+        <field name="model">purchase.order.line</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="purchase_discount.purchase_discount_order_line_form"/>
+        <field name="arch" type="xml">
+            <field name="discount" position="after">
+                <field name="string_discount" on_change="Calcolo_Sconto(string_discount)"/>
+            </field>
+            <field name="discount" position="replace">
+                <field name="discount" invisible="1"/>
+            </field>
+        </field>
+    </record>
+    
+    <record id="purchase_discount_combined_form" model="ir.ui.view" >
+        <field name="name">purchase_discount.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="purchase_discount.purchase_discount_form"/>
+        <field name="arch" type="xml">
+            <field name="discount" position="after">
+                <field name="string_discount"/>
+            </field>
+        </field>
+    </record>
+    
+    <record id="purchase_discount_order_line_combined_tree" model="ir.ui.view" >
+        <field name="name">purchase_discount.order.line.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field name="type">tree</field>
+        <field name="inherit_id" ref="purchase_discount.purchase_discount_order_line_tree"/>
+        <field name="arch" type="xml">
+            <field name="discount" position="after">
+                <field name="string_discount"/>
+            </field>
+        </field>
+    </record>
+
+</data>
+</openerp>
