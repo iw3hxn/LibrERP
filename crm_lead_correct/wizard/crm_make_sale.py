@@ -97,8 +97,8 @@ class crm_make_sale(orm.TransientModel):
 
                 if make.move_attachment:
                     attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id)], context=context)
-                    for attachment_id in attachment_ids:
-                        attachment_obj.write(cr, uid, attachment_id, {'res_model': 'sale.order', 'res_id': new_id}, context)
+                    if attachment_ids:
+                        attachment_obj.write(cr, uid, attachment_ids, {'res_model': 'sale.order', 'res_id': new_id}, context)
                     
             if make.close:
                 lead_obj.case_close(cr, uid, data)
