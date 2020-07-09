@@ -367,6 +367,24 @@ class CrmLead(orm.Model):
         res['domain'] = domain
         return res
 
+    def onchange_partner_address_id(self, cr, uid, ids, partner_address_id, email_from):
+        res = super(CrmLead, self).onchange_partner_address_id(cr, uid, ids, partner_address_id, email_from)
+        if partner_address_id:
+            partner_address = self.pool['res.partner.address'].browse(cr, uid, partner_address_id)
+            find_city = False
+            if partner_address.zip:
+                find_city = True
+                res['value'].update(zip=partner_address.zip)
+            if partner_address.province:
+                find_city = True
+                res['value'].update(province=partner_address.province.id)
+            if partner_address.region:
+                find_city = True
+                res['value'].update(region=partner_address.region.id)
+            if find_city:
+                res['value'].update(find_city=find_city)
+        return res
+
     def onchange_sale_order_id(self, cr, uid, ids, sale_order_id, context=None):
         ref = False
         if sale_order_id:
