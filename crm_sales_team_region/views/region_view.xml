@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+
+        <!--
+           Province
+        -->
+
+        <record id="view_res_region_tree" model="ir.ui.view">
+            <field name="name">res.region.tree</field>
+            <field name="model">res.region</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Province">
+                    <field name="name"/>
+                    <field name="country_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_res_region_form" model="ir.ui.view">
+            <field name="name">res.region.form</field>
+            <field name="model">res.region</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Region">
+                    <field name="name"/>
+                    <field name="country_id"/>
+                    <field name="crm_case_section_ids" nolabel="1" colspan="4" widget="many2many_checkboxes" />
+                </form>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

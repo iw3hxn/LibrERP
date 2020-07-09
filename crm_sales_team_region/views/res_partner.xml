@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-        <record id="view_res_region_form" model="ir.ui.view">
+        <record id="view_res_partner_region_form" model="ir.ui.view">
             <field name="name">res.partner.region.search</field>
             <field name="model">res.partner</field>
             <field name="type">search</field>
