@@ -22,6 +22,7 @@ class ResPartner(orm.Model):
 
     def _search_regional_user_ids(self, cr, uid, obj, name, args, context=None):
         if args:
+            partner_ids = []
             for arg in args:
                 if arg[0] == 'regional_user_ids':
                     section_ids = self.pool['crm.case.section'].search(cr, uid, ['|', ('user_id', 'in', arg[2]), ('member_ids', 'in', arg[2])], context=context)
