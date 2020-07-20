@@ -548,6 +548,7 @@ class sale_order(orm.Model):
         # For unknown reason default_get() returns more values than required
         default_values = self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context)
         default.update({
+            'origin': False,
             'date_order': datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT),
             'validity': validity,
             'tech_validation': False,
