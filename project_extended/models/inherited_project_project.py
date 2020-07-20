@@ -30,7 +30,7 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 
-class project_project(orm.Model):
+class ProjectProject(orm.Model):
     _inherit = 'project.project'
 
     # def search(self, cr, user, args, offset=0, limit=None, order=None, context=None, count=False):
@@ -71,7 +71,7 @@ class project_project(orm.Model):
                 _('Error'),
                 _('There are same analytic line'))
 
-        res = super(project_project, self).unlink(cr, uid, ids, context)
+        res = super(ProjectProject, self).unlink(cr, uid, ids, context)
         self.pool['account.analytic.account'].unlink(cr, uid, account_analytic_account_ids, context)
         return res
 
@@ -279,7 +279,7 @@ class project_project(orm.Model):
 
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        project_selection = super(project_project, self).name_search(cr, uid, name, args, operator, context=context,
+        project_selection = super(ProjectProject, self).name_search(cr, uid, name, args, operator, context=context,
                                                                      limit=limit)
         if name:
             partner_ids = self.pool['res.partner'].search(cr, uid, [('name', 'ilike', name)])
@@ -444,3 +444,12 @@ class project_project(orm.Model):
         #     _get_attached_docs, string="Number of documents attached", type='integer'
         # )
     }
+
+    def copy(self, cr, uid, ids, default=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        default = default or {}
+        default.update({
+            'project_task_work_ids': False,
+        })
+        res_id = super(ProjectProject, self).copy(cr, uid, ids, default, context)
+        return res_id
