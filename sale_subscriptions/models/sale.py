@@ -100,7 +100,7 @@ class sale_order_line(orm.Model):
                 total_purchase_price = total_purchase_price
 
             res[line.id] = {
-                'margin': round((price_subtotal_line * (100.0 - line.discount) / 100.0) - total_purchase_price, 2),
+                'margin': price_subtotal_line - total_purchase_price,
                 'total_purchase_price': total_purchase_price,
             }
         return res
