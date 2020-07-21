@@ -84,9 +84,13 @@
                     <filter icon="terp-go-month" string="Month" name="month"
                             domain="[('date_maturity', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
                     />
+<!--                    <filter icon="terp-go-month" string="Next Month" name="next_month"-->
+<!--                            domain="[('date_maturity', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"-->
+<!--                    />-->
                     <filter icon="terp-go-month" string="Next Month" name="next_month"
-                            domain="[('date_maturity', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
+                            domain="[('date_maturity', '&gt;=', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&lt;', (datetime.date.today() + relativedelta(months=2)).strftime('%%Y-%%m-01 00:00:00'))]"
                     />
+
                     <newline/>
                     <field name="date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
                     <field name="date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
