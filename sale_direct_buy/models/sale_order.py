@@ -211,11 +211,32 @@ class sale_order(orm.Model):
 class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
 
+    def _get_supplier_ids(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        for line in self.browse(cr, uid, ids, context):
+            product = line.product_id
+            if product:
+                # --find the supplier
+                if product.seller_ids:
+                    seller_ids = list(set([info.name.id for info in product.seller_ids]))
+                else:
+                    # If not suppliers found -> returns all of them
+                    seller_ids = self.pool['res.partner'].search(cr, uid, [('supplier', '=', True)], context=context)
+            else:
+                seller_ids = []
+            result[line.id] = seller_ids
+        return result
+
     _columns = {
         'manufacturer_id': fields.many2one('res.partner', 'Manufacturer',),
         'manufacturer_pref': fields.char('Manufacturer Product Code', size=64),
-        'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True),
-        'supplier_id': fields.many2one('res.partner', string='Supplier'),
+        # 'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True),
+        'supplier_ids': fields.function(_get_supplier_ids, string="Suppliers", type='many2many', method=True,
+                                        relation='res.partner'),
+        # 'supplier_id': fields.many2one('res.partner', string='Supplier'),
+        'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]"),
         'extra_purchase_discount': fields.float('Ex. Purchase Discount', digits=(16, 2)),
         'bom_ids': fields.one2many('sale.order.line.mrp.bom', 'order_id', 'BoM'),
         'product_brand_id': fields.related('product_id', 'product_tmpl_id', 'product_brand_id', type='many2one', relation='product.brand', string=_('Brand'), store=False)
@@ -274,7 +295,7 @@ class sale_order_line(orm.Model):
                         seller_ids = self.pool['res.partner'].search(cr, uid, [('supplier', '=', True)], context=context)
 
                     result_dict['value'].update({
-                        'supplier_id': seller_ids and seller_ids[0] or False,
+                        'supplier_id': len(seller_ids) == 1 and seller_ids and seller_ids[0] or False,
                         'supplier_ids': seller_ids,
                     })
 
