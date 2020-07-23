@@ -193,3 +193,27 @@ class order_requirement(orm.Model):
         # TODO set_state_done, now commented in view
         # pass
         # self.write(cr, uid, ids, {'state': 'done'})
+
+    def action_view_purchase_order(self, cr, uid, ids, context=None):
+        order = self.browse(cr, uid, ids, context)[0]
+        purchase_ids = []
+        for line in order.order_requirement_line_ids:
+            purchase_ids += [po.id for po in line.purchase_order_ids]
+
+        purchase_ids = list(set(purchase_ids))
+        mod_obj = self.pool['ir.model.data']
+        form_id = mod_obj.get_object_reference(cr, uid, 'purchase', 'purchase_order_form')
+        form_res = form_id and form_id[1] or False
+        tree_id = mod_obj.get_object_reference(cr, uid, 'purchase', 'purchase_order_tree')
+        tree_res = tree_id and tree_id[1] or False
+        return {
+            'domain': "[('id', 'in', %s)]" % purchase_ids,
+            'name': _('Purchase Order'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'purchase.order',
+            'view_id': False,
+            'views': [(tree_res, 'tree'), (form_res, 'form')],
+            'context': "{'type':'out_refund'}",
+            'type': 'ir.actions.act_window',
+        }

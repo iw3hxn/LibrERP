@@ -913,7 +913,7 @@ class OrderRequirementLine(orm.Model):
             })
         return routing_vals
 
-    def _get_purchase_order_line_value(self, cr, uid, product_id, uom_id, qty, purchase_order_values, supplier_id, context):
+    def _get_purchase_order_line_value(self, cr, uid, obj, product_id, uom_id, qty, purchase_order_values, supplier_id, context):
         purchase_order_line_obj = self.pool['purchase.order.line']
         order_line_values = purchase_order_line_obj.onchange_product_id(cr, uid, [], purchase_order_values['pricelist_id'],
                                                                         product_id, qty, uom_id=uom_id, partner_id=supplier_id,
@@ -1006,7 +1006,7 @@ class OrderRequirementLine(orm.Model):
 
             purchase_id = purchase_order_obj.create(cr, uid, purchase_order_values, context=ctx)
 
-            purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, uom_id, qty,
+            purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, obj, product_id, uom_id, qty,
                                                                              purchase_order_values, supplier_id, ctx)
             purchase_order_line_values.update({
                 # 'account_analytic_id': account_analytic_id,
@@ -1059,7 +1059,7 @@ class OrderRequirementLine(orm.Model):
                     'product_uom': uom_id,
                     'sale_order_ids': [(4, sale_order_id)],
                 }
-                purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, uom_id, qty,
+                purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, obj, product_id, uom_id, qty,
                                                                                  purchase_order_values, supplier_id, context)
                 purchase_order_line_values.update({
                     # 'account_analytic_id': account_analytic_id,
@@ -1264,6 +1264,10 @@ class OrderRequirementLine(orm.Model):
         is_manufactured = True
         line_vals = line.get_suppliers(product, context=context)
         supplier_ids_formatted = line_vals['supplier_ids']
+        if context.get('supplier_id', False):
+            line_vals.update(supplier_id=context['supplier_id'], buy=True)
+            is_manufactured = False
+
         line_vals.update({
             'new_product_id': product.id,
             'is_manufactured': is_manufactured,

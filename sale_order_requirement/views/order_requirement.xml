@@ -50,6 +50,7 @@
                     <newline />
                     <field name="user_id" />
                     <field name="state" widget="statusbar" statusbar_colors='{"draft":"red","done":"black","cancel":"grey"}'/>
+                    <button name="action_view_purchase_order" string="View Purchase Order" type="object" icon="STOCK_FULLSCREEN"/>
                 </form>
            </field>
         </record>

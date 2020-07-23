@@ -217,6 +217,7 @@ msgstr "Righe Routing"
 #. module: sale_order_requirement
 #: code:addons/sale_order_requirement/models/temp_mrp_bom.py:386
 #: model:ir.model,name:sale_order_requirement.model_purchase_order
+#: field:order.requirement.line,purchase_order_id:0
 #: field:temp.mrp.bom,purchase_order_id:0
 msgid "Purchase Order"
 msgstr "Ordine Acquisto"
@@ -289,6 +290,8 @@ msgstr "Costo"
 
 #. module: sale_order_requirement
 #: field:temp.mrp.routing,user_id:0
+#: field:order.requirement,user_id:0
+#: field:order.requirement.line,user_id:0
 msgid "User"
 msgstr "Utente"
 
@@ -728,3 +731,8 @@ msgstr "Aggiungi Righe d'Ordine"
 #: field:order.requirement.line.add,order_line:0
 msgid "Order Line"
 msgstr "Riga"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "View Purchase Order"
+msgstr "View Purchase Order"
