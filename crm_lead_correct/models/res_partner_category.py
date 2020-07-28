@@ -40,5 +40,5 @@ class ResPartnerCategory(orm.Model):
         if context.get('no_create', False):
             raise orm.except_orm(
                 'Errore',
-                _('Here is not allow to create category'))
-        return super(ResPartnerCategory, self).create(values)
+                _('It is not allowed to create category from here'))
+        return super(ResPartnerCategory, self).create(cr, uid, values, context)
