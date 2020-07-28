@@ -486,5 +486,5 @@ msgstr "Offerte / Ordini"
 #. module: crm_lead_correct
 #: code:addons/crm_lead_correct/models/res_partner_category.py:43
 #, python-format
-msgid "Here is not allow to create category"
+msgid "It is not allowed to create category from here"
 msgstr "Qui non si può creare una categoria"
