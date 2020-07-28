@@ -9,8 +9,10 @@
             <field name="inherit_id" ref="mrp.mrp_routing_workcenter_tree_view"/>
             <field name="arch" type="xml">
                     <field name="hour_nbr" position="replace">
+                        <field name="costs_cycle" />
                         <field name="hour_nbr" widget="float_time_second" sum="Total Time"/>
                         <field name="costs_hour"/>
+                        <field name="cost_efficiency" />
                         <field name="total_cost" sum="Total Cost"/>
                     </field>
             </field>
@@ -23,6 +25,7 @@
             <field name="arch" type="xml">
                 <field name="hour_nbr" position="replace">
                     <field name="hour_nbr" widget="float_time_second" sum="Total Time"/>
+                    <field name="cost_efficiency" />
                     <field name="total_cost"/>
                 </field>
             </field>

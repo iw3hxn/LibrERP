@@ -49,6 +49,16 @@ msgid "Cost per hour"
 msgstr "Costo Orario"
 
 #. module: mrp
+#: field:mrp.routing.workcenter,costs_cycle:0
+msgid "Cost per cycle"
+msgstr "Costo per Ciclo"
+
+#. module: mrp
+#: field:mrp.routing.workcenter,cost_efficiency:0
+msgid "Cost Efficiency"
+msgstr "Efficienza Costo"
+
+#. module: mrp
 #: field:mrp.routing.workcenter,total_cost:0
 msgid "Total Cost"
 msgstr "Costo Totale"
