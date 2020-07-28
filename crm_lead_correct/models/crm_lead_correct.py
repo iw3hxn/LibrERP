@@ -327,6 +327,7 @@ class CrmLead(orm.Model):
             address_id = address_ids[0]
         else:
             address_id = address_obj.create(cr, uid, {
+                'type': 'default',
                 'partner_id': partner_id,
                 'name': lead.contact_name,
                 'phone': lead.phone,
