@@ -48,6 +48,12 @@ class product_pricelist_item(orm.Model):
 class product_pricelist(orm.Model):
     _inherit = 'product.pricelist'
 
+    def _auto_init(self, cr, context={}):
+        super(product_pricelist, self)._auto_init(cr, context)
+        cr.execute("SELECT 1 FROM pg_indexes WHERE indexname='product_pricelist_company_id_index'")
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX product_pricelist_company_id_index ON product_pricelist (company_id)')
+
     def create(self, cr, uid, vals, context=None):
         res = super(product_pricelist, self).create(cr, uid, vals, context)
         if ENABLE_CACHE:

@@ -171,7 +171,11 @@ class product_product(orm.Model):
                     wc = wline.workcenter_id
                     cycle = wline.cycle_nbr
                     # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
-                    price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
+                    cost_efficiency = wline._get_cost_efficiency()[wline.id]
+                    cost = (wc.costs_cycle * cycle + wc.costs_hour * (
+                                wline.hour_nbr + (wc.time_start or 0.0) + (wc.time_stop or 0.0))) * (
+                                       wc.time_efficiency or 1.0)
+                    price += cost * cost_efficiency
             price /= bom.product_qty
             price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
             if ENABLE_CACHE and debug_logger:

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2013-2018 Didotech srl (info@didotech.com)
+# © 2020 Didotech srl (info@didotech.com)
 
 import logging
 
@@ -13,26 +13,20 @@ ENABLE_CACHE = config.get('product_cache', False)
 CACHE_TYPE = config.get('cache_type', 'dictionary')
 
 
-class mrp_routing_workcenter(orm.Model):
+class MrpRouting(orm.Model):
 
-    _inherit = 'mrp.routing.workcenter'
+    _inherit = 'mrp.routing'
 
     def create(self, cr, uid, vals, context=None):
-        res = super(mrp_routing_workcenter, self).create(cr, uid, vals, context)
+        res = super(MrpRouting, self).create(cr, uid, vals, context)
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache.empty()
             _logger.info(u'_cost_price CREATE cache empty')
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
-        res = super(mrp_routing_workcenter, self).write(cr, uid, ids, vals, context)
+        res = super(MrpRouting, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache.empty()
             _logger.info(u'_cost_price CREATE cache empty')
-        return res
-
-    def _get_cost_efficiency(self, cr, uid, ids, context):
-        res = {}
-        for line_id in ids:
-            res[line_id] = 1
         return res
