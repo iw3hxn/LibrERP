@@ -3,7 +3,7 @@
 
 {
     'name': 'CRM Sales Team Region',
-    'version': '4.2.0.4',
+    'version': '4.2.1.4',
     "author": "Didotech Srl",
     "website": "www.didotech.com",
     'category': 'Customer Relationship Management',
