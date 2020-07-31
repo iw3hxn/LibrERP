@@ -20,10 +20,10 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-from openerp.addons.sale_subscriptions.models.sale import ORDER_DURATION
+from openerp.addons.sale_subscriptions.models.sale_order import ORDER_DURATION
 
 
-class sale_change_subscriptions(orm.TransientModel):
+class SaleChangeSubscriptions(orm.TransientModel):
     _name = 'sale.change.subscriptions'
     _description = 'Change Subscriptions Duration'
     _columns = {
@@ -47,7 +47,5 @@ class sale_change_subscriptions(orm.TransientModel):
             order_obj_line.write(cr, uid, [line.id], {'price_unit': unit_price}, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
-
-sale_change_subscriptions()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

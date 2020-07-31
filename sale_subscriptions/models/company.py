@@ -23,7 +23,7 @@ from openerp.osv import orm, fields
 from tools.translate import _
 
 
-class res_company(orm.Model):
+class ResCompany(orm.Model):
 
     _inherit = 'res.company'
 

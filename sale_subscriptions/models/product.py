@@ -20,13 +20,11 @@
 #
 ##############################################################################
 
+from openerp.addons.sale_subscriptions.models.sale_order import ORDER_DURATION
 from openerp.osv import orm, fields
-from tools.translate import _
-
-from openerp.addons.sale_subscriptions.models.sale import ORDER_DURATION
 
 
-class product_product(orm.Model):
+class ProductProduct(orm.Model):
     _inherit = "product.product"
 
     _columns = {
