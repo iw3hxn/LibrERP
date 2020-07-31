@@ -432,4 +432,5 @@ msgstr "3 anni"
 #: view:sale.change.subscriptions:0
 #: view:sale.order:0
 msgid "Change Subscriptions"
-msgstr "Cambia Periodo Fatturazione"
+msgstr "Cambia Periodo Contrattuale"
+
