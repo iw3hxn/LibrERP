@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2010-2012 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
-#    Copyright (C) 2014-2018 Didotech srl
+#    Copyright (C) 2014-2020 Didotech srl
 #    (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,11 +21,10 @@
 #
 ##############################################################################
 
-import multiprocessing
+# import multiprocessing
 from datetime import date, datetime
-
 from openerp import netsvc
-import pooler
+# import pooler
 from openerp.osv import orm, fields
 from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 from tools.translate import _
@@ -210,7 +209,7 @@ class stock_picking(orm.Model):
 
     # from profilehooks import profile
     # @profile(immediate=True)
-    def _get_order_board_state(self, cr, uid, ids, name, args, context=None):
+    def _get_order_board_state_old(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for picking in self.browse(cr, uid, ids, context=context):
@@ -244,6 +243,16 @@ class stock_picking(orm.Model):
             #         if ratio == 100.0:
             #             picking.write({'order_ready': True})
         return res
+
+    def _get_order_board_state(self, cr, uid, ids, name, args, context=None):
+        """The faster variant of the old function"""
+        return {
+            picking_id: {
+                'order_sent': False,
+                'picked_rate': 0.0
+            }
+            for picking_id in ids
+        }
 
     def _get_picking_move(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -329,7 +338,8 @@ class stock_picking(orm.Model):
 
     def _filter_goods_ready(self, cr, uid, obj, field_name, args, context=None):
         all_pickings_ids = self.search(cr, uid, [], context=context)
-        goods_ready_dict = self._is_goods_ready(cr=cr, uid=uid, ids=all_pickings_ids, field_name=field_name, arg=args, context=context)
+        goods_ready_dict = self._is_goods_ready(
+            cr=cr, uid=uid, ids=all_pickings_ids, field_name=field_name, arg=args, context=context)
         res = [key for (key, value) in goods_ready_dict.iteritems() if value]
         where = [('id', 'in', res)]
         return where
@@ -372,7 +382,7 @@ class stock_picking(orm.Model):
         # 'weight_net': fields.float('Net weight', digits_compute=dp.get_precision('Stock Weight'), help="The net weight in Kg."),
         'customer_id': fields.related('sale_id', 'partner_id', type='many2one', relation='res.partner',
                                       string='Customer', readonly=True, store={
-                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id'], 6000),
+                                        'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['sale_id'], 6000),
                                         'sale.order': (_get_picking_sale, ['partner_id'], 6000),
                                         }),
         'order_type': fields.function(_get_order_type, string="Order Type", type="selection", selection=[
@@ -380,11 +390,11 @@ class stock_picking(orm.Model):
             ('internal', 'Internal'),
         ], readonly=True),
         'picked_rate': fields.function(_get_order_board_state, type='float', multi='order_state', string='Ready', store={
-                                           'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['state'], 5000),
+                                           'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['state'], 5000),
                                            'stock.move': (_get_picking_move, ['state'], 6000),
                                        }),
         'order_sent': fields.function(_get_order_board_state, type='boolean', multi='order_state', string='Order Sent', store={
-                                           'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['state'], 5000),
+                                           'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['state'], 5000),
                                            'stock.move': (_get_picking_move, ['state'], 6000),
                                        }),
         'order_ready': fields.boolean(string='Order Ready'),
@@ -394,52 +404,55 @@ class stock_picking(orm.Model):
         'city': fields.related('address_delivery_id', 'city', type='char', string='City', store=False),
         'province': fields.related('address_delivery_id', 'province', type='many2one', relation='res.province',
                                    string='Province', readonly=True, store={
-                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['address_delivery_id'], 6000),
+                                        'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['address_delivery_id'], 6000),
                                         'res.partner.address': (_get_picking_partner_address, ['province'], 6000),
                                         }),
 
         'region': fields.related('address_delivery_id', 'region', type='many2one', relation='res.region', string='Region',
                                  readonly=True, store={
-                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['address_delivery_id'], 6000),
+                                        'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['address_delivery_id'], 6000),
                                         'res.partner.address': (_get_picking_partner_address, ['region'], 6000),
                                         }),
         'agent': fields.related('customer_id', 'section_id', type='many2one', relation='crm.case.section',
                                 string='Agent', readonly=True, store={
-                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['customer_id'], 6000),
+                                        'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['customer_id'], 6000),
                                         'res.partner': (_get_picking_partner, ['section_id'], 6000),
                                         }),
         'sale_user_id': fields.related('sale_id', 'user_id', type='many2one', relation='res.users',
                                 string='Sale User', readonly=True, store={
-                'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id'], 6000),
-            }),
+                                    'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id'], 6000),
+                                }),
         'board_date': fields.related('sale_id', 'date_confirm', type='date', string='Order Board Delivery date'),
-        'amount_partial': fields.function(_get_amount_partial, type='float', string='Partial Amount (VAT Excluded)', readonly=True,
+        'amount_partial': fields.function(_get_amount_partial, type='float', string='Partial Amount (VAT Excluded)',
+                                          readonly=True,
                                           store=False),
         'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)',
                                        readonly=True,
                                        store={
-                                           'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id', 'state'], 5000),
+                                           'stock.picking': (
+                                           lambda self, cr, uid, ids, c=None: ids, ['sale_id', 'state'], 5000),
                                            'sale.order': (_get_picking_sale, ['amount_untaxed', 'state'], 6000),
                                        }),
-        'payment_term_id': fields.related('sale_id', 'payment_term', type='many2one', relation='account.payment.term', string="Payment Term"),
+        'payment_term_id': fields.related('sale_id', 'payment_term', type='many2one', relation='account.payment.term',
+                                          string="Payment Term"),
         'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number",
                                     store={
-                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id', 'max_date', 'state'], 5000),
+                                        'stock.picking': (
+                                        lambda self, cr, uid, ids, c=None: ids, ['sale_id', 'max_date', 'state'], 5000),
                                         'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 6000),
-                                        }),
-
-        'minimum_planned_date': fields.related('sale_id', 'minimum_planned_date', type='date', string='Expected Date',
-                                               store={
-                                                   'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id', 'max_date'], 500),
-                                                   'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 600),
-                                               }),
+                                    }),
+        'minimum_planned_date': fields.related(
+            'sale_id', 'minimum_planned_date', type='date', string='Expected Date',
+            store={
+                'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['sale_id', 'max_date'], 500),
+                'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 600),
+            }),
         'internal_note': fields.text('Internal Note'),
         'invoiced_state': fields.function(_get_invoiced_state, string="Invoice State", type='char'),
         'location_id': fields.related('move_lines', 'location_id', type='many2one', relation='stock.location',
                                       string='Location', readonly=True, auto_join=True),
         'location_dest_id': fields.related('move_lines', 'location_dest_id', type='many2one', relation='stock.location',
-                                           string='Destination Location', readonly=True, auto_join=True),
-
+                                           string='Destination Location', readonly=True, auto_join=True)
     }
 
     def check_limit(self, cr, uid, ids, context=None):
@@ -450,14 +463,14 @@ class stock_picking(orm.Model):
                     title = _(u'Credit Over Limit')
                     msg = _(u'Is not possible to confirm because customer exceed the credit limit.')
                     raise orm.except_orm(_(title), _(msg))
-                    return False
+                    # return False
                 if picking.company_id and picking.company_id.check_overdue and self.pool[
                     'sale.order'].partner_overdue_check(cr, uid, picking.company_id, picking.address_id.partner_id,
                                                         context):
                     title = _(u'Overdue Limit')
                     msg = _(u'Is not possible to confirm because customer have a overdue payment.')
                     raise orm.except_orm(_(title), _(msg))
-                    return False
+                    # return False
         return True
 
     def action_process(self, cr, uid, ids, context=None):
