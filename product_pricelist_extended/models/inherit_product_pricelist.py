@@ -130,6 +130,8 @@ class ProductPricelist(orm.Model):
         'partner_ids': fields.function(_get_partner, string='Partners', type='one2many', relation="res.partner",
                                        readonly=True, method=True, multi='get_partner'),
         'partner_num': fields.function(_get_partner, string='Partners number', type='integer', readonly=True, method=True, multi='get_partner'),
+
+        'member_ids': fields.many2many('res.users', 'product_pricelist_rel', 'product_pricelist_id', 'member_id', 'Team Members'),
     }
 
     def copy(self, cr, uid, ids, default, context=None):

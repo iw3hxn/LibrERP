@@ -2,7 +2,7 @@
 
 {
     'name': 'Product Pricelist Extended',
-    'version': "3.2.1.2",
+    'version': "3.3.2.3",
     'author': "Didotech SRL",
     'website': "http://www.didotech.com",
     'category': 'Sales Management',
@@ -13,9 +13,12 @@
     'license': 'AGPL-3',
     "depends": [
         'product',
+        'sale',
         'dt_product_pricelist_fixed_price',
+        'res_users_helper_functions'
     ],
     "data": [
+        'security/product_pricelist_security.xml',
         'views/product_product_view.xml',
         'views/product_pricelist_view.xml',
         'views/product_pricelist_item_view.xml',

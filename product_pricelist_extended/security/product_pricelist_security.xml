@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record id="group_only_my_pricelist" model="res.groups">
+            <field name="name">View Only my Pricelist</field>
+            <field name="category_id" ref="sale.module_category_sale"/>
+        </record>
+
+        <record id="rule_only_my_pricelist" model="ir.rule">
+            <field name="name">Only my Pricelist</field>
+            <field model="ir.model" name="model_id" ref="product.model_product_pricelist"/>
+            <field name="groups" eval="[(4, ref('group_only_my_pricelist'))]"/>
+
+            <field name="domain_force">['|', ('type', '=', 'purchase'), ('member_ids', 'in', [user.id])]</field>
+        </record>
+
+
+
+    </data>
+</openerp>
+
+
+
