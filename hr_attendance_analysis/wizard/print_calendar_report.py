@@ -107,7 +107,7 @@ class wizard_calendar_report(orm.TransientModel):
                 current_total_overtime = 0.0
                 current_total_leaves = 0.0
                 # If calendar is not specified: working days = 24/7
-                current_total_due = 24.0
+                current_total_due = 8.0
                 current_total_inside_calendar = 0.0
                 str_current_date = current_date.strftime('%Y-%m-%d')
                 days_by_employee[employee_id][str_current_date] = {
