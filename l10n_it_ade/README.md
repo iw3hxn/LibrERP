@@ -53,8 +53,10 @@ Per aggiungere nuovi schemi o modificare o aggiornare gli schemi gestiti:
 - Aggiungere o modificare gli schemi nella directory ./binding
 ### Linux CentOS
 - Eseguire da una macchina CentOS lo script ./pyxbgen.sh -u
+
 ### Le altre SO Unix-like
-    $ pyxbgen -u Schema_del_file_xml_FatturaPA_versione_1.2.1.xsd -m fatturapa_v_1_2_1
+
+    $ pyxbgen -u FatturaPA_versione_1.2.1.xsd -m fatturapa_v_1_2_1__1_2_4
 
 Example:
 
