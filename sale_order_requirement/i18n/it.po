@@ -201,6 +201,7 @@ msgstr "Fornitori"
 #. module: sale_order_requirement
 #: field:order.requirement.line,sale_order_id:0
 #: field:temp.mrp.bom,sale_order_id:0
+#: view:purchase.order:0
 msgid "Sale Order"
 msgstr "Ordine di Vendita"
 
@@ -735,4 +736,10 @@ msgstr "Riga"
 #. module: sale_order_requirement
 #: view:order.requirement:0
 msgid "View Purchase Order"
-msgstr "View Purchase Order"
+msgstr "Visualizza Ordini Acquisto"
+
+#. module: sale_order_requirement
+#: view:purchase.order:0
+#: field:purchase.order,customer_account_invoice_ids:0
+msgid "Customer Invoice"
+msgstr "Fatture Clienti"
