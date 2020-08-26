@@ -11,7 +11,7 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="pricelist_id" position="after">
-                        <group colspan="3" col="12" string="Stampa">
+                        <group colspan="4" col="12" string="Stampa">
                             <field name="view_total" invisible="1"/>
                             <button name="action_check_intro" string="Totali visualizzati" type="object" icon="gtk-yes"
                                     context="{ 'intro_id': 1}" colspan="2"
@@ -27,7 +27,6 @@
                             <button name="action_check_intro" string="Sconti nascosti" type="object" icon="gtk-no"
                                     context="{ 'intro_id': 2}" colspan="2"
                                     attrs="{'invisible': [('view_discount', '=', True)]}"/>
-                            <newline/>
                             <field name="view_price_unit" invisible="1"/>
                             <button name="action_check_intro" string="Lordo e netto" type="object" icon="gtk-yes"
                                     context="{ 'intro_id': 3}" colspan="2"
