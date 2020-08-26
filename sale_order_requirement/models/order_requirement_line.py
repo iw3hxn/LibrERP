@@ -1001,7 +1001,7 @@ class OrderRequirementLine(orm.Model):
                 'shop_id': shop_id,
                 'partner_id': supplier_id,
                 'location_id': location_id,
-                # 'sale_order_ids': [(4, sale_order_id)],
+                'sale_order_ids': [(4, sale_order_id)],
             })
 
             purchase_id = purchase_order_obj.create(cr, uid, purchase_order_values, context=ctx)

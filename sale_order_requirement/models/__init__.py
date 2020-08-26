@@ -4,6 +4,7 @@ from . import mrp_production
 from . import mrp_production_product_line
 from . import order_requirement
 from . import order_requirement_line
+from . import procurement_order
 from . import purchase_order
 from . import purchase_order_line
 from . import res_company

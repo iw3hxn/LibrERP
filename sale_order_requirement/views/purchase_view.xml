@@ -13,20 +13,39 @@
                         <field colspan="4" name="order_requirement_ids" nolabel="1" readonly="1"/>
                         <field colspan="4" name="order_requirement_line_ids" nolabel="1" readonly="1"/>
                         <field colspan="4" name="temp_mrp_bom_ids" nolabel="1" widget="many2many_tags" readonly="1">
-                        <!--<field colspan="4" name="temp_mrp_bom_ids" nolabel="1" readonly="1">-->
+                            <!--<field colspan="4" name="temp_mrp_bom_ids" nolabel="1" readonly="1">-->
                             <!--<tree string="Sale Order lines">-->
-                                <!--<field name="sale_order_id"/>-->
-                                <!--<field name="product_qty"/>-->
-                                <!--<field name="product_uom"/>-->
+                            <!--<field name="sale_order_id"/>-->
+                            <!--<field name="product_qty"/>-->
+                            <!--<field name="product_uom"/>-->
                             <!--</tree>-->
                             <!--<form string="Sale Order lines">-->
-                                <!--<field name="sale_order_id"/>-->
-                                <!--<field name="product_qty"/>-->
-                                <!--<field name="product_uom"/>-->
+                            <!--<field name="sale_order_id"/>-->
+                            <!--<field name="product_qty"/>-->
+                            <!--<field name="product_uom"/>-->
                             <!--</form>-->
                         </field>
                     </page>
                 </notebook>
+            </field>
+        </record>
+
+        <record id="purchase_order_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="model">purchase.order</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="invoice_ids" position="after">
+                    <separator string="Sale Order" colspan="4"/>
+                    <newline/>
+                    <field name="sale_order_ids" readonly="1" nolabel="1" colspan="4"
+                           groups="base.group_sale_salesman"/>
+                    <separator string="Customer Invoice" colspan="4"/>
+                    <newline/>
+                    <field name="customer_account_invoice_ids" readonly="1" nolabel="1" colspan="4"
+                           groups="account.group_customer_account_invoice"/>
+                </field>
             </field>
         </record>
 
