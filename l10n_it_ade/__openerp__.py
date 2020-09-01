@@ -9,7 +9,7 @@
 {
     'name': 'Definizioni di Base Agenzia delle Entrate',
     'summary': 'Codice con le definizioni dei file xml Agenzia delle Entrate',
-    'version': '6.1.1.3.12',
+    'version': '6.1.2.4.13',
     'category': 'Localization/Italy',
     'author': 'SHS-AV s.r.l.,'
               ' Odoo Italia Associazione',
@@ -20,6 +20,7 @@
         'data/italy_ade_codice_carica.xml',
         'data/italy_ade_invoice_type.xml',
         'data/italy_ade_tax_nature.xml',
+        'data/italy_ade_payment_reason.xml',
         'views/ir_ui_menu.xml',
         'views/codice_carica_view.xml',
         'views/invoice_type_view.xml',
