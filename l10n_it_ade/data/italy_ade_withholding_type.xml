@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!-- FatturaPA Ritenuta di acconto -->
+        <record id="fatturapa_RT01" model="italy.ade.withholding.type">
+            <field name="code">RT01</field>
+            <field name="name">Ritenuta di acconto persone fisiche</field>
+            <field name="active">True</field>
+        </record>
+        <record id="fatturapa_RT02" model="italy.ade.withholding.type">
+            <field name="code">RT02</field>
+            <field name="name">Ritenuta di acconto persone giuridiche</field>
+            <field name="active">True</field>
+        </record>
+        <record id="fatturapa_RT03" model="italy.ade.withholding.type">
+            <field name="code">RT03</field>
+            <field name="name">Contributo INPS</field>
+            <field name="active">True</field>
+        </record>
+        <record id="fatturapa_RT04" model="italy.ade.withholding.type">
+            <field name="code">RT04</field>
+            <field name="name">Contributo ENASARCO</field>
+            <field name="active">True</field>
+        </record>
+        <record id="fatturapa_RT05" model="italy.ade.withholding.type">
+            <field name="code">RT05</field>
+            <field name="name">Contributo ENPAM</field>
+            <field name="active">True</field>
+        </record>
+        <record id="fatturapa_RT06" model="italy.ade.withholding.type">
+            <field name="code">RT06</field>
+            <field name="name">Altro contributo previdenziale</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</openerp>

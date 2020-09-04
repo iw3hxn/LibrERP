@@ -68,6 +68,7 @@ class AccountTax(orm.Model):
             'Law reference', size=100),
         'withholding_tax': fields.boolean("Ritenuta d'acconto"),
         'causale_pagamento_id': fields.selection(_payment_reason, string="Causale Ritenuta"),
+        'withholding_type_id': fields.many2one('italy.ade.withholding.type', string='Tipo Ritenuta'),
         'social_security': fields.boolean("Cassa Previdenziale"),
         'social_security_type': fields.selection(SOCIAL_SECURITY_TYPE, string='Tipo Cassa Previdenziale'),
         'amount_e_invoice': fields.integer(

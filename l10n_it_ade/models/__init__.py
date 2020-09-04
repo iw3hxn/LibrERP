@@ -12,3 +12,4 @@ from . import italy_ade_tax_nature
 from . import account_tax
 from . import account_journal
 from . import italy_ade_payment_reason
+from . import italy_ade_withholding_type
