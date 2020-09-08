@@ -148,6 +148,12 @@
             <field name="inherit_id" ref="project_issue.project_issue_form_view" />
             <field name="type">form</field>
             <field name="arch" type="xml">
+
+                <!-- Add the "write_date" field -->
+                <field name="create_date" position="before">
+                    <field name="ordering_date"/>
+                </field>
+
                 <field name="project_id" position="attributes">
                     <attribute name="on_change">on_change_project(project_id, email_from)</attribute>
                 </field>

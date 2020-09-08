@@ -31,6 +31,8 @@ from openerp.tools.translate import _
 class ProjectIssue(orm.Model):
 
     _inherit = "project.issue"
+    _description = "Project Issue"
+    _order = "priority, ordering_date desc nulls last, create_date desc"
 
     def on_change_project(self, cr, uid, ids, project_id, email_from, context=None):
         if not project_id or not ids:
@@ -159,13 +161,24 @@ class ProjectIssue(orm.Model):
         return True
     # end silent_done
 
+    def _get_ordering_date(self, cr, uid, ids, field_name, arg, context):
+
+        result = dict()
+
+        for record_id in ids:
+            current_issue = self.pool['project.issue'].browse(cr, uid, ids, context=context)[0]
+            result[record_id] = current_issue.write_date or current_issue.create_date
+        # end for
+
+        return result
+    # end _get_ordering_date
+
     # def name_get(self, cr, uid, ids, context=None):
     #     if not ids:
     #         return []
     #     if isinstance(ids, (int, long)):
     #         ids = [ids]
     #     return [(x['id'], str(x.id)) for x in self.browse(cr, uid, ids, context=context)]
-
 
     # def case_close(self, cr, uid, ids, *args):
     #     """
@@ -184,6 +197,13 @@ class ProjectIssue(orm.Model):
         'work_ids': fields.one2many('project.task.work', 'issue_id', 'Work done'),
         'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),
         'status_id': fields.many2one(obj='project.issue.status', string='Status', required=False),
+        'ordering_date': fields.function(
+            _get_ordering_date,
+            type='datetime',
+            method=True,
+            string='Update Date',
+            readonly=True,
+            store=True
+        ),
     }
-
 # end ProjectIssue

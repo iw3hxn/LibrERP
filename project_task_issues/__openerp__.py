@@ -22,7 +22,7 @@
 ##############################################################################
 {
     'name': 'Project Task Issues',
-    'version': '3.2.4.8',
+    'version': '3.3.5.9',
     'category': 'Generic Modules/Projects & Services',
     'description': """Issues list associated to task. In the task form, you can see the issues related to that task
 		Create issues from tasks.""",
