@@ -21,7 +21,8 @@
                         <newline />
                         <group string="Ritenuta Acconto">
                             <field name="withholding_tax"/>
-                            <field name="causale_pagamento_id"/>
+                            <field name="causale_pagamento_id" attrs="{'invisible': [('withholding_tax', '=', False)]}"/>
+                            <field name="withholding_type_id" attrs="{'invisible': [('withholding_tax', '=', False)]}"/>
                         </group>
                         <newline />
                         <group string="Cassa Previdenziale">
