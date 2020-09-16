@@ -3,11 +3,11 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
 
-
+from tools.translate import _
 from openerp.osv import fields, orm
 
 
-class account_invoice(orm.Model):
+class AccountInvoice(orm.Model):
 
     _inherit = 'account.invoice'
 
@@ -23,7 +23,7 @@ class account_invoice(orm.Model):
         default.update({
             'to_pay': True,
         })
-        return super(account_invoice, self).copy(cr, uid, id, default, context)
+        return super(AccountInvoice, self).copy(cr, uid, id, default, context)
 
     def payment_approve(self, cr, uid, ids, context=None):
         '''
@@ -33,7 +33,8 @@ class account_invoice(orm.Model):
         '''
         context = context or self.pool['res.users'].context_get(cr, uid)
         self._update_blocked_payment(cr, uid, ids, False, context)
-
+        text = _("Approve payment")
+        self.message_append(cr, uid, ids, text, body_text=text, context=context)
         return self.write(cr, uid, ids, {'to_pay': True}, context)
 
     def payment_disapproves(self, cr, uid, ids, context=None):
@@ -44,7 +45,8 @@ class account_invoice(orm.Model):
         '''
         context = context or self.pool['res.users'].context_get(cr, uid)
         self._update_blocked_payment(cr, uid, ids, True, context)
-
+        text = _("Block payment")
+        self.message_append(cr, uid, ids, text, body_text=text, context=context)
         return self.write(cr, uid, ids, {'to_pay': False}, context=context)
 
     def _update_blocked_payment(self, cr, uid, ids, block, context):
@@ -57,4 +59,4 @@ class account_invoice(orm.Model):
             move_line_ids += account_move_line.search(cr, uid,
                                                       [('account_id', '=', account_id), ('partner_id', '=', partner_id),
                                                        ('move_id', '=', move_id)], context=context)
-        return account_move_line.write(cr, uid, move_line_ids, {'blocked': block}, context=context)
+        return account_move_line.write(cr, uid, list(set(move_line_ids)), {'blocked': block}, context=context)

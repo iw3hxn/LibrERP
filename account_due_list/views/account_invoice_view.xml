@@ -2,6 +2,27 @@
 <openerp>
     <data>
 
+        <record id="view_account_invoice_filter_by_year" model="ir.ui.view">
+            <field name="name">account.invoice.filter.by.year</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+
+                <filter name="unpaid" position="after">
+                    <separator orientation="vertical"/>
+                    <filter icon="terp-go-home"
+                            string="Blocked Payment"
+                            name="block_payment"
+                            help="Blocked Payment"
+                            domain="[('to_pay', '!=', True)]"
+                            invisible="context.get('type') != 'in_invoice'"
+                            groups="account_due_list.group_account_invoice_approve_manager"
+                    />
+                </filter>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="invoice_supplier_form_approve">
             <field name="name">invoice.supplier.form.approve</field>
             <field name="model">account.invoice</field>

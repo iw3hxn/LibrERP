@@ -218,7 +218,6 @@ class res_partner(orm.Model):
 
         return []
 
-
     def _search_overdue_debit_positive(self, cr, uid, obj, name, args, context=None):
         if args:
             current_date = time.strftime(DEFAULT_SERVER_DATE_FORMAT)

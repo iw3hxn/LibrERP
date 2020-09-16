@@ -595,3 +595,20 @@ msgstr "Descrizione"
 msgid "Contacts"
 msgstr "Contatti"
 
+#. module: account_due_list
+#: view:account.invoice:0
+msgid "Blocked Payment"
+msgstr "Pagamenti Bloccati"
+
+#. module: account_due_list
+#: code:addons/account_due_list/models/account_invoice.py:48
+#, python-format
+msgid "Block payment"
+msgstr "Bloccato il pagamento"
+
+#. module: account_due_list
+#: code:addons/account_due_list/models/account_invoice.py:36
+#, python-format
+msgid "Approve payment"
+msgstr "Approvato il pagamento"
+
