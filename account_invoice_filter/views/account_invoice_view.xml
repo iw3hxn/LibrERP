@@ -8,9 +8,9 @@
             <field name="inherit_id" ref="account.view_account_invoice_filter"/>
             <field name="type">search</field>
             <field name="arch" type="xml">
-                <field name="supplier_invoice_number" position="replace">
-                    <field name="supplier_invoice_number" invisible="context.get('type') != 'in_invoice'" />
-                </field>
+<!--                <field name="supplier_invoice_number" position="replace">-->
+<!--                    <field name="supplier_invoice_number" invisible="context.get('type') != 'in_invoice'" />-->
+<!--                </field>-->
                 <filter name="unpaid" position="after">
                     <separator orientation="vertical"/>
                     <filter icon="terp-go-month"
