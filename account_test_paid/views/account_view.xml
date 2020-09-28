@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="action_testpaid" model="ir.actions.server">
+            <field name="name">Test Paid</field>
+            <field name="model_id" ref="model_account_invoice"/>
+            <field name="state">code</field>
+            <field name="code">self.action_test_paid(cr, uid, context=context)</field>
+        </record>
+
+        <record id="menu_test_paid" model="ir.values">
+            <field name="object" eval="True" />
+            <field name="name">action test paid</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,%d'%action_testpaid" />
+            <field name="key">action</field>
+            <field name="model">account.invoice</field>
+        </record>
+    </data>
+</openerp>
