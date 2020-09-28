@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2018 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2018-2020 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -24,7 +24,7 @@
 
 {
     "name": "Core extended",
-    "version": "2.2.18.2",
+    "version": "2.2.19.3",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Base",
@@ -76,6 +76,7 @@
     "data": [
         'security/security.xml',
         'views/ir_model_view.xml',
+        'views/cron_view.xml'
     ],
 
     "active": False,
