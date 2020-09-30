@@ -26,7 +26,7 @@ class res_company(orm.Model):
 
     _inherit = 'res.company'
 
-    def write(self, cr, uid, ids, values, context={}):
+    def write(self, cr, uid, ids, values, context=None):
 
         if not ids:
             return False
