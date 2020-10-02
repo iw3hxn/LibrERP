@@ -5,6 +5,12 @@ access_italy_ade_invoice_type_manager,italy.ade.invoice.type.manager,model_italy
 access_italy_ade_invoice_type_user,italy.ade.invoice.type.user,model_italy_ade_invoice_type,account.group_account_user,1,0,0,0
 access_italy_ade_tax_nature_manager,italy.ade.tax.nature.manager,model_italy_ade_tax_nature,account.group_account_manager,1,1,1,1
 access_italy_ade_tax_nature_user,italy.ade.tax.nature.user,model_italy_ade_tax_nature,account.group_account_user,1,0,0,0
+access_italy_ade_tax_nature_sale,italy.ade.tax.nature.user.sale,model_italy_ade_tax_nature,base.group_sale_salesman,1,0,0,0
+access_italy_ade_tax_nature_sale_all,italy.ade.tax.nature.user.sale.all,model_italy_ade_tax_nature,base.group_sale_salesman_all_leads,1,0,0,0
+access_italy_ade_tax_nature_sale_manager,italy.ade.tax.nature.user.sale.manager,model_italy_ade_tax_nature,base.group_sale_manager,1,0,0,0
 access_italy_ade_payment_reason,italy.ade.payment.reason.user,model_italy_ade_payment_reason,account.group_account_user,1,0,0,0
+access_italy_ade_payment_reason_invoice,italy.ade.payment.reason.invoice,model_italy_ade_payment_reason,account.group_account_invoice,1,0,0,0
+access_italy_ade_payment_sale,italy.ade.payment.reason.sale,model_italy_ade_payment_reason,base.group_sale_salesman,1,0,0,0
+access_italy_ade_payment_sale_all,italy.ade.payment.reason.sale.all,model_italy_ade_payment_reason,base.group_sale_salesman_all_leads,1,0,0,0
+access_italy_ade_payment_sale_manager,italy.ade.payment.reason.sale.manager,model_italy_ade_payment_reason,base.group_sale_manager,1,0,0,0
 access_italy_ade_withholding_type,italy.ade.tax.withholding.type.user,model_italy_ade_withholding_type,account.group_account_user,1,0,0,0
-access_italy_ade_payment_reason,italy.ade.payment.reason.user,model_italy_ade_payment_reason,account.group_account_user,1,0,0,0
