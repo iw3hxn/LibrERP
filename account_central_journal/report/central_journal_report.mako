@@ -15,7 +15,8 @@
     .p_row {
         page-break-inside: avoid; 
         vertical-align:text-top;
-        height: 21px;
+/*        height: 21px; */
+        height: 18px;
         }
     .p_cell {
         overflow: hidden;
@@ -23,8 +24,9 @@
         }
     .p_text {
         color: black;
-        font-size: 9px;
-        font-family: "Courier New", Courier, monospace;
+        font-size: 7px;
+        font-family: Verdana, Geneva, sans-serif;
+/*        font-family: "Courier New", Courier, monospace; */
         }
     .p_cell_debit, .p_cell_credit {
         text-align: right;
@@ -139,7 +141,6 @@
                 <td class="p_cell p_cell_head"><span class="p_text">${ _("Date") }</span></td>
                 <td class="p_cell p_cell_head"><span class="p_text">${ _("Ref") }</span></td>
                 <td class="p_cell p_cell_head"><span class="p_text">${ _("Account move") }</span></td>
-                <td class="p_cell p_cell_head"><span class="p_text">${ _("Account code") }</span></td>
                 <td class="p_cell p_cell_head"><span class="p_text">${ _("Account name") }</span></td>
                 <td class="p_cell p_cell_head"><span class="p_text">${ _("Partner") }</span></td>
                 <td class="p_cell p_cell_head"><span class="p_text">${ _("Name") }</span></td>
@@ -148,7 +149,7 @@
             </tr>
 
             <tr class="p_row p_row_total p_row_total_up">
-                <td colspan="7"></td>
+                <td colspan="6"></td>
                 <td class="p_cell p_cell_progressive"><span class="p_text">${ _("Progressives =>") }</span></td>
                 <td class="p_cell p_cell_debit"><span class="p_text p_debit">${ formatLang(debit_tot, digits=get_digits(dp='Account')) |entity }</span></td>
                 <td class="p_cell p_cell_credit"><span class="p_text p_credit">${ formatLang(credit_tot, digits=get_digits(dp='Account')) |entity }</span></td>
@@ -157,12 +158,11 @@
         <tr class="p_row">
             <td class="p_cell p_cell_progr_row"><span class="p_text p_progr_row">${progr_row}</span></td>
             <td class="p_cell p_cell_date"><span class="p_text p_date">${ formatLang(line['date'], date=True) or ''|entity }</span></td>
-            <td class="p_cell p_cell_ref"><span class="p_text p_ref">${ line['ref'] or ''|entity }</span></td>
+            <td class="p_cell p_cell_ref"><span class="p_text p_ref">${ line['ref'] and line['ref'].replace('\n', '')[0:21].strip()  or ''|entity }</span></td>
             <td class="p_cell p_cell_move_id_name"><span class="p_text p_move_id_name">${ line['move_id'].name or ''|entity }</span></td>
-            <td class="p_cell p_cell_account_id_code"><span class="p_text p_account_id_code">${ get_account(line['account_id'].id)['code'] or ''|entity }</span></td>
-            <td class="p_cell p_cell_account_id_name"><span class="p_text p_account_id_name">${ get_account(line['account_id'].id)['name'] or ''|entity }</span></td>
-            <td class="p_cell p_cell_name"><span class="p_text p_name">${ line['partner_id'] and line['partner_id'].name or ''|entity }</span></td>
-            <td class="p_cell p_cell_name"><span class="p_text p_name">${ line['name'] or ''|entity }</span></td>
+            <td class="p_cell p_cell_account_id_name"><span class="p_text p_account_id_name">${ get_account(line['account_id'].id)['name'].replace('\n', '')[0:30].strip()  or ''|entity }</span></td>
+            <td class="p_cell p_cell_name"><span class="p_text p_name">${ line['partner_id'] and line['partner_id'].name.replace('\n', '')[0:21].strip()  or ''|entity }</span></td>
+            <td class="p_cell p_cell_name"><span class="p_text p_name">${ line['name'] and line['name'].replace('\n', '')[0:51].strip() or ''|entity }</span></td>
             <td class="p_cell p_cell_debit"><span class="p_text p_debit">${ formatLang(line['debit'], digits=get_digits(dp='Account')) |entity }</span></td>
             <td class="p_cell p_cell_credit"><span class="p_text p_credit">${ formatLang(line['credit'], digits=get_digits(dp='Account')) |entity }</span></td>
         </tr>
@@ -175,7 +175,7 @@
             new_page = True
             %>
             <tr class="p_row p_row_total p_row_total_down">
-            <td colspan="7"></td>
+            <td colspan="6"></td>
             <td class="p_cell p_cell_progressive"><span class="p_text">${ _("Progressives =>") }</span></td>
             <td class="p_cell p_cell_debit"><span class="p_text p_debit">${ formatLang(debit_tot, digits=get_digits(dp='Account')) |entity }</span></td>
             <td class="p_cell p_cell_credit"><span class="p_text p_credit">${ formatLang(credit_tot, digits=get_digits(dp='Account')) |entity }</span></td>
