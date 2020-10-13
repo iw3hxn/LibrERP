@@ -46,7 +46,7 @@ class account_invoice(orm.Model):
                         records[line.id] = []
                         records[line.id].append(line.date_maturity)
                         # res[invoice.id].append(line.id)
-                sorted_records = sorted(records.items(), reverse=True)
+                sorted_records = sorted(records.items(), key=lambda r: r[1])
                 for date in sorted_records:
                     res[invoice.id].append(date[0])
         return res
