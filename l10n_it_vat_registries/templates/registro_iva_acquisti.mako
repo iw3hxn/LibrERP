@@ -4,15 +4,19 @@
         ${css}
         .left_with_line {
             text-align:left; vertical-align:text-top; border-top:1px solid #000; padding:5px
+            word-break: break-all;
         }
         .right_with_line {
             text-align:right; vertical-align:text-top; border-top:1px solid #000; padding:5px
+            word-break: break-all;
         }
         .left_without_line {
             text-align:left; vertical-align:text-top; padding:5px
+            word-break: break-all;
         }
         .right_without_line {
             text-align:right; vertical-align:text-top; padding:6px
+            word-break: break-all;
         }
     </style>
 </head>
