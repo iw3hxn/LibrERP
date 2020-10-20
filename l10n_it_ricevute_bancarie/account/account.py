@@ -6,8 +6,8 @@
 #    Web site: http://www.andreacometa.it
 #    Copyright (C) 2012 Agile Business Group sagl (<http://www.agilebg.com>)
 #    Copyright (C) 2012 Domsense srl (<http://www.domsense.com>)
-#    Copyright (C) 2012 Associazione OpenERP Italia
-#    (<http://www.openerp-italia.org>).
+#    Copyright (C) 2012 Associazione OpenERP Italia (<http://www.openerp-italia.org>).
+#    Copyright (C) 2014-2020 Didotech SRL (<http://www.didotechsrl.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -184,9 +184,8 @@ class account_move_line(orm.Model):
                 account_move_line.id in ({move_ids})
         """.format(move_ids=', '.join([str(move_id) for move_id in ids])))
         val = cr.fetchall()
-
-        for el in val:
-            res[el[0]] = el[1]
+        if val:
+            return {el[0]: el[1] for el in val}
 
         return res
 
@@ -220,7 +219,7 @@ class account_move_line(orm.Model):
         'riba_bank_id': fields.function(_get_riba_bank_id, method=True, string="Bank Ri.Ba.", type="many2one", relation="riba.configurazione",
                                         store={
                                             'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['move_id'], 7000),
-                                            'account.invoice': (_get_move_lines_riba, ['payment_term', 'bank_riba_id'], 7000),
+                                            'account.invoice': (_get_move_lines_riba, ['payment_term', 'bank_riba_id', 'move_id'], 7000),
                                             'account.payment.term': (_get_riba_from_payment_term, ['riba'], 7000),
                                         }),
     }
