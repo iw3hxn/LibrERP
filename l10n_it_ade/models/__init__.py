@@ -7,7 +7,7 @@
 #
 #
 from . import italy_ade_codice_carica
-from . import italy_ade_invoice_type
+# from . import italy_ade_invoice_type  # duplicated in l10n_it_fattaurapa
 from . import italy_ade_tax_nature
 from . import italy_ade_withholding_type
 from . import italy_ade_payment_reason
