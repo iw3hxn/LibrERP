@@ -24,7 +24,7 @@
         'data/italy_ade_withholding_type.xml',
         'views/ir_ui_menu.xml',
         'views/codice_carica_view.xml',
-        'views/invoice_type_view.xml',
+        # 'views/invoice_type_view.xml', # duplicated in l10n_it_fattaurapa
         'views/tax_nature_view.xml',
         'views/account_tax_view.xml',
         'views/account_journal.xml',
