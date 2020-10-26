@@ -62,6 +62,7 @@ class report_balancesheet_horizontal(
             'get_filter': self._get_filter,
             'get_start_date': self._get_start_date,
             'get_end_date': self._get_end_date,
+            'get_display_account': self._get_display_account,
             'get_target_move': self._get_target_move,
         })
         self.context = context

@@ -117,6 +117,8 @@ msgstr "Nessun filtro"
 #: selection:account.bs.report,display_account:0
 #: selection:account.pl.report,display_account:0
 #: selection:account_financial_report_horizontal.common.account.report,display_account:0
+#: code:addons/account_financial_report_horizontal/report/common_report_header.py:84
+#, python-format
 msgid "With balance is not equal to 0"
 msgstr "Con saldo diverso da zero"
 
@@ -155,6 +157,8 @@ msgid "Start period"
 msgstr "Periodo di inizio"
 
 #. module: account_financial_report_horizontal
+#: report:account.balancesheet.horizontal:0
+#: report:account.profit_horizontal:0
 #: field:account.bs.report,target_move:0
 #: field:account.pl.report,target_move:0
 #: field:account_financial_report_horizontal.common.account.report,target_move:0
@@ -324,6 +328,8 @@ msgstr "Totale"
 #: selection:account.bs.report,display_account:0
 #: selection:account.pl.report,display_account:0
 #: selection:account_financial_report_horizontal.common.account.report,display_account:0
+#: code:addons/account_financial_report_horizontal/report/common_report_header.py:83
+#, python-format
 msgid "With movements"
 msgstr "Con movimenti"
 
@@ -388,6 +394,8 @@ msgid "Landscape Mode"
 msgstr "Modalità Orizzontale"
 
 #. module: account_financial_report_horizontal
+#: report:account.balancesheet.horizontal:0
+#: report:account.profit_horizontal:0
 #: field:account.bs.report,display_account:0
 #: field:account.pl.report,display_account:0
 #: field:account_financial_report_horizontal.common.account.report,display_account:0

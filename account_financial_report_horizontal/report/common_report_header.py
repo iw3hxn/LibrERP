@@ -75,6 +75,14 @@ class common_report_header(object):
                 return _('Periods')
         return _('No Filter')
 
+    def _get_display_account(self, data):
+        if data.get('form', False) and data['form'].get('display_account', False):
+            if data['form']['display_account'] == 'bal_all':
+                return _('All')
+            elif data['form']['display_account'] == 'bal_movement':
+                return _('With movements')
+        return _('With balance is not equal to 0')
+
     def _get_fiscalyear(self, data):
         if data.get('form', False) and data['form'].get(
             'fiscalyear_id', False
