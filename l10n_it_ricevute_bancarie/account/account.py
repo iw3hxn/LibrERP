@@ -185,7 +185,7 @@ class account_move_line(orm.Model):
         """.format(move_ids=', '.join([str(move_id) for move_id in ids])))
         val = cr.fetchall()
         if val:
-            return {el[0]: el[1] for el in val}
+            res.update({el[0]: el[1] for el in val})
 
         return res
 

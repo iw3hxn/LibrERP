@@ -26,7 +26,7 @@
 
 {
     "name": "Ricevute Bancarie",
-    "version": "2.14.36.32",
+    "version": "2.14.37.32",
     "author": "OpenERP Italian Community",
     "category": "Accounting & Finance",
     "website": "http://www.openerp-italia.org",
