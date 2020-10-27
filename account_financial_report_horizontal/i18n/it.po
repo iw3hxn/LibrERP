@@ -337,6 +337,8 @@ msgstr "Con movimenti"
 #: selection:account.bs.report,display_account:0
 #: selection:account.pl.report,display_account:0
 #: selection:account_financial_report_horizontal.common.account.report,display_account:0
+#: code:addons/account_financial_report_horizontal/report/common_report_header.py:81
+#, python-format
 msgid "All"
 msgstr "Tutti"
 
