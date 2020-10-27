@@ -1004,7 +1004,8 @@ Namespace.addCategoryObject('typeBinding', 'EmailType', EmailType)
 
 
 # Atomic simple type: {http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2}PesoType
-class PesoType(pyxb.binding.datatypes.decimal):
+# class PesoType(pyxb.binding.datatypes.decimal):
+class PesoType(pyxb.binding.datatypes.string):
     """An atomic simple type."""
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'PesoType')
@@ -1019,7 +1020,8 @@ Namespace.addCategoryObject('typeBinding', 'PesoType', PesoType)
 
 
 # Atomic simple type: {http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2}Amount8DecimalType
-class Amount8DecimalType(pyxb.binding.datatypes.decimal):
+# class Amount8DecimalType(pyxb.binding.datatypes.decimal):
+class Amount8DecimalType(pyxb.binding.datatypes.string):
     """An atomic simple type."""
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'Amount8DecimalType')
@@ -1034,7 +1036,8 @@ Namespace.addCategoryObject('typeBinding', 'Amount8DecimalType', Amount8DecimalT
 
 
 # Atomic simple type: {http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2}Amount2DecimalType
-class Amount2DecimalType(pyxb.binding.datatypes.decimal):
+# class Amount2DecimalType(pyxb.binding.datatypes.decimal):
+class Amount2DecimalType(pyxb.binding.datatypes.string):
     """An atomic simple type."""
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'Amount2DecimalType')
@@ -1049,7 +1052,8 @@ Namespace.addCategoryObject('typeBinding', 'Amount2DecimalType', Amount2DecimalT
 
 
 # Atomic simple type: {http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2}RateType
-class RateType(pyxb.binding.datatypes.decimal):
+# class RateType(pyxb.binding.datatypes.decimal):
+class RateType (pyxb.binding.datatypes.string):
     """An atomic simple type."""
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'RateType')
@@ -1057,12 +1061,13 @@ class RateType(pyxb.binding.datatypes.decimal):
     _Documentation = None
 
 
-RateType._CF_maxInclusive = pyxb.binding.facets.CF_maxInclusive(value_datatype=RateType,
-                                                                value=pyxb.binding.datatypes.decimal('100.0'))
+# RateType._CF_maxInclusive = pyxb.binding.facets.CF_maxInclusive(value_datatype=RateType,
+#                                                                 value=pyxb.binding.datatypes.decimal('100.0'))
 RateType._CF_pattern = pyxb.binding.facets.CF_pattern()
 RateType._CF_pattern.addPattern(pattern='[0-9]{1,3}\\.[0-9]{2}')
-RateType._InitializeFacetMap(RateType._CF_maxInclusive,
-                             RateType._CF_pattern)
+# RateType._InitializeFacetMap(RateType._CF_maxInclusive,
+#                              RateType._CF_pattern)
+RateType._InitializeFacetMap(RateType._CF_pattern)
 Namespace.addCategoryObject('typeBinding', 'RateType', RateType)
 
 
@@ -1184,7 +1189,8 @@ Namespace.addCategoryObject('typeBinding', 'GiorniTerminePagamentoType', GiorniT
 
 
 # Atomic simple type: {http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2}QuantitaType
-class QuantitaType(pyxb.binding.datatypes.decimal):
+# class QuantitaType(pyxb.binding.datatypes.decimal):
+class QuantitaType(pyxb.binding.datatypes.string):
     """An atomic simple type."""
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'QuantitaType')

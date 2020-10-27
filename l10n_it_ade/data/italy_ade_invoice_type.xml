@@ -47,44 +47,29 @@
         <field name="help">Documento (a volte chiamato notula) emesso da un libero professionista per prestazioni effettuate.</field>
         <field name="active">1</field>
     </record>
-    <record id="fatturapa_TD07" model="italy.ade.invoice.type">
-        <field name="code">TD07</field>
-        <field name="name">Fattura semplificata</field>
-        <field name="scope">IT,out_invoice,Out_refund</field>
-        <field name="help">Documento semplificato in cui è sufficiente inserire la partita IVA senza i dettagli anagrafici del cliente.
-               Usata ad esempio nella ristorazione.</field>
-        <field name="active">1</field>
+    <record id="fatturapa_TD16" model="fatturapa.document_type">
+        <field name="code">TD16</field>
+        <field name="name">Integrazione fattura reverse charge interno</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
     </record>
-    <record id="fatturapa_TD08" model="italy.ade.invoice.type">
-        <field name="code">TD08</field>
-        <field name="name">Nota di credito semplificata</field>
-        <field name="scope">IT,out_refund,Out_invoice</field>
-        <field name="help">Documento emesso per rettificare totalmente o parzialmente importi precedentemente con una fattura semplificata;
-               è sufficiente inserire la partita IVA senza i dettagli anagrafici del cliente.</field>
-        <field name="active">1</field>
+    <record id="fatturapa_TD17" model="fatturapa.document_type">
+        <field name="code">TD17</field>
+        <field name="name">Integrazione/autofattura per acquisto servizi dall'estero</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
     </record>
-    <record id="fatturapa_TD10" model="italy.ade.invoice.type">
-        <field name="code">TD10</field>
-        <field name="name">Fattura di acquisto intracomunitario beni</field>
-        <field name="scope">EU,in_invoice</field>
-        <field name="help">Documento ricevuto da un fornitore della UE per l'acquisto di beni.
-               Deve essere registrata con la procedura di integrazione.</field>
-        <field name="active">1</field>
+    <record id="fatturapa_TD18" model="fatturapa.document_type">
+        <field name="code">TD18</field>
+        <field name="name">Integrazione per acquisto di beni intracomunitari</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
     </record>
-    <record id="fatturapa_TD11" model="italy.ade.invoice.type">
-        <field name="code">TD11</field>
-        <field name="name">Fattura di acquisto intracomunitario servizi</field>
-        <field name="scope">EU,in_invoice</field>
-        <field name="help">Documento ricevuto da un fornitore della UE per l'acquisto di servizi.
-               Deve essere registrata con la procedura di integrazione.</field>
-        <field name="active">1</field>
-    </record>
-    <record id="fatturapa_TD12" model="italy.ade.invoice.type">
-        <field name="code">TD12</field>
-        <field name="name">Documento riepilogativo (art.6, DPR 695/1996)</field>
-        <field name="scope">IT,in_invoice</field>
-        <field name="help">Riepilogo di fatture da fornitore per importi inferiori a 300€.</field>
-        <field name="active">1</field>
+    <record id="fatturapa_TD19" model="fatturapa.document_type">
+        <field name="code">TD19</field>
+        <field name="name">Integrazione/autofattura per acquisto di beni ex art.17 c.2 DPR 633/72</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
     </record>
     <record id="fatturapa_TD20" model="italy.ade.invoice.type">
         <field name="code">TD20</field>
@@ -92,6 +77,48 @@
         <field name="scope">IT,out_invoice</field>
         <field name="help">Documento auto emesso.</field>
         <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD21" model="fatturapa.document_type">
+        <field name="code">TD21</field>
+        <field name="name">Autofattura per splafonamento</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
+    </record>
+    <record id="fatturapa_TD22" model="fatturapa.document_type">
+        <field name="code">TD22</field>
+        <field name="name">Estrazione benida Deposito IVA</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
+    </record>
+    <record id="fatturapa_TD23" model="fatturapa.document_type">
+        <field name="code">TD23</field>
+        <field name="name">Estrazione beni da Deposito IVA con versamento dell'IVA</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
+    </record>
+    <record id="fatturapa_TD24" model="fatturapa.document_type">
+        <field name="code">TD24</field>
+        <field name="name">Fattura differita di cui all'art.21, comma 4, lett. a)</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
+    </record>
+    <record id="fatturapa_TD25" model="fatturapa.document_type">
+        <field name="code">TD25</field>
+        <field name="name">Fattura differita di cui all'art.21, comma 4, terzo periodo lett. b)</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
+    </record>
+    <record id="fatturapa_TD26" model="fatturapa.document_type">
+        <field name="code">TD26</field>
+        <field name="name">Cessione di beni ammortizzabili e per passaggi interni (ex art.36 DPR 633/72)</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
+    </record>
+    <record id="fatturapa_TD27" model="fatturapa.document_type">
+        <field name="code">TD27</field>
+        <field name="name">Fattura per autoconsumo o per cessioni gratuite senza rivalsa</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="active">True</field>
     </record>
 
 </data>
