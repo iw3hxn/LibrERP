@@ -25,3 +25,10 @@ class WithholdingType(orm.Model):
         'active': True
     }
     _order = 'code'
+
+    def get_withholding_type(self, cr, uid, context=None):
+        withholding_type_ids = self.search(cr, uid, [('active', '=', True)], context=context)
+        return [
+            (withholding_type.code, withholding_type.name)
+            for withholding_type in self.browse(cr, uid, withholding_type_ids, context=context)
+        ]
