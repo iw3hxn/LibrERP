@@ -14,3 +14,6 @@ access_italy_ade_payment_sale,italy.ade.payment.reason.sale,model_italy_ade_paym
 access_italy_ade_payment_sale_all,italy.ade.payment.reason.sale.all,model_italy_ade_payment_reason,base.group_sale_salesman_all_leads,1,0,0,0
 access_italy_ade_payment_sale_manager,italy.ade.payment.reason.sale.manager,model_italy_ade_payment_reason,base.group_sale_manager,1,0,0,0
 access_italy_ade_withholding_type,italy.ade.tax.withholding.type.user,model_italy_ade_withholding_type,account.group_account_user,1,0,0,0
+access_italy_ade_withholding_type_sale_manager,italy.ade.tax.withholding.type.sale.manager,model_italy_ade_withholding_type,base.group_sale_manager,1,0,0,0
+access_italy_ade_withholding_type_salesman_all,italy.ade.tax.withholding.type.salesman.all,model_italy_ade_withholding_type,base.group_sale_salesman_all_leads,1,0,0,0
+access_italy_ade_withholding_type__account_invoice,italy.ade.tax.withholding.type.account.invoice,model_italy_ade_withholding_type,account.group_account_invoice,1,0,0,0
