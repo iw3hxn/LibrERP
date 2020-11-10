@@ -21,7 +21,7 @@
 
 {
     "name": "Sale Order Section",
-    "version": "3.0.0.4",
+    "version": "3.1.0.4",
     "author": "Didotech SRL",
     "category": 'Sales Management',
     'complexity': "normal",
@@ -30,7 +30,8 @@
     """,
     'website': 'http://www.didotech.com',
     "depends": [
-        "sale",
+        'sale',
+        'sale_margin',
         'one2many_sorted',
         'project_extended',
     ],
