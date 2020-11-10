@@ -78,7 +78,7 @@ class sale_order(orm.Model):
                     if order_line.product_id and order_line.product_id.type != 'service':
                         return False
             elif not service:
-                    return False
+                return False
         return True
 
     def hook_sale_state(self, cr, uid, orders, vals, context):
