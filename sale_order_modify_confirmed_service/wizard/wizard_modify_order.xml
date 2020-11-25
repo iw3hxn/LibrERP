@@ -24,7 +24,7 @@
                             <tree string="Order Line" editable="bottom">
                                 <field name="name" invisible="1"/>
                                 <field name="product_id" attrs="{'readonly': [('line_id', '!=', False)]}"/>
-                                <field name="price_unit" />
+                                <field name="price_unit" attrs="{'readonly': [('line_id', '!=', False)]}"/>
                                 <field name="discount" attrs="{'readonly': [('line_id', '!=', False)]}"/>
                                 <field name="line_id" invisible="1" />
                                 <field name="purchase_price" />
