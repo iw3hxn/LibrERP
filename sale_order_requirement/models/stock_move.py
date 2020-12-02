@@ -26,8 +26,8 @@ class StockMove(orm.Model):
         user = self.pool['res.users'].browse(cr, uid, uid, context)
 
         if user.company_id.auto_production:
-            mrp_production_obj = self.pool['mrp.production']
-            order_requirement_line_obj = self.pool['order.requirement.line']
+            mrp_production_model = self.pool['mrp.production']
+            order_requirement_line_model = self.pool['order.requirement.line']
             wf_service = netsvc.LocalService("workflow")
             for stock_move in self.browse(cr, uid, stock_move_ids, context):
                 for mrp_production in stock_move.production_order_ids:
@@ -36,7 +36,7 @@ class StockMove(orm.Model):
                         wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'button_confirm', cr)
                         wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'force_production', cr)
                         wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'button_produce', cr)
-                        mrp_production_obj.action_produce(cr, uid, mrp_production.id, mrp_production.product_qty,
+                        mrp_production_model.action_produce(cr, uid, mrp_production.id, mrp_production.product_qty,
                                                           'consume_produce', context=context)
             return True
         return False
@@ -75,8 +75,8 @@ class StockMove(orm.Model):
     def _line_ready(self, cr, uid, ids, field_name, arg, context=None):
         res = dict.fromkeys(ids, False)
 
-        order_requirement_line_obj = self.pool['order.requirement.line']
-        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        order_requirement_line_model = self.pool['order.requirement.line']
+        temp_mrp_bom_model = self.pool['temp.mrp.bom']
         stock_move_confirmed_ids = self.search(cr, uid, [('state', 'in', ['assigned', 'done']), ('id', 'in', ids)], context=context)
         for stock_id in stock_move_confirmed_ids:
             res[stock_id] = True
@@ -88,12 +88,12 @@ class StockMove(orm.Model):
             # sale_id = stock_move.sale_id and stock_move.sale_id.id or False
             sale_order_line_id = stock_move['sale_line_id'] and stock_move['sale_line_id'][0] or False
             if True:
-                order_requirement_line_ids = order_requirement_line_obj.search(cr, uid, [('sale_order_line_id', '=', sale_order_line_id)], context=context)
-                temp_mrp_bom_ids = temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id', 'in', order_requirement_line_ids), ('mrp_production_id', '!=', False)], context=context)
+                order_requirement_line_ids = order_requirement_line_model.search(cr, uid, [('sale_order_line_id', '=', sale_order_line_id)], context=context)
+                temp_mrp_bom_ids = temp_mrp_bom_model.search(cr, uid, [('order_requirement_line_id', 'in', order_requirement_line_ids), ('mrp_production_id', '!=', False)], context=context)
                 # if not temp_mrp_bom_ids:  # if not exist production order means that is a normal product
                 #     if stock_move.state == 'assigned':
                 #         res[stock_move.id] = True
-                for temp_mrp_bom in temp_mrp_bom_obj.browse(cr, uid, temp_mrp_bom_ids, context):
+                for temp_mrp_bom in temp_mrp_bom_model.browse(cr, uid, temp_mrp_bom_ids, context):
                     res[stock_move['id']] = True
                     if temp_mrp_bom.mrp_production_id and temp_mrp_bom.mrp_production_id.state != 'done':
                         res[stock_move['id']] = False
@@ -103,18 +103,18 @@ class StockMove(orm.Model):
     def _purchase_orders_approved(self, cr, uid, ids, name, args, context=None):
         # Get the order approved by order requirement line, from sale order id
         context = context or self.pool['res.users'].context_get(cr, uid)
-        ordreqline_obj = self.pool['order.requirement.line']
+        ordreqline_model = self.pool['order.requirement.line']
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             done = 0
             tot = 0
             try:
-                ordreqline_ids = ordreqline_obj.search(cr, uid, [('sale_order_id', '=', line.sale_id.id),
+                ordreqline_ids = ordreqline_model.search(cr, uid, [('sale_order_id', '=', line.sale_id.id),
                                                                  ('new_product_id', '=', line.product_id.id)],
                                                        context=context)
                 # Maybe useless, but is generic, it supports eventually multiple lines
-                for ordreqline in ordreqline_obj.browse(cr, uid, ordreqline_ids, context):
-                    d, t = ordreqline_obj.get_purchase_orders_approved(ordreqline)
+                for ordreqline in ordreqline_model.browse(cr, uid, ordreqline_ids, context):
+                    d, t = ordreqline_model.get_purchase_orders_approved(ordreqline)
                     done += d
                     tot += t
                 state_str = ''
@@ -129,18 +129,18 @@ class StockMove(orm.Model):
     def _purchase_orders_state(self, cr, uid, ids, name, args, context=None):
         # Get the order state by order requirement line, from sale order id
         context = context or self.pool['res.users'].context_get(cr, uid)
-        ordreqline_obj = self.pool['order.requirement.line']
+        ordreqline_model = self.pool['order.requirement.line']
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             done = 0
             tot = 0
             try:
-                ordreqline_ids = ordreqline_obj.search(cr, uid, [('sale_order_id', '=', line.sale_id.id),
+                ordreqline_ids = ordreqline_model.search(cr, uid, [('sale_order_id', '=', line.sale_id.id),
                                                                  ('new_product_id', '=', line.product_id.id)],
                                                        context=context)
                 # Maybe useless, but is generic, it supports eventually multiple lines
-                for ordreqline in ordreqline_obj.browse(cr, uid, ordreqline_ids, context):
-                    d, t = ordreqline_obj.get_purchase_orders_state(ordreqline)
+                for ordreqline in ordreqline_model.browse(cr, uid, ordreqline_ids, context):
+                    d, t = ordreqline_model.get_purchase_orders_state(ordreqline)
                     done += d
                     tot += t
                 state_str = ''
@@ -156,17 +156,17 @@ class StockMove(orm.Model):
     def _purchase_orders(self, cr, uid, ids, name, args, context=None):
         # Get the order state by order requirement line, from sale order id
         context = context or self.pool['res.users'].context_get(cr, uid)
-        ordreqline_obj = self.pool['order.requirement.line']
+        ordreqline_model = self.pool['order.requirement.line']
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             state_str = ''
             purchase_orders_state = ''
 
             try:
-                ordreqline_ids = ordreqline_obj.search(cr, uid, [('sale_order_line_id', '=', line.sale_line_id.id), ('new_product_id', '=', line.product_id.id)], context=context)
+                ordreqline_ids = ordreqline_model.search(cr, uid, [('sale_order_line_id', '=', line.sale_line_id.id), ('new_product_id', '=', line.product_id.id)], context=context)
 
                 # Maybe useless, but is generic, it supports eventually multiple lines
-                ordreqlines = ordreqline_obj.browse(cr, uid, ordreqline_ids, context)
+                ordreqlines = ordreqline_model.browse(cr, uid, ordreqline_ids, context)
 
                 done = 0
                 tot = 0
@@ -175,11 +175,11 @@ class StockMove(orm.Model):
                 tot_approved = 0
 
                 for ordreqline in ordreqlines:
-                    d, t = ordreqline_obj.get_purchase_orders_state(ordreqline)
+                    d, t = ordreqline_model.get_purchase_orders_state(ordreqline)
                     done += d
                     tot += t
 
-                    d_approved, t_approved = ordreqline_obj.get_purchase_orders_approved(ordreqline)
+                    d_approved, t_approved = ordreqline_model.get_purchase_orders_approved(ordreqline)
                     done_approved += d_approved
                     tot_approved += t_approved
 
@@ -216,7 +216,7 @@ class StockMove(orm.Model):
     def _get_production_order(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
-        order_requirement_line_obj = self.pool['order.requirement.line']
+        order_requirement_line_model = self.pool['order.requirement.line']
 
         for stock_move in self.browse(cr, uid, ids, context):
             mrp_production_ids = []
@@ -226,8 +226,8 @@ class StockMove(orm.Model):
             tot = 0
             state_str = ''
             if sale_id and sale_order_line_id:
-                order_requirement_line_ids = order_requirement_line_obj.search(cr, uid, [('sale_order_line_id', '=', sale_order_line_id)], context=context)
-                for order_requirement_line in order_requirement_line_obj.browse(cr, uid, order_requirement_line_ids, context):
+                order_requirement_line_ids = order_requirement_line_model.search(cr, uid, [('sale_order_line_id', '=', sale_order_line_id)], context=context)
+                for order_requirement_line in order_requirement_line_model.browse(cr, uid, order_requirement_line_ids, context):
                     for temp in order_requirement_line.temp_mrp_bom_ids:
                         mrp_production = temp.mrp_production_id or False
                         if mrp_production:
@@ -265,8 +265,8 @@ class StockMove(orm.Model):
     }
 
     def print_production_order(self, cr, uid, ids, context):
-        order_requirement_line_obj = self.pool['order.requirement.line']
-        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        order_requirement_line_model = self.pool['order.requirement.line']
+        temp_mrp_bom_model = self.pool['temp.mrp.bom']
 
         production_ids = []
         for stock_move in self.browse(cr, uid, ids, context):
@@ -274,24 +274,24 @@ class StockMove(orm.Model):
             sale_id = stock_move.sale_id and stock_move.sale_id.id or False
             sale_order_line_id = stock_move.sale_line_id and stock_move.sale_line_id.id or False
             if sale_id and sale_order_line_id:
-                order_requirement_line_ids = order_requirement_line_obj.search(cr, uid, [
+                order_requirement_line_ids = order_requirement_line_model.search(cr, uid, [
                     ('sale_order_line_id', '=', sale_order_line_id)], context=context)
-                temp_mrp_bom_ids = temp_mrp_bom_obj.search(cr, uid, [
+                temp_mrp_bom_ids = temp_mrp_bom_model.search(cr, uid, [
                     ('order_requirement_line_id', 'in', order_requirement_line_ids),
                     ('mrp_production_id', '!=', False)], context=context)
-                for temp_mrp_bom in temp_mrp_bom_obj.browse(cr, uid, temp_mrp_bom_ids, context):
+                for temp_mrp_bom in temp_mrp_bom_model.browse(cr, uid, temp_mrp_bom_ids, context):
                     if temp_mrp_bom.mrp_production_id:
                         production_ids.append(temp_mrp_bom.mrp_production_id.id)
 
         return self.pool['account.invoice'].print_report(cr, uid, production_ids, 'mrp.report_mrp_production_report', context)
 
     def print_bom_explode(self, cr, uid, ids, context):
-        mrp_bom_obj = self.pool['mrp.bom']
+        mrp_bom_model = self.pool['mrp.bom']
         product_ids = []
         for stock_move in self.browse(cr, uid, ids, context):
             if stock_move.product_id:
                 product_ids.append(stock_move.product_id.id)
-        bom_ids = mrp_bom_obj.search(cr, uid, [('product_id', 'in', product_ids)], context=context)
+        bom_ids = mrp_bom_model.search(cr, uid, [('product_id', 'in', product_ids)], context=context)
         return self.pool['account.invoice'].print_report(cr, uid, bom_ids, 'mrp.report_bom_structure', context)
 
     def action_view_bom(self, cr, uid, ids, context=None):
@@ -327,13 +327,13 @@ class StockMove(orm.Model):
 
     def remove_from_production(self, cr, uid, ids, context=None):
         context['call_unlink'] = True
-        mrp_production_obj = self.pool['mrp.production']
+        mrp_production_model = self.pool['mrp.production']
         production = None
 
         try:
             picking_id = self.browse(cr, uid, ids[0], context).picking_id.id
-            production_id = mrp_production_obj.search(cr, uid, [('picking_id', '=', picking_id)])[0]
-            production = mrp_production_obj.browse(cr, uid, production_id, context)
+            production_id = mrp_production_model.search(cr, uid, [('picking_id', '=', picking_id)])[0]
+            production = mrp_production_model.browse(cr, uid, production_id, context)
         except:
             pass
 

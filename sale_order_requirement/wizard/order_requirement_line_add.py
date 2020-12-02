@@ -8,7 +8,7 @@ from tools.translate import _
 
 class OrderRequirementLineAdd(orm.TransientModel):
     _name = "order.requirement.line.add"
-    _description = "Split in Production lots"
+    _description = "Add sale Order to line"
 
     def default_get(self, cr, uid, fields, context=None):
         if context is None:
@@ -19,16 +19,7 @@ class OrderRequirementLineAdd(orm.TransientModel):
             if 'order_id' in fields:
                 order_id = line.order_requirement_id.sale_order_id
                 res.update(order_id=order_id.id)
-        #     if 'product_id' in fields:
-        #         res.update({'product_id': move.product_id.id})
-        #     if 'product_uom' in fields:
-        #         res.update({'product_uom': move.product_uom.id})
-        #     if 'qty' in fields:
-        #         res.update({'qty': move.product_qty})
-        #     if 'use_exist' in fields:
-        #         res.update({'use_exist': (move.picking_id and move.picking_id.type=='out' and True) or False})
-        #     if 'location_id' in fields:
-        #         res.update({'location_id': move.location_id.id})
+
         return res
 
     def _get_order_line(self, cr, uid, context=None):

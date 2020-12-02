@@ -70,7 +70,7 @@ class mrp_production(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         super(mrp_production, self)._costs_generate(cr, uid, production, context)
         amount = 0.0
-        analytic_line_obj = self.pool['account.analytic.line']
+        analytic_line_model = self.pool['account.analytic.line']
         default_account = self.pool['ir.property'].get(cr, uid, 'property_account_expense_categ',
                                                            'product.category', context=context)
         for wc_line in production.workcenter_lines:
@@ -96,13 +96,13 @@ class mrp_production(orm.Model):
                         'unit_amount': wc_line.hour,
                         'product_uom_id': wc.product_id and wc.product_id.uom_id.id or False
                     }
-                    analytic_line_obj.create(cr, uid, analytic_line_vals, context)
+                    analytic_line_model.create(cr, uid, analytic_line_vals, context)
                 # Cost per cycle
                 value = wc_line.cycle * wc.costs_cycle
 
                 if value and account:
                     amount += value
-                    analytic_line_obj.create(cr, uid, {
+                    analytic_line_model.create(cr, uid, {
                         'name': wc_line.name + ' (C)',
                         'amount': -value,
                         'account_id': account.id,
@@ -138,10 +138,10 @@ class mrp_production(orm.Model):
         results = []
 
         # If production order was created by order requirement, behaviour is different
-        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-        uom_obj = self.pool['product.uom']
-        prod_line_obj = self.pool['mrp.production.product.line']
-        workcenter_line_obj = self.pool['mrp.production.workcenter.line']
+        temp_mrp_bom_model = self.pool['temp.mrp.bom']
+        uom_model = self.pool['product.uom']
+        prod_line_model = self.pool['mrp.production.product.line']
+        workcenter_line_model = self.pool['mrp.production.workcenter.line']
         for production in self.browse(cr, uid, ids, context):
             cr.execute('delete from mrp_production_product_line where production_id=%s', (production.id,))
             cr.execute('delete from mrp_production_workcenter_line where production_id=%s', (production.id,))
@@ -152,14 +152,14 @@ class mrp_production(orm.Model):
             if not (bom_point or bom_id):
                 _logger.error('action_compute: Production order %s does not have a bill of material.' % production.name)
                 raise orm.except_orm(_('Error'), _("Found a production order to enqueue to, but it does not have a bill of material: ") + production.name)
-            factor = uom_obj._compute_qty(cr, uid, production.product_uom.id, production.product_qty, bom_point.product_uom.id)
+            factor = uom_model._compute_qty(cr, uid, production.product_uom.id, production.product_qty, bom_point.product_uom.id)
             # Forcing routing_id to False, the lines are linked directly to temp_mrp_bom
-            res = temp_mrp_bom_obj._temp_mrp_bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, context)
+            res = temp_mrp_bom_model._temp_mrp_bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, context)
             results = res[0]
             results2 = res[1]
             for line in results:
                 line['production_id'] = production.id
-                prod_line_obj.create(cr, uid, line, context)
+                prod_line_model.create(cr, uid, line, context)
             if not results2 and production.routing_id:
                 bom_point = production.bom_id
                 original_bom_res = self.pool['mrp.bom']._bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, properties, routing_id=production.routing_id.id)
@@ -168,6 +168,6 @@ class mrp_production(orm.Model):
 
             for line in results2:
                 line['production_id'] = production.id
-                workcenter_line_obj.create(cr, uid, line, context)
+                workcenter_line_model.create(cr, uid, line, context)
         return len(results)
 

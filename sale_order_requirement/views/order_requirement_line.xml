@@ -87,11 +87,16 @@
                                         <field name="is_manufactured" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_leaf','=',True)]}"/>
                                         <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="terp-dolar" attrs="{'invisible': ['|',('level','=',0),('is_manufactured','=',True)]}"/>
                                         <field name="buy" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_manufactured','=',True)]}"/>
-                                        <field name="supplier_id" on_change="onchange_supplier_id(supplier_id, context)"
+                                        <field name="supplier_id" on_change="onchange_supplier_id(supplier_id, product_id, context)"
                                                attrs="{'required': [('is_manufactured', '=', False)],
                                                     'readonly': ['|',('is_manufactured', '=', True),
                                                                      ('product_type','!=','product'),
                                                                      ('level','=',0)]}"/>
+                                        <field name="purchase_order_line_id" domain="[('product_id', '=', product_id), ('partner_id', '=', supplier_id)]"
+                                               on_change="onchange_purchase_order_line_id(purchase_order_line_id, context)"
+                                               attrs="{'invisibile': [('supplier_id','=',False)]}" context="{'full_name': True}" />
+                                        <field name="purchase_order_id" invisible="1"/>
+
                                         <field name="supplier_ids" invisible="1"/>
                                         <!--<button name="update_supplier" string="Reload" type="object" icon="gtk-refresh" />-->
                                     </tree>
@@ -258,7 +263,7 @@
                     <field name="row_color" invisible="1"/>
                     <field name="user_id" />
                     <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in" attrs="{'invisible': [('has_bom','=',False)]}" />
-                    <field name="has_bom" />
+                    <field name="has_bom" invisible="1"/>
                     <field name="product_id"/>
                     <field name="new_product_id"/>
                     <field name="qty" sum="qty"/>
@@ -268,10 +273,12 @@
                     <field name="sale_order_line_id" invisible="1"/>
                     <button context="" name="%(action_add_sale_order_line)d" icon="gtk-add" type="action" help="Add Sale Order Line"
                             attrs="{'invisible': [('sale_order_line_id', '!=', False)]}"/>
-
+<!--                    <button context="" name="%(action_add_purchase_order_line)d" icon="gtk-disconnect" type="action" help="Add Purchase Order Line"-->
+<!--                            states="draft" />-->
                     <button context="" name="action_open_bom" icon="terp-mrp" type="object" help="Start to Work on BOM" states="draft" />
                     <button name="action_reload_bom" icon="gtk-refresh" type="object" help="Reload BOM"
-                            attrs="{'invisible': [('state','!=','draft')]}"/>
+                            attrs="{'invisible': ['|', ('state','!=','draft'), ('temp_mrp_bom_ids', '=', False)]}"/>
+                    <field name="temp_mrp_bom_ids" invisible="1"/>
                     <field name="production_orders_state"/>
                     <field name="purchase_orders_approved"/>
                     <field name="purchase_orders_state"/>

@@ -28,16 +28,16 @@ class PurchaseOrder(orm.Model):
     }
 
     def wkf_confirm_order(self, cr, uid, ids, context=None):
-        product_supplierinfo_obj = self.pool['product.supplierinfo']
+        product_supplierinfo_model = self.pool['product.supplierinfo']
         product_uom = self.pool['product.uom']
         for po in self.browse(cr, uid, ids, context=context):
             partner_id = po.partner_id.id
             for line in po.order_line:
                 qty = line.product_qty
                 product = line.product_id
-                supplierinfo_ids = product_supplierinfo_obj.search(cr, uid, [('name', '=', partner_id), ('product_id', '=', product.product_tmpl_id.id)])
+                supplierinfo_ids = product_supplierinfo_model.search(cr, uid, [('name', '=', partner_id), ('product_id', '=', product.product_tmpl_id.id)])
                 if supplierinfo_ids:
-                    supplierinfo = product_supplierinfo_obj.browse(cr, uid, supplierinfo_ids[0], context=context)
+                    supplierinfo = product_supplierinfo_model.browse(cr, uid, supplierinfo_ids[0], context=context)
                     uom_id = line.product_uom.id
                     min_qty = product_uom._compute_qty(cr, uid, supplierinfo.product_uom.id, supplierinfo.min_qty, to_uom_id=uom_id)
                     if qty < min_qty:  # If the supplier quantity is greater than entered from user, set minimal.

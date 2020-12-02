@@ -273,7 +273,17 @@ class temp_mrp_bom(orm.Model):
                 return True
         return False
 
-    def onchange_supplier_id(self, cr, uid, ids, supplier_id, context=None):
+    def onchange_purchase_order_line_id(self, cr, uid, ids, purchase_order_line_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        ret = {
+            'purchase_order_id': False
+        }
+        if purchase_order_line_id:
+            order_id = self.pool['purchase.order.line'].read(cr, uid, purchase_order_line_id, ['order_id'], context=context, load='_obj')['order_id']
+            ret['purchase_order_id'] = order_id
+        return {'value': ret}
+
+    def onchange_supplier_id(self, cr, uid, ids, supplier_id, product_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         ctx = context.copy()
         partner_obj = self.pool['res.partner']
