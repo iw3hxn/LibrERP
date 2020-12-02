@@ -1,6 +1,6 @@
 {
     "name": "Sale Order Requirement",
-    "version": "4.39.62.60",
+    "version": "4.39.62.61",
     "author": "Antonio Mignolli - Didotech SRL",
     "category": 'Sales Management',
     "description": """

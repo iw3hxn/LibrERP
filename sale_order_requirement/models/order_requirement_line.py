@@ -1099,15 +1099,15 @@ class OrderRequirementLine(orm.Model):
                 # Add qty to existing line
                 uom_model = self.pool['product.uom']
                 order_line_id = purchase_order_line_ids[0]
-                line = purchase_order_line_model.browse(cr, uid, order_line_id, context)
+                po_line = purchase_order_line_model.browse(cr, uid, order_line_id, context)
 
                 # Calculate qty according to UoM
-                qty = uom_model._compute_qty(cr, uid, uom_id, qty, line.product_uom.id)
+                qty = uom_model._compute_qty(cr, uid, uom_id, qty, po_line.product_uom.id)
 
                 if obj.purchase_order_line_id:
                     newqty = qty
                 else:
-                    newqty = qty + line.product_qty
+                    newqty = qty + po_line.product_qty
 
                 purchase_order_line_values = {
                     'product_qty': newqty,

@@ -94,7 +94,8 @@
                                                                      ('level','=',0)]}"/>
                                         <field name="purchase_order_line_id" domain="[('product_id', '=', product_id), ('partner_id', '=', supplier_id)]"
                                                on_change="onchange_purchase_order_line_id(purchase_order_line_id, context)"
-                                               attrs="{'invisibile': [('supplier_id','=',False)]}" context="{'full_name': True}" />
+                                               attrs="{'readonly': ['|', ('supplier_id','=',False), ('buy', '=', False)]}"
+                                               context="{'full_name': True}" />
                                         <field name="purchase_order_id" invisible="1"/>
 
                                         <field name="supplier_ids" invisible="1"/>
@@ -273,8 +274,6 @@
                     <field name="sale_order_line_id" invisible="1"/>
                     <button context="" name="%(action_add_sale_order_line)d" icon="gtk-add" type="action" help="Add Sale Order Line"
                             attrs="{'invisible': [('sale_order_line_id', '!=', False)]}"/>
-<!--                    <button context="" name="%(action_add_purchase_order_line)d" icon="gtk-disconnect" type="action" help="Add Purchase Order Line"-->
-<!--                            states="draft" />-->
                     <button context="" name="action_open_bom" icon="terp-mrp" type="object" help="Start to Work on BOM" states="draft" />
                     <button name="action_reload_bom" icon="gtk-refresh" type="object" help="Reload BOM"
                             attrs="{'invisible': ['|', ('state','!=','draft'), ('temp_mrp_bom_ids', '=', False)]}"/>

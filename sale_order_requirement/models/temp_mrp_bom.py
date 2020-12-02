@@ -122,7 +122,11 @@ class temp_mrp_bom(orm.Model):
         line = self.browse(cr, uid, ids, context)[0]
         if line.level == 0 or line.is_manufactured:
             return True
-        line.write({'buy': not line.buy})
+        line.write({
+            'buy': not line.buy,
+            'purchase_order_line_id': False,
+            'purchase_order_id': False
+        })
         return True
 
     def update_supplier(self, cr, uid, ids, context):
