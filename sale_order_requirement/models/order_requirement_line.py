@@ -1348,6 +1348,8 @@ class OrderRequirementLine(orm.Model):
         }
 
     def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_model = self.pool['temp.mrp.bom']
 

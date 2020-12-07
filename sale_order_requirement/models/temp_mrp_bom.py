@@ -105,28 +105,37 @@ class temp_mrp_bom(orm.Model):
         return res
 
     def action_toggle_manufactured(self, cr, uid, ids, context):
-        line = self.browse(cr, uid, ids, context)[0]
-        ordreqline_obj = self.pool['order.requirement.line']
-        if line.level == 0 or line.is_leaf:
-            return True
-        temp_dict = {'is_manufactured': not line.is_manufactured}
-        line.write(temp_dict)
+        if not ids:
+            return False
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        line = self.read(cr, uid, ids[0], ['level', 'is_leaf', 'is_manufactured', 'order_requirement_line_id'], context)
 
-        ordreqline = ordreqline_obj.browse(cr, uid, line.order_requirement_line_id.id, context)
+        if line['level'] == 0 or line['is_leaf']:
+            return True
+        temp_dict = {'is_manufactured': not line['is_manufactured']}
+        self.write(cr, uid, [ids[0]], temp_dict, context=context)
+
+        ordreqline_model = self.pool['order.requirement.line']
         # Build update value [1, ID, vals]
-        temp_vals = [1, line.id, temp_dict]
-        ordreqline.onchange_temp_mrp_bom_ids(temp_mrp_bom_ids=[temp_vals], context=context)
+        temp_vals = [1, line['id'], temp_dict]
+        ordreqline_model.onchange_temp_mrp_bom_ids(cr, uid, line['order_requirement_line_id'][0], temp_mrp_bom_ids=[temp_vals], context=context)
         return True
 
     def action_toggle_buy(self, cr, uid, ids, context):
-        line = self.browse(cr, uid, ids, context)[0]
-        if line.level == 0 or line.is_manufactured:
+        if not ids:
+            return False
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        line = self.read(cr, uid, ids[0], ['level', 'is_manufactured', 'buy'], context)
+
+        if line['level'] == 0 or line['is_manufactured']:
             return True
-        line.write({
-            'buy': not line.buy,
+        self.write(cr, uid, [ids[0]], {
+            'buy': not line['buy'],
             'purchase_order_line_id': False,
             'purchase_order_id': False
-        })
+        }, context=context)
         return True
 
     def update_supplier(self, cr, uid, ids, context):

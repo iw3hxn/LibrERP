@@ -7,7 +7,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class mrp_production(orm.Model):
+class MrpProduction(orm.Model):
 
     _inherit = 'mrp.production'
 
@@ -15,7 +15,7 @@ class mrp_production(orm.Model):
     _index_name2 = 'mrp_production_id_state_index'
 
     def _auto_init(self, cr, context={}):
-        res = super(mrp_production, self)._auto_init(cr, context)
+        res = super(MrpProduction, self)._auto_init(cr, context)
 
         cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (self._index_name,))
         if not cr.fetchone():
@@ -45,7 +45,7 @@ class mrp_production(orm.Model):
 
     def _make_production_produce_line(self, cr, uid, production, context=None):
         stock_move = self.pool['stock.move']
-        move_id = super(mrp_production, self)._make_production_produce_line(
+        move_id = super(MrpProduction, self)._make_production_produce_line(
             cr, uid, production, context=context)
         if production.analytic_account_id:
             stock_move.write(cr, uid, [move_id], {
@@ -56,7 +56,7 @@ class mrp_production(orm.Model):
     def _make_production_consume_line(self, cr, uid, production_line, parent_move_id, source_location_id=False,
                                       context=None):
         stock_move = self.pool['stock.move']
-        move_id = super(mrp_production, self)._make_production_consume_line(
+        move_id = super(MrpProduction, self)._make_production_consume_line(
             cr, uid, production_line, parent_move_id,
             source_location_id=source_location_id, context=context)
         production = production_line.production_id
@@ -68,7 +68,7 @@ class mrp_production(orm.Model):
 
     def _costs_generate(self, cr, uid, production, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        super(mrp_production, self)._costs_generate(cr, uid, production, context)
+        super(MrpProduction, self)._costs_generate(cr, uid, production, context)
         amount = 0.0
         analytic_line_model = self.pool['account.analytic.line']
         default_account = self.pool['ir.property'].get(cr, uid, 'property_account_expense_categ',
@@ -133,7 +133,7 @@ class mrp_production(orm.Model):
         # NOTE: SINGLE PRODUCTION (not supported for multiple lines, problems with return len(results) )
 
         if not productions[0].is_from_order_requirement:
-            return super(mrp_production, self).action_compute(cr, uid, ids, properties, context)
+            return super(MrpProduction, self).action_compute(cr, uid, ids, properties, context)
 
         results = []
 
