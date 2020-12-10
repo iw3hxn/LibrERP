@@ -1049,11 +1049,7 @@ class OrderRequirementLine(orm.Model):
             # if account_analytic_id:
             #     purchase_line_search.append(('account_analytic_id', '=', account_analytic_id))
 
-            purchase_line_id = obj.purchase_order_line_id and obj.purchase_order_line_id.id
-            if purchase_line_id:
-                purchase_order_line_ids = [purchase_line_id]
-            else:
-                purchase_order_line_ids = purchase_order_line_model.search(cr, uid, purchase_line_search, context=context)
+            purchase_order_line_ids = purchase_order_line_model.search(cr, uid, purchase_line_search, context=context)
 
             if not purchase_order_line_ids:
                 # TODO: Can be simplified: if no order present create order and use it below, do not repeat code!
