@@ -53,6 +53,8 @@ class OrderRequirementLineAdd(orm.TransientModel):
             if wizard.order_line:
                 line_id = int(wizard.order_line)
                 order_requirement_line = self.pool['order.requirement.line'].browse(cr, uid, line_ids[0], context)
+                if not order_requirement_line.product_id:
+                    raise orm.except_orm(_(u'Error!'), _(u"Missing Product"))
                 order_requirement_line.write({'sale_order_line_id': line_id})
 
                 order_requirement = self.pool['order.requirement'].browse(cr, uid, context['order_id'], context)

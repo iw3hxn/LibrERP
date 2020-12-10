@@ -574,6 +574,11 @@ msgstr "Da Sviluppare"
 
 #. module: sale_order_requirement
 #: view:order.requirement:0
+msgid "Missing SO Line"
+msgstr "Senza Ordine"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
 msgid "Done"
 msgstr "Completato"
 
