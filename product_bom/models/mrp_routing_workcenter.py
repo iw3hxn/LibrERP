@@ -13,19 +13,19 @@ ENABLE_CACHE = config.get('product_cache', False)
 CACHE_TYPE = config.get('cache_type', 'dictionary')
 
 
-class mrp_routing_workcenter(orm.Model):
+class MrpRoutingWorkcenter(orm.Model):
 
     _inherit = 'mrp.routing.workcenter'
 
     def create(self, cr, uid, vals, context=None):
-        res = super(mrp_routing_workcenter, self).create(cr, uid, vals, context)
+        res = super(MrpRoutingWorkcenter, self).create(cr, uid, vals, context)
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache.empty()
             _logger.info(u'_cost_price CREATE cache empty')
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
-        res = super(mrp_routing_workcenter, self).write(cr, uid, ids, vals, context)
+        res = super(MrpRoutingWorkcenter, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache.empty()
             _logger.info(u'_cost_price CREATE cache empty')

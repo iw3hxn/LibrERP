@@ -31,7 +31,7 @@ _logger.setLevel(logging.DEBUG)
 ENABLE_CACHE = config.get('product_cache', False)
 
 
-class mrp_bom(orm.Model):
+class MrpBom(orm.Model):
     _inherit = 'mrp.bom'
     
     def create(self, cr, uid, vals, context=None):
@@ -47,12 +47,12 @@ class mrp_bom(orm.Model):
                     if int(product_id) in self.pool['product.product'].product_cost_cache:
                         del self.pool['product.product'].product_cost_cache[int(product_id)]
 
-        return super(mrp_bom, self).create(cr, uid, vals, context=context)
+        return super(MrpBom, self).create(cr, uid, vals, context=context)
     
     def unlink(self, cr, uid, ids, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
-        product_obj = self.pool['product.product']
+        product_model = self.pool['product.product']
         bom_ids = []
 
         for bom in self.browse(cr, uid, ids, context):
@@ -64,9 +64,9 @@ class mrp_bom(orm.Model):
             bom_ids_count = self.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], count=True)
 
             if bom_ids_count == 1:
-                product_obj.write(cr, uid, product_id, {'supply_method': 'buy', 'purchase_ok': True}, context=context)
+                product_model.write(cr, uid, product_id, {'supply_method': 'buy', 'purchase_ok': True}, context=context)
 
-        return super(mrp_bom, self).unlink(cr, uid, ids, context=context)
+        return super(MrpBom, self).unlink(cr, uid, ids, context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
@@ -99,7 +99,7 @@ class mrp_bom(orm.Model):
                     if product_old_id in self.pool['product.product'].product_cost_cache:
                         del self.pool['product.product'].product_cost_cache[product_old_id]
 
-        return super(mrp_bom, self).write(cr, uid, ids, vals, context=context)
+        return super(MrpBom, self).write(cr, uid, ids, vals, context=context)
 
     def action_view_bom(self, cr, uid, ids, context=None):
         line = self.browse(cr, uid, ids, context)[0]

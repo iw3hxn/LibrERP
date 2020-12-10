@@ -85,6 +85,7 @@
 
                 <field name="lst_price" position="replace">
                     <field name="prefered_supplier" groups="product_bom.group_supplier_product"/>
+                    <field name="prefered_supplier_code" groups="product_bom.group_supplier_product_code"/>
                     <field name="lst_price" groups="product_bom.group_sell_price"/>
                 </field>
 

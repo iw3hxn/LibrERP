@@ -33,6 +33,10 @@
             <field name="name">Product / Can View Supplier</field>
             <field name="category_id" ref="product.module_category_product"/>
         </record>
+        <record model="res.groups" id="group_supplier_product_code">
+            <field name="name">Product / Can View Supplier Code</field>
+            <field name="category_id" ref="product.module_category_product"/>
+        </record>
         <record model="res.groups" id="group_view_warehouse">
             <field name="name">Product / View Warehouse availability</field>
             <field name="category_id" ref="product.module_category_product"/>

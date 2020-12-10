@@ -219,6 +219,11 @@ msgid "Prefered Supplier"
 msgstr "Fornitore Preferenziale"
 
 #. module: product_bom
+#: field:product.product,prefered_supplier_code:0
+msgid "Prefered Supplier Code"
+msgstr "Codice Fornitore"
+
+#. module: product_bom
 #: model:res.groups,name:product_bom.group_view_warehouse
 msgid "Product / View Warehouse availability"
 msgstr "Prodotto / Può vedere le disponibilità"
