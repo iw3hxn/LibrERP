@@ -47,7 +47,7 @@
                                 <field name="sale_order_line_notes" colspan="4" nolabel="1"/>
                             </page>
                             <page string="BOM" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False), ('is_manufactured','=',False)]}">
-                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context=""
+                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context="{'purchase_order_full_name': True}"
                                        on_change="onchange_temp_mrp_bom_ids(temp_mrp_bom_ids, context)"
                                        attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
                                                                  ('is_manufactured','=',False)],
@@ -95,7 +95,7 @@
                                         <field name="purchase_order_line_id" domain="[('product_id', '=', product_id), ('partner_id', '=', supplier_id)]"
                                                on_change="onchange_purchase_order_line_id(purchase_order_line_id, context)"
                                                attrs="{'readonly': ['|', ('supplier_id','=',False), ('buy', '=', False)]}"
-                                               context="{'full_name': True}" />
+                                               context="{'purchase_order_full_name': True}" />
                                         <field name="purchase_order_id" invisible="1"/>
 
                                         <field name="supplier_ids" invisible="1"/>

@@ -167,10 +167,6 @@ class temp_mrp_bom(orm.Model):
         'product_efficiency': fields.float('Manufacturing Efficiency', required=True,
                                            help="A factor of 0.9 means a loss of 10% within the production process."),
         'product_rounding': fields.float('Product Rounding', help="Rounding applied on the product quantity."),
-        'type': fields.selection([('normal','Normal BoM'),('phantom','Sets / Phantom')], 'BoM Type', required=True,
-                                 help= "If a sub-product is used in several products, it can be useful to create its own BoM. "\
-                                 "Though if you don't want separated production orders for this sub-product, select Set/Phantom as BoM type. "\
-                                 "If a Phantom BoM is used for a root product, it will be sold and shipped as a set of components, instead of being produced."),
         'partial_cost': fields.float('Partial Cost', readonly=True),
         'cost': fields.float('Cost', readonly=True),
         'product_type': fields.char('Pr.Type', size=10, readonly=True),
