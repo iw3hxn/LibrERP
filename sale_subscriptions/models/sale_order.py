@@ -230,17 +230,21 @@ class SaleOrder(orm.Model):
                     'order_start_date': order_end_date + datetime.timedelta(days=1),
                     'validation_date': False,
                     'origin': order.name,
-                    'validation_user': False
+                    'validation_user': False,
+                    'client_order_ref': False
                 }
-                new_order_id = self.copy(cr, uid, order.id, values, context)
-                
-                order_obj.write(cr, uid, [order.id], {'automatically_create_new_subscription': False}, context)
-                
-                new_line_ids = line_obj.search(cr, uid, [('order_id', '=', new_order_id)], context=context)
-                new_lines = line_obj.browse(cr, uid, new_line_ids, context)
-                for line in new_lines:
-                    if not line.product_id.subscription or line.suspended:
-                        line_obj.unlink(cr, uid, [line.id])
+                try:
+                    new_order_id = self.copy(cr, uid, order.id, values, context)
+
+                    order_obj.write(cr, uid, [order.id], {'automatically_create_new_subscription': False}, context)
+
+                    new_line_ids = line_obj.search(cr, uid, [('order_id', '=', new_order_id)], context=context)
+                    new_lines = line_obj.browse(cr, uid, new_line_ids, context)
+                    for line in new_lines:
+                        if not line.product_id.subscription or line.suspended:
+                            line_obj.unlink(cr, uid, [line.id])
+                except Exception as e:
+                    _logger.error("Error on duplicate Sale Order ID {}: {}".format(order.id, e))
         
         # We should return smth, if not we will get an error
         return {'value': {}}
