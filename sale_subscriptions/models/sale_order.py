@@ -232,7 +232,7 @@ class SaleOrder(orm.Model):
                     'origin': order.name,
                     'validation_user': False
                 }
-                new_order_id = self.copy(cr, uid, [order.id], values, context)
+                new_order_id = self.copy(cr, uid, order.id, values, context)
                 
                 order_obj.write(cr, uid, [order.id], {'automatically_create_new_subscription': False}, context)
                 
