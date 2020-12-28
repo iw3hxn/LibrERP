@@ -18,14 +18,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    "name": "Base VAT Unique check VAT number is unique",
-    "version": "3.0.3",
-    "author": "vitrum Network",
-    "category": "Generic Modules/Base",
-    "description": """Check VAT Number is unique.""",
-    "depends": ['base', 'account', 'base_vat'],
-    "active": False,
-    "installable": True
-}
+#
+from . import inherit_res_partner
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

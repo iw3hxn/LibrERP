@@ -23,7 +23,7 @@ from tools.translate import _
 from openerp import SUPERUSER_ID
 
 
-class res_partner(orm.Model):
+class ResPartner(orm.Model):
     _name = "res.partner"
     _inherit = "res.partner"
 
@@ -37,32 +37,35 @@ class res_partner(orm.Model):
         # partner_vat_dif = set(partner_vat).symmetric_difference(set(ids))
         if context.get('res_log_read', False):
             return True
+        
+        if partner_vat == ids:
+            return True
         if partner_vat and ids not in partner_vat:
             partner = self.browse(cr, SUPERUSER_ID, partner_vat, context)[0]
             raise orm.except_orm(_('Error!'),
-                _("Vat {vat} just exist on partner {partner} assigned to {user}!").format(vat=vat, partner=partner.name, user=partner.user_id.name or ''))
+                                 _("Vat {vat} just exist on partner '{partner}' assigned to {user}!").format(vat=vat,
+                                                                                                             partner=partner.name,
+                                                                                                             user=partner.user_id.name or ''))
         partner_vat = self.search(cr, SUPERUSER_ID, [('vat', '=', vat), ('active', '=', False)], context=context)
 
         if partner_vat and ids not in partner_vat:
             partner = self.browse(cr, SUPERUSER_ID, partner_vat, context)[0]
             raise orm.except_orm(_('Error!'),
-                _("Vat {vat} just exist non active partner {partner} assigned to {user}!").format(vat=vat, partner=partner.name, user=partner.user_id and partner.user_id.name or ''))
+                                 _("Vat {vat} just exist non active partner '{partner}' assigned to {user}!").format(
+                                     vat=vat, partner=partner.name,
+                                     user=partner.user_id and partner.user_id.name or ''))
         return True
 
     def write(self, cr, uid, ids, vals, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if vals.get('vat', False):
             self.vat_search(cr, ids, vals.get('vat'), context)
-        return super(res_partner, self).write(cr, uid, ids, vals, context)
+        return super(ResPartner, self).write(cr, uid, ids, vals, context)
 
     def create(self, cr, uid, vals, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if vals.get('vat', False):
             self.vat_search(cr, [], vals.get('vat'), context)
-        return super(res_partner, self).create(cr, uid, vals, context)
-
-
+        return super(ResPartner, self).create(cr, uid, vals, context)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

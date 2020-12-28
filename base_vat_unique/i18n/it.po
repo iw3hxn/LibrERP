@@ -35,11 +35,11 @@ msgstr "La P.Iva già esistente in qualche altro partner"
 #. module: base_vat_unique
 #: code:addons/base_vat_unique/base_vat_unique.py:0
 #, python-format
-msgid "Vat {vat} just exist on partner {partner} assigned to {user}!"
-msgstr "La P.IVA {vat} esiste già per il partner {partner} assegnato all'utente {user}!"
+msgid "Vat {vat} just exist on partner '{partner}' assigned to {user}!"
+msgstr "La P.IVA {vat} esiste già per il partner '{partner}' assegnato all'utente {user}!"
 
 #. module: base_vat_unique
 #: code:addons/base_vat_unique/base_vat_unique.py:0
 #, python-format
-msgid "Vat {vat} just exist non active partner {partner} assigned to {user}!"
-msgstr "La P.IVA {vat} esiste già per il partner NON ATTIVO {partner} assegnato all'utente {user}!"
+msgid "Vat {vat} just exist non active partner '{partner}' assigned to {user}!"
+msgstr "La P.IVA {vat} esiste già per il partner NON ATTIVO '{partner}' assegnato all'utente {user}!"
