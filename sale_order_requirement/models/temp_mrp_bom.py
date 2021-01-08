@@ -110,6 +110,10 @@ class temp_mrp_bom(orm.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
         line = self.read(cr, uid, ids[0], ['level', 'is_leaf', 'is_manufactured', 'order_requirement_line_id'], context)
+        if not line:
+            raise orm.except_orm(
+                _('Error'),
+                _('Press "Reload & Preview" Button'))
 
         if line['level'] == 0 or line['is_leaf']:
             return True
@@ -128,6 +132,10 @@ class temp_mrp_bom(orm.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
         line = self.read(cr, uid, ids[0], ['level', 'is_manufactured', 'buy'], context)
+        if not line:
+            raise orm.except_orm(
+                _('Error'),
+                _('Press "Reload & Preview" Button'))
 
         if line['level'] == 0 or line['is_manufactured']:
             return True
