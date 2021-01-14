@@ -1100,7 +1100,7 @@ class OrderRequirementLine(orm.Model):
                 # Calculate qty according to UoM
                 qty = uom_model._compute_qty(cr, uid, uom_id, qty, po_line.product_uom.id)
 
-                if obj.purchase_order_line_id:
+                if obj._columns.get('purchase_order_line_id', False) and obj.purchase_order_line_id:
                     newqty = qty
                 else:
                     newqty = qty + po_line.product_qty
