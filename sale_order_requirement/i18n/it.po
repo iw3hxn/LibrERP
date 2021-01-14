@@ -382,6 +382,7 @@ msgstr "Ritorna a Bozza"
 
 #. module: sale_order_requirement
 #: selection:order.requirement,state:0
+#: selection:temp.mrp.bom,state:0
 #: selection:order.requirement.line,state:0
 msgid "Draft"
 msgstr "Bozza"
@@ -448,11 +449,13 @@ msgstr "Sicuro di confermare?"
 
 #. module: sale_order_requirement
 #: selection:order.requirement,state:0
+#: selection:temp.mrp.bom,state:0
 msgid "Confirmed"
 msgstr "Confermato"
 
 #. module: sale_order_requirement
 #: selection:order.requirement,state:0
+#: selection:temp.mrp.bom,state:0
 #: selection:order.requirement.line,state:0
 msgid "Cancelled"
 msgstr "Annullato"
@@ -748,3 +751,14 @@ msgstr "Visualizza Ordini Acquisto"
 #: field:purchase.order,customer_account_invoice_ids:0
 msgid "Customer Invoice"
 msgstr "Fatture Clienti"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Reload & Preview"
+msgstr "Ricarica"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,state:0
+#: field:temp.mrp.bom,state:0
+msgid "State"
+msgstr "State"

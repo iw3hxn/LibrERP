@@ -10,7 +10,7 @@ from ..util import rounding
 default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
 
 
-class temp_mrp_bom(orm.Model):
+class TempMrpBom(orm.Model):
     _name = 'temp.mrp.bom'
 
     stock_availability = {}
@@ -100,7 +100,7 @@ class temp_mrp_bom(orm.Model):
     def get_color(self, cr, uid, ids, field_name, arg, context):
         res = {}
         for line in self.read(cr, uid, ids, ['level'], context):
-            row_color = temp_mrp_bom.get_color_bylevel(line['level'])
+            row_color = self.get_color_bylevel(line['level'])
             res[line['id']] = row_color
         return res
 
@@ -155,6 +155,9 @@ class temp_mrp_bom(orm.Model):
         return True
 
     _columns = {
+        'state': fields.selection(
+            [('cancel', 'Cancelled'), ('draft', 'Draft'), ('done', 'Done')], 'State', required=True, default='draft'
+        ),
         'name': fields.char('Name', size=160, readonly=True),
         'type': fields.selection([('normal', 'Normal BoM'), ('phantom', 'Sets / Phantom')], 'BoM Type', required=True,
                                  help="If a sub-product is used in several products, it can be useful to create its own BoM. " \
@@ -215,8 +218,89 @@ class temp_mrp_bom(orm.Model):
 
     _defaults = {
         'is_manufactured': True,
-        'level': 1  # Useful for insertion of new temp mrp boms
+        'level': 1,  # Useful for insertion of new temp mrp boms
+        'state': 'draft'
     }
+
+    def _manufacture_bom(self, cr, uid, temp, context):
+        mrp_production_model = self.pool['mrp.production']
+        temp_mrp_bom_model = self.pool['temp.mrp.bom']
+        uom_model = self.pool['product.uom']
+
+        product = temp.product_id
+
+        # Search for another production order for the same sale order
+        mrp_productions = mrp_production_model.search_browse(cr, uid, [('product_id', '=', product.id),
+                                                                     ('sale_id', '=', temp.sale_order_id.id),
+                                                                     ('state', '=', 'draft')], context=context)
+        if not isinstance(mrp_productions, list):
+            mrp_productions = [mrp_productions]
+
+        append_production = False
+        # If another production order for the same sale order is present and not started, append to it
+        #   but ONLY if the production order has a bom (production orders confirmed)
+        if mrp_productions:
+            # Take first that has a bom
+            for mrp_production in mrp_productions:
+                bom_point = mrp_production.temp_bom_id
+                bom_id = mrp_production.temp_bom_id.id
+                if bom_point or bom_id:
+                    append_production = True
+                    break
+
+        # From for above, mrp_production is the mrp order to which to append
+        if append_production:
+            mrp_production_id = mrp_production.id
+            # Calculate qty according to UoM
+            qty = uom_model._compute_qty(cr, uid, temp.product_uom.id, temp.product_qty, mrp_production.product_uom.id)
+
+            newqty = mrp_production.product_qty + qty
+
+            mrp_production_model.write(cr, uid, mrp_production_id,
+                                     {'product_qty': newqty}, context)
+        else:
+            # Create new
+            mrp_production_values = mrp_production_model.product_id_change(cr, uid, [], product.id)['value']
+
+            mrp_production_values.update({
+                'analytic_account_id': temp.sale_order_id.project_id and temp.sale_order_id.project_id.id or False,
+                'product_id': product.id,
+                'product_qty': temp.product_qty,
+                'sale_id': temp.sale_order_id.id,
+                # 'sale_name': temp.sale_order_id.name,
+                # 'sale_ref': temp.sale_order_id.client_order_ref or '',
+                'is_from_order_requirement': True,
+                'temp_bom_id': temp.id,
+                'level': temp.level,
+                'notes': temp.order_requirement_line_id.order_requirement_id.internal_note or '',
+            })
+
+            # Create manufacturing order
+            mrp_production_id = mrp_production_model.create(cr, uid, mrp_production_values, context=context)
+
+        if isinstance(mrp_production_id, (int, long)):
+            mrp_production_ids = [mrp_production_id]
+        else:
+            mrp_production_ids = mrp_production_id
+
+        mrp_production_model.action_compute(cr, uid, mrp_production_ids, context=context)
+        self.write(cr, uid, temp.id, {'mrp_production_id': mrp_production_id}, context)
+        return True
+
+    def _manufacture_or_purchase_rec(self, cr, uid, line, is_split, context=None):
+        # todo test line.state != 'draft'
+        if line.is_manufactured:
+            # self._manufacture_bom(cr, uid, temp, context)
+            # When splitting orders, create MRP order for every non-leaf bom (excluding level 0 already done)
+            if is_split and line.level > 0:
+                self._manufacture_bom(cr, uid, line, context)
+            for child in line.bom_lines:
+                self._manufacture_or_purchase_rec(cr, uid, child, is_split, context)
+        else:
+            self.pool['order.requirement.line']._purchase_bom(cr, uid, line, context)
+        line.write({'state': 'done'})
+        return True
+
 
     def action_add(self, cr, uid, ids, context):
         line = self.browse(cr, uid, ids, context)[0]
@@ -285,8 +369,8 @@ class temp_mrp_bom(orm.Model):
         if level == 1:
             return bool(parents_ids)
         for parent in parents_ids:
-            vals = parent[2]
-            if temp_mrp_bom.check_parents(vals, temp_mrp_bom_ids):
+            values = parent[2]
+            if TempMrpBom.check_parents(values, temp_mrp_bom_ids):
                 return True
         return False
 

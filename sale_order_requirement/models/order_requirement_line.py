@@ -184,7 +184,7 @@ class OrderRequirementLine(orm.Model):
 
     def _get_temp_vals_from_mrp_bom(self, cr, uid, ids, bom, qty_mult, temp_father_id, level, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        product_model = self.pool['product.product']
+        temp_mrp_bom_model = self.pool['temp.mrp.bom']
 
         # Set temp values by original BOM
         line_id = ids[0]
@@ -197,7 +197,7 @@ class OrderRequirementLine(orm.Model):
 
         line = self.browse(cr, uid, line_id, context)
 
-        row_color = temp_mrp_bom.temp_mrp_bom.get_color_bylevel(level)
+        row_color = temp_mrp_bom_model.get_color_bylevel(level)
         level_name = '- {} {} >'.format(str(level), ' -----' * level)
 
         suppliers = line.get_suppliers(product, context=context)
@@ -247,7 +247,7 @@ class OrderRequirementLine(orm.Model):
     def _get_temp_vals_from_product(self, cr, uid, ids, product, qty_mult, temp_father_id, level, context):
         # Set temp values by product => LEAF
         context = context or self.pool['res.users'].context_get(cr, uid)
-        product_model = self.pool['product.product']
+        temp_mrp_bom_model = self.pool['temp.mrp.bom']
 
         line_id = ids[0]
 
@@ -258,7 +258,7 @@ class OrderRequirementLine(orm.Model):
         product_id = product.id
         line = self.browse(cr, uid, line_id, context)
 
-        row_color = temp_mrp_bom.temp_mrp_bom.get_color_bylevel(level)
+        row_color = temp_mrp_bom_model.get_color_bylevel(level)
         level_name = u'- {} {} >'.format(str(level), ' -----' * level)
 
         suppliers = line.get_suppliers(product, context=context)
@@ -1137,101 +1137,23 @@ class OrderRequirementLine(orm.Model):
 
         return True
 
-    def _manufacture_bom(self, cr, uid, temp, context):
-        mrp_production_model = self.pool['mrp.production']
-        temp_mrp_bom_model = self.pool['temp.mrp.bom']
-        uom_model = self.pool['product.uom']
-
-        product = temp.product_id
-
-        # Search for another production order for the same sale order
-        mrp_productions = mrp_production_model.search_browse(cr, uid, [('product_id', '=', product.id),
-                                                                     ('sale_id', '=', temp.sale_order_id.id),
-                                                                     ('state', '=', 'draft')], context=context)
-        if not isinstance(mrp_productions, list):
-            mrp_productions = [mrp_productions]
-
-        append_production = False
-        # If another production order for the same sale order is present and not started, append to it
-        #   but ONLY if the production order has a bom (production orders confirmed)
-        if mrp_productions:
-            # Take first that has a bom
-            for mrp_production in mrp_productions:
-                bom_point = mrp_production.temp_bom_id
-                bom_id = mrp_production.temp_bom_id.id
-                if bom_point or bom_id:
-                    append_production = True
-                    break
-
-        # From for above, mrp_production is the mrp order to which to append
-        if append_production:
-            mrp_production_id = mrp_production.id
-            # Calculate qty according to UoM
-            qty = uom_model._compute_qty(cr, uid, temp.product_uom.id, temp.product_qty, mrp_production.product_uom.id)
-
-            newqty = mrp_production.product_qty + qty
-
-            mrp_production_model.write(cr, uid, mrp_production_id,
-                                     {'product_qty': newqty}, context)
-        else:
-            # Create new
-            mrp_production_values = mrp_production_model.product_id_change(cr, uid, [], product.id)['value']
-
-            mrp_production_values.update({
-                'analytic_account_id': temp.sale_order_id.project_id and temp.sale_order_id.project_id.id or False,
-                'product_id': product.id,
-                'product_qty': temp.product_qty,
-                'sale_id': temp.sale_order_id.id,
-                # 'sale_name': temp.sale_order_id.name,
-                # 'sale_ref': temp.sale_order_id.client_order_ref or '',
-                'is_from_order_requirement': True,
-                'temp_bom_id': temp.id,
-                'level': temp.level,
-                'notes': temp.order_requirement_line_id.order_requirement_id.internal_note or '',
-            })
-
-            # Create manufacturing order
-            mrp_production_id = mrp_production_model.create(cr, uid, mrp_production_values, context=context)
-
-        if isinstance(mrp_production_id, (int, long)):
-            mrp_production_ids = [mrp_production_id]
-        else:
-            mrp_production_ids = mrp_production_id
-
-        mrp_production_model.action_compute(cr, uid, mrp_production_ids, context=context)
-        temp_mrp_bom_model.write(cr, uid, temp.id, {'mrp_production_id': mrp_production_id}, context)
-        return True
-
     def _manufacture_or_purchase_all(self, cr, uid, line, context):
         # line is a order_requirement_line, not a bom line
         user = self.pool['res.users'].browse(cr, uid, uid, context)
 
         split_mrp_production = user.company_id.split_mrp_production
 
-        # Single line
-        # line = self.browse(cr, uid, ids, context)[0]
-
         if not line.temp_mrp_bom_ids:
             return
-
-        def _manufacture_or_purchase_rec(temp, context, is_split):
-            if temp.is_manufactured:
-                # self._manufacture_bom(cr, uid, temp, context)
-                # When splitting orders, create MRP order for every non-leaf bom (excluding level 0 already done)
-                if is_split and temp.level > 0:
-                    self._manufacture_bom(cr, uid, temp, context)
-                for child in temp.bom_lines:
-                    _manufacture_or_purchase_rec(child, context, is_split)
-            else:
-                self._purchase_bom(cr, uid, temp, context)
 
         father_temp = line.temp_mrp_bom_ids[0]
 
         # First create main bom
-        self._manufacture_bom(cr, uid, father_temp, context)
+        temp_mrp_bom_model = self.pool['temp.mrp.bom']
 
+        temp_mrp_bom_model._manufacture_bom(cr, uid, father_temp, context)
         # Explode orders
-        _manufacture_or_purchase_rec(father_temp, context, split_mrp_production)
+        temp_mrp_bom_model._manufacture_or_purchase_rec(cr, uid, father_temp, split_mrp_production, context)
         return True
 
     def confirm_suppliers(self, cr, uid, ids, context):
@@ -1309,10 +1231,10 @@ class OrderRequirementLine(orm.Model):
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
                                                                'view_order_requirement_line_form')
         # Reload line
-        line = self.browse(cr, uid, ids, context)[0]
+        # line = self.browse(cr, uid, ids, context)[0]
 
         view_id = view and view[1] or False
-        return {
+        action_vals = {
             'type': 'ir.actions.act_window',
             'name': _('Product BOM'),
             'res_model': 'order.requirement.line',
@@ -1321,8 +1243,12 @@ class OrderRequirementLine(orm.Model):
             'view_id': [view_id],
             'target': 'new',
             'context': {'view_bom': True},
-            'res_id': line.id
+            'res_id': ids[0]
         }
+        has_group = self.pool['res.users'].has_group(cr, uid, 'sale_order_requirement.open_order_requirement_new_tab')
+        if has_group:
+            action_vals['target'] = 'current'
+        return action_vals
 
     def action_view_bom(self, cr, uid, ids, context=None):
         line = self.browse(cr, uid, ids, context)[0]

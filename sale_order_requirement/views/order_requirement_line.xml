@@ -99,6 +99,7 @@
                                         <field name="purchase_order_id" invisible="1"/>
 
                                         <field name="supplier_ids" invisible="1"/>
+                                        <field name="state" />
                                         <!--<button name="update_supplier" string="Reload" type="object" icon="gtk-refresh" />-->
                                     </tree>
                                 </field>
@@ -188,6 +189,7 @@
                                         <button string="View" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>
                                         <field name="mrp_production_id" />
                                         <button string="View" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>
+                                        <field name="state" />
                                     </tree>
                                     <form string="BoM Details">
                                         <field name="product_id" readonly="1"/>
@@ -211,6 +213,7 @@
                                         <field name="supplier_id"  readonly="1"/>
                                         <newline />
                                         <field name="mrp_production_id" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
+                                        <field name="state" widget="statusbar" statusbar_colors='{"draft":"red","done":"black","cancel":"grey"}'/>
                                     </form>
                                 </field>
                             </page>

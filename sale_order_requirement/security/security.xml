@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record id="open_order_requirement_new_tab" model="res.groups">
+            <field name="name">Open Order Requirement on new Tab</field>
+            <field name="category_id" ref="base.module_category_manufacturing"/>
+        </record>
+
+    </data>
+</openerp>
