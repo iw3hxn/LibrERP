@@ -877,6 +877,9 @@ class OrderRequirementLine(orm.Model):
 
     def onchange_qty(self, cr, uid, ids, qty, context=None):
         temp_mrp_bom_model = self.pool['temp.mrp.bom']
+        if not ids:
+            return {'value': {}}
+
         line_id = ids[0]
         line = self.browse(cr, uid, line_id, context)
 
