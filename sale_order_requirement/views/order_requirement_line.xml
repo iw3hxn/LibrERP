@@ -83,9 +83,11 @@
                                                 attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
                                         <field name="cost"/>
                                         <field name="temp_mrp_bom_action"/>
-                                        <button name="action_toggle_manufactured" string="Toggle Manufactured" type="object" icon="gtk-properties" attrs="{'invisible': [('level','=',0)]}"/>
+                                        <button name="action_toggle_manufactured" string="Toggle Manufactured" type="object" icon="gtk-properties"
+                                                attrs="{'invisible': ['|', ('level','=',0), ('state', '!=', 'draft')]}"/>
                                         <field name="is_manufactured" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_leaf','=',True)]}"/>
-                                        <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="terp-dolar" attrs="{'invisible': ['|',('level','=',0),('is_manufactured','=',True)]}"/>
+                                        <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="terp-dolar"
+                                                attrs="{'invisible': ['|', '|', ('level','=',0),('is_manufactured','=',True), ('state', '!=', 'draft')]}"/>
                                         <field name="buy" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_manufactured','=',True)]}"/>
                                         <field name="supplier_id" on_change="onchange_supplier_id(supplier_id, product_id, context)"
                                                attrs="{'required': [('is_manufactured', '=', False)],
@@ -97,8 +99,8 @@
                                                attrs="{'readonly': ['|', ('supplier_id','=',False), ('buy', '=', False)]}"
                                                context="{'purchase_order_full_name': True}" />
                                         <field name="purchase_order_id" invisible="1"/>
-
                                         <field name="supplier_ids" invisible="1"/>
+                                        <field name="mrp_production_id" readonly="1" />
                                         <field name="state" />
                                         <button name="manufacture_or_purchase_rec" string="OK" icon="gtk-ok" type="object" states="draft"
                                             confirm="Are you sure you want to do this?" groups="sale_order_requirement.open_order_requirement_by_line"/>
@@ -186,10 +188,11 @@
                                         <field name="is_manufactured" readonly="1" invisible="1"/>
                                         <field name="buy" readonly="1" invisible="1"/>
                                         <field name="supplier_id"  readonly="1"/>
-                                        <field name="purchase_order_id" />
-                                        <button string="View" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>
-                                        <field name="mrp_production_id" />
-                                        <button string="View" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>
+                                        <field name="connected_document" readonly="1"/>
+                                        <field name="purchase_order_id" invisible="1"/>
+                                        <button string="View Purchase Order" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>
+                                        <field name="mrp_production_id" invisible="1"/>
+                                        <button string="View Production Order" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>
                                         <field name="state" />
                                     </tree>
                                     <form string="BoM Details">

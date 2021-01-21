@@ -777,15 +777,17 @@ class OrderRequirementLine(orm.Model):
         return res
 
     def action_reload_bom(self, cr, uid, ids, context):
-        for requirement_line in self.browse(cr, uid, ids, context):
-            line_to_clear = []
-            for temp_line in requirement_line.temp_mrp_bom_ids:
-                if not temp_line.purchase_order_id or not temp_line.mrp_production_id:
-                    line_to_clear.append(temp_line.id)
-            if len(line_to_clear) == len(requirement_line.temp_mrp_bom_ids):  # if i can cancel all the line
-                self.pool['temp.mrp.bom'].unlink(cr, uid, line_to_clear, context)
-            else:
-                raise orm.except_orm(_(u'Error !'), _(u'There are same processed line'))
+        temp_mrp_bom_model = self.pool['temp.mrp.bom']
+        all_line_to_clear_ids = temp_mrp_bom_model.search(cr, uid, [('order_requirement_line_id', 'in', ids)], context=context)
+        done_line_to_clear_ids = temp_mrp_bom_model.search(cr, uid, [
+            '&', '|', '|',
+            ('id', 'in', all_line_to_clear_ids),
+            ('state', '=', 'done'), ('purchase_order_id', '!=', False), ('mrp_production_id', '!=', False)
+        ], context=context)
+
+        if done_line_to_clear_ids:
+            raise orm.except_orm(_(u'Error !'), _(u'There are same processed line'))
+        temp_mrp_bom_model.unlink(cr, uid, all_line_to_clear_ids, context)
         self.write(cr, uid, ids, {'new_product_id': False}, context)
         return True
 

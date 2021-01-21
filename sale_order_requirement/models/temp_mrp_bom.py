@@ -57,6 +57,13 @@ class TempMrpBom(orm.Model):
             res[line['id']] = line['stock_availability'] < line['spare']
         return res
 
+    def _get_connected_document(self, cr, uid, ids, name, args, context=None):
+        res = {}
+        for line in self.read(cr, uid, ids, ['purchase_order_id', 'mrp_production_id'], context=context):
+            res[line['id']] = line['purchase_order_id'] and line['purchase_order_id'][1] or line[
+                'mrp_production_id'] and line['mrp_production_id'][1] or ''
+        return res
+
     def _get_temp_mrp_bom_action(self, cr, uid, ids, name, args, context=None):
         # Return a string describing whether a product is being bought or produced
         res = {}
@@ -109,11 +116,13 @@ class TempMrpBom(orm.Model):
             return False
         if isinstance(ids, (int, long)):
             ids = [ids]
-        line = self.read(cr, uid, ids[0], ['level', 'is_leaf', 'is_manufactured', 'order_requirement_line_id'], context)
+        line = self.read(cr, uid, ids[0], ['level', 'is_leaf', 'is_manufactured', 'order_requirement_line_id', 'state'], context)
         if not line:
             raise orm.except_orm(
                 _('Error'),
                 _('Press "Reload & Preview" Button'))
+        if line['state'] != 'draft':
+            return False
 
         if line['level'] == 0 or line['is_leaf']:
             return True
@@ -131,11 +140,13 @@ class TempMrpBom(orm.Model):
             return False
         if isinstance(ids, (int, long)):
             ids = [ids]
-        line = self.read(cr, uid, ids[0], ['level', 'is_manufactured', 'buy'], context)
+        line = self.read(cr, uid, ids[0], ['level', 'is_manufactured', 'buy', 'state'], context)
         if not line:
             raise orm.except_orm(
                 _('Error'),
                 _('Press "Reload & Preview" Button'))
+        if line['state'] != 'draft':
+            return False
 
         if line['level'] == 0 or line['is_manufactured']:
             return True
@@ -155,6 +166,7 @@ class TempMrpBom(orm.Model):
         return True
 
     _columns = {
+        'active': fields.boolean(required=True),
         'state': fields.selection(
             [('cancel', 'Cancelled'), ('draft', 'Draft'), ('done', 'Done')], 'State', required=True, default='draft'
         ),
@@ -164,7 +176,7 @@ class TempMrpBom(orm.Model):
                                       "Though if you don't want separated production orders for this sub-product, select Set/Phantom as BoM type. " \
                                       "If a Phantom BoM is used for a root product, it will be sold and shipped as a set of components, instead of being produced."),
         'level_name': fields.char('Level', readonly=True),
-        'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True,
+        'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True, index=True,
                                                      ondelete='cascade', select=True, auto_join=True),
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True, ondelete='cascade'),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
@@ -211,12 +223,15 @@ class TempMrpBom(orm.Model):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, store=False),
         'sequence': fields.integer('Sequence index'),
         'is_out_of_stock': fields.function(_is_out_of_stock, method=True, type='boolean', string='Out of Stock', readonly=True),
-        'temp_mrp_bom_action': fields.function(_get_temp_mrp_bom_action, method=True, type='char', string='Action', readonly=True)
+        'temp_mrp_bom_action': fields.function(_get_temp_mrp_bom_action, method=True, type='char', string='Action', readonly=True),
+        'connected_document': fields.function(_get_connected_document, method=True, type='char', string="Document", readonly=True),
+
     }
 
     _order = 'sequence,level,id'
 
     _defaults = {
+        'active': True,
         'is_manufactured': True,
         'level': 1,  # Useful for insertion of new temp mrp boms
         'state': 'draft'
@@ -224,7 +239,6 @@ class TempMrpBom(orm.Model):
 
     def _manufacture_bom(self, cr, uid, temp, context):
         mrp_production_model = self.pool['mrp.production']
-        temp_mrp_bom_model = self.pool['temp.mrp.bom']
         uom_model = self.pool['product.uom']
 
         product = temp.product_id

@@ -34,6 +34,12 @@ msgid "Product BOM"
 msgstr "Distinta Base"
 
 #. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/order_requirement_line.py:789
+#, python-format
+msgid "There are same processed line'"
+msgstr "Ci sono alcune righe processate"
+
+#. module: sale_order_requirement
 #: field:temp.mrp.bom,purchase_order_line_id:0
 msgid "Purchase Order Line"
 msgstr "Riga Ordine Acquisto"
@@ -744,8 +750,15 @@ msgstr "Riga"
 
 #. module: sale_order_requirement
 #: view:order.requirement:0
+#: view:temp.mrp.bom:0
 msgid "View Purchase Order"
 msgstr "Visualizza Ordini Acquisto"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+#: view:temp.mrp.bom:0
+msgid "View Production Order"
+msgstr "Visualizza Ordini Produzione"
 
 #. module: sale_order_requirement
 #: view:purchase.order:0
@@ -762,4 +775,4 @@ msgstr "Ricarica"
 #: field:order.requirement.line,state:0
 #: field:temp.mrp.bom,state:0
 msgid "State"
-msgstr "State"
+msgstr "Stato"
