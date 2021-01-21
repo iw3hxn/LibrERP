@@ -287,8 +287,18 @@ class TempMrpBom(orm.Model):
         self.write(cr, uid, temp.id, {'mrp_production_id': mrp_production_id}, context)
         return True
 
+    def manufacture_or_purchase_rec(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
+        is_split = user.company_id.split_mrp_production
+        for line in self.browse(cr, uid, ids, context):
+            self._manufacture_or_purchase_rec(cr, uid, line, is_split, context)
+        return True
+
     def _manufacture_or_purchase_rec(self, cr, uid, line, is_split, context=None):
         # todo test line.state != 'draft'
+        if line.state != 'draft':
+            return False
         if line.is_manufactured:
             # self._manufacture_bom(cr, uid, temp, context)
             # When splitting orders, create MRP order for every non-leaf bom (excluding level 0 already done)
@@ -300,7 +310,6 @@ class TempMrpBom(orm.Model):
             self.pool['order.requirement.line']._purchase_bom(cr, uid, line, context)
         line.write({'state': 'done'})
         return True
-
 
     def action_add(self, cr, uid, ids, context):
         line = self.browse(cr, uid, ids, context)[0]

@@ -444,6 +444,7 @@ msgstr "Fornitore"
 
 #. module: sale_order_requirement
 #: view:order.requirement.line:0
+#: view:temp.mrp.bom:0
 msgid "Are you sure you want to do this?"
 msgstr "Sicuro di confermare?"
 

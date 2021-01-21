@@ -36,7 +36,7 @@
                     <group colspan="8" col="8" attrs="{'invisible': [('state','!=','draft')]}">
                         <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/>
                         <button name="reload_bom" string="Reload &amp; Preview" icon="gtk-refresh" type="object"/>
-                        <button name="confirm_suppliers" string="OK" icon="gtk-apply" type="object"
+                        <button name="confirm_suppliers" string="OK" icon="gtk-ok" type="object"
                                 confirm="Are you sure you want to do this?"/>
                     </group>
 <!--                    <group colspan="8" col="8" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),-->
@@ -100,7 +100,8 @@
 
                                         <field name="supplier_ids" invisible="1"/>
                                         <field name="state" />
-                                        <!--<button name="update_supplier" string="Reload" type="object" icon="gtk-refresh" />-->
+                                        <button name="manufacture_or_purchase_rec" string="OK" icon="gtk-ok" type="object" states="draft"
+                                            confirm="Are you sure you want to do this?" groups="sale_order_requirement.open_order_requirement_by_line"/>
                                     </tree>
                                 </field>
                             </page>

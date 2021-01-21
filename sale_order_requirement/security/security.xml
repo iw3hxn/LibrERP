@@ -7,5 +7,10 @@
             <field name="category_id" ref="base.module_category_manufacturing"/>
         </record>
 
+        <record id="open_order_requirement_by_line" model="res.groups">
+            <field name="name">Manage Order Requiremet By Line</field>
+            <field name="category_id" ref="base.module_category_manufacturing"/>
+        </record>
+
     </data>
 </openerp>
