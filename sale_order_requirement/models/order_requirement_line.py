@@ -780,7 +780,7 @@ class OrderRequirementLine(orm.Model):
         temp_mrp_bom_model = self.pool['temp.mrp.bom']
         all_line_to_clear_ids = temp_mrp_bom_model.search(cr, uid, [('order_requirement_line_id', 'in', ids)], context=context)
         done_line_to_clear_ids = temp_mrp_bom_model.search(cr, uid, [
-            '&', '|', '|',
+            '&', '&', '|',
             ('id', 'in', all_line_to_clear_ids),
             ('state', '=', 'done'), ('purchase_order_id', '!=', False), ('mrp_production_id', '!=', False)
         ], context=context)

@@ -400,11 +400,6 @@ msgid "Buy"
 msgstr "Acquista"
 
 #. module: sale_order_requirement
-#: selection:order.requirement.line,state:0
-msgid "Done"
-msgstr "Fatto"
-
-#. module: sale_order_requirement
 #: field:purchase.order,sale_order_ids:0
 #: field:stock.picking,sale_order_ids:0
 #: field:purchase.order.line,temp_mrp_bom_ids:0
@@ -589,6 +584,8 @@ msgstr "Senza Ordine"
 
 #. module: sale_order_requirement
 #: view:order.requirement:0
+#: selection:order.requirement.line,state:0
+#: selection:temp.mrp.bom,state:0
 msgid "Done"
 msgstr "Completato"
 
