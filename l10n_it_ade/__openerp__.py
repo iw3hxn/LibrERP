@@ -9,7 +9,7 @@
 {
     'name': 'Definizioni di Base Agenzia delle Entrate',
     'summary': 'Codice con le definizioni dei file xml Agenzia delle Entrate',
-    'version': '6.1.4.9.20',
+    'version': '6.1.4.10.20',
     'category': 'Localization/Italy',
     'author': 'SHS-AV s.r.l.,'
               ' Odoo Italia Associazione',
