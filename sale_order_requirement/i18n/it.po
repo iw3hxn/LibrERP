@@ -230,6 +230,12 @@ msgid "Purchase Order"
 msgstr "Ordine Acquisto"
 
 #. module: sale_order_requirement
+#: field:order.requirement.line,force_purchase_order_line_id:0
+msgid "Force Order Line"
+msgstr "Forza Ordine Acquisto"
+
+
+#. module: sale_order_requirement
 #: view:order.requirement.line:0
 #: field:temp.mrp.bom,mrp_routing_id:0
 #: field:temp.mrp.routing,mrp_routing_id:0
@@ -569,6 +575,7 @@ msgstr "Numero Ordine Cliente"
 
 #. module: sale_order_requirement
 #: field:order.requirement,user_id:0
+#: field:temp.mrp.bom,user_id:0
 msgid "User"
 msgstr "Utente"
 

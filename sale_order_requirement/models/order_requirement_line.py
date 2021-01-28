@@ -698,6 +698,7 @@ class OrderRequirementLine(orm.Model):
         ),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_id': fields.function(_get_purchase_order_id, string='Purchase Order', type='many2one', relation='purchase.order'),
+        'force_purchase_order_line_id': fields.many2one('purchase.order.line', "Force Order Line"),
         'purchase_order_ids': fields.many2many('purchase.order', string='Purchase Orders'),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
         'production_orders_state': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
@@ -980,6 +981,13 @@ class OrderRequirementLine(orm.Model):
         shop = obj.sale_order_id.shop_id
         shop_id = shop.id
         # account_analytic_id = obj.sale_order_id.project_id and obj.sale_order_id.project_id.id
+
+        if obj._name == 'order.requirement.line' and obj.force_purchase_order_line_id:
+            self.write(cr, uid, line.id, {
+                'purchase_order_ids': [(4, obj.force_purchase_order_line_id.order_id.id)],
+                'purchase_order_line_ids': [(4, obj.force_purchase_order_line_id.id)]
+            }, context)
+            return True
 
         if obj.purchase_order_id:
             purchase_order_ids = [obj.purchase_order_id.id]
