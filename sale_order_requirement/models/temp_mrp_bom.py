@@ -225,7 +225,7 @@ class TempMrpBom(orm.Model):
         'is_out_of_stock': fields.function(_is_out_of_stock, method=True, type='boolean', string='Out of Stock', readonly=True),
         'temp_mrp_bom_action': fields.function(_get_temp_mrp_bom_action, method=True, type='char', string='Action', readonly=True),
         'connected_document': fields.function(_get_connected_document, method=True, type='char', string="Document", readonly=True),
-
+        'user_id': fields.many2one('res.users', 'User'),
     }
 
     _order = 'sequence,level,id'
@@ -243,19 +243,23 @@ class TempMrpBom(orm.Model):
 
         product = temp.product_id
 
+        user_id = temp.user_id or temp.order_requirement_line_id.user_id or False
+
         # Search for another production order for the same sale order
-        mrp_productions = mrp_production_model.search_browse(cr, uid, [('product_id', '=', product.id),
-                                                                     ('sale_id', '=', temp.sale_order_id.id),
-                                                                     ('state', '=', 'draft')], context=context)
-        if not isinstance(mrp_productions, list):
-            mrp_productions = [mrp_productions]
+        mrp_production_domain = [('product_id', '=', product.id),
+                                 ('sale_id', '=', temp.sale_order_id.id),
+                                 ('state', '=', 'draft')]
+        if user_id:
+            mrp_production_domain.append(('user_id', '=', user_id.id))
+
+        mrp_productions_ids = mrp_production_model.search_browse(cr, uid, mrp_production_domain, context=context)
 
         append_production = False
         # If another production order for the same sale order is present and not started, append to it
         #   but ONLY if the production order has a bom (production orders confirmed)
-        if mrp_productions:
+        if mrp_productions_ids:
             # Take first that has a bom
-            for mrp_production in mrp_productions:
+            for mrp_production in mrp_productions_ids:
                 bom_point = mrp_production.temp_bom_id
                 bom_id = mrp_production.temp_bom_id.id
                 if bom_point or bom_id:
@@ -288,6 +292,8 @@ class TempMrpBom(orm.Model):
                 'level': temp.level,
                 'notes': temp.order_requirement_line_id.order_requirement_id.internal_note or '',
             })
+            if user_id:
+                mrp_production_values.update(user_id=user_id.id)
 
             # Create manufacturing order
             mrp_production_id = mrp_production_model.create(cr, uid, mrp_production_values, context=context)
@@ -523,6 +529,16 @@ class TempMrpBom(orm.Model):
 
         _explode_rec(bom_father, bom_factor)
         return result, result2
+
+    def action_view_connected_document(self, cr, uid, ids, context=None):
+        line = self.browse(cr, uid, ids, context)[0]
+        if line.purchase_order_id:
+            return line.action_view_purchase_order()
+        elif line.mrp_production_id:
+            return line.action_view_mrp_production()
+        raise orm.except_orm(
+            _('Error'),
+            _('Missing document to open'))
 
     def action_view_purchase_order(self, cr, uid, ids, context=None):
         line = self.browse(cr, uid, ids, context)[0]

@@ -46,14 +46,17 @@
                                 <field name="sale_order_line_description" colspan="4" nolabel="1"/>
                                 <field name="sale_order_line_notes" colspan="4" nolabel="1"/>
                             </page>
+                        </notebook>
+                        <notebook colspan="4">
                             <page string="BOM" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False), ('is_manufactured','=',False)]}">
-                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context="{'purchase_order_full_name': True}"
+                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context="{'purchase_order_full_name': True, 'default_user_id': user_id}"
                                        on_change="onchange_temp_mrp_bom_ids(temp_mrp_bom_ids, context)"
                                        attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
                                                                  ('is_manufactured','=',False)],
                                                'readonly':['|',('state','!=','draft'),('is_manufactured','=',False)]}">
                                     <tree string="BoM Structure" editable="bottom"
                                         colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                        <field name="user_id" attrs="{'readonly': ['|', ('is_manufactured','=',False), ('level', '=', 0)]}"/>
                                         <field name="row_color" invisible="1"/>
                                         <field name="is_leaf"/>
                                         <field name="id" invisible="1"/>
@@ -102,7 +105,7 @@
                                         <field name="supplier_ids" invisible="1"/>
                                         <field name="mrp_production_id" readonly="1" />
                                         <field name="state" />
-                                        <button name="manufacture_or_purchase_rec" string="OK" icon="gtk-ok" type="object" states="draft"
+                                        <button name="manufacture_or_purchase_rec" string="OK" icon="gtk-ok" type="object" attrs="{'invisible': ['|', ('level','=', 0), ('state', '!=', 'draft')]}"
                                             confirm="Are you sure you want to do this?" groups="sale_order_requirement.open_order_requirement_by_line"/>
                                     </tree>
                                 </field>
@@ -168,9 +171,10 @@
                                 <field name="sale_order_line_notes" colspan="4" nolabel="1"/>
                             </page>
                             <page string="BOM" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False), ('is_manufactured','=',False)]}">
-                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" readonly="1" widget="one2many_list">
+                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" readonly="1" widget="one2many_list" context="{'default_user_id': user_id}">
                                     <tree string="BoM Structure" editable="top"
                                         colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                        <field name="user_id" />
                                         <field name="row_color" invisible="1"/>
                                         <field name="is_leaf"/>
                                         <field name="level_name"/>
@@ -189,10 +193,11 @@
                                         <field name="buy" readonly="1" invisible="1"/>
                                         <field name="supplier_id"  readonly="1"/>
                                         <field name="connected_document" readonly="1"/>
-                                        <field name="purchase_order_id" invisible="1"/>
-                                        <button string="View Purchase Order" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>
-                                        <field name="mrp_production_id" invisible="1"/>
-                                        <button string="View Production Order" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>
+                                        <button string="View Connected Document" name="action_view_connected_document" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('connected_document','=',False)]}"/>
+<!--                                        <field name="purchase_order_id" invisible="1"/>-->
+<!--                                        <button string="View Purchase Order" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>-->
+<!--                                        <field name="mrp_production_id" invisible="1"/>-->
+<!--                                        <button string="View Production Order" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>-->
                                         <field name="state" />
                                     </tree>
                                     <form string="BoM Details">
