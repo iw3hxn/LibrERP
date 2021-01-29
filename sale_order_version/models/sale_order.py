@@ -109,6 +109,8 @@ class SaleOrder(orm.Model):
                 vals['version'])
 
             new_order_id = self.copy(cr, uid, order.id, vals, context=context)
+            if order.origin:
+                self.write(cr, uid, new_order_id, {'origin': order.origin}, context=context)
 
             old_order_lines_ids = self.read(cr, uid, order.id, ['order_line'], context)['order_line']
             for order_line_id in old_order_lines_ids:
@@ -120,6 +122,12 @@ class SaleOrder(orm.Model):
             if attachment_ids:
                 attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': vals['name']},
                                      context)
+
+            if self.pool.get('crm.lead'):
+                crm_lead_model = self.pool['crm.lead']
+                if 'sale_order_id' in self.pool['crm.lead']._columns:
+                    crm_lead_ids = crm_lead_model.search(cr, uid, [('sale_order_id', '=', order.id)], context=context)
+                    crm_lead_model.write(cr, uid, crm_lead_ids, {'sale_order_id': new_order_id}, context)
 
             order.write({'active': False})
             order_ids.append(new_order_id)
