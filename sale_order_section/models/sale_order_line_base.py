@@ -47,13 +47,18 @@ class SaleOrderLineBase(orm.Model):
             res[base_line_id] = {
                 'subtotal': 0,
                 'subtotal_cost': 0,
-                'subtotal_margin': 0
+                'subtotal_margin': 0,
+                'subtotal_margin_perc': 0
             }
             sale_order_line_ids = sale_order_line_obj.search(cr, uid, [('order_line_base_id', '=', base_line_id)], context=context)
             for sale_order_line in sale_order_line_obj.read(cr, uid, sale_order_line_ids, ['price_subtotal', 'total_purchase_price'], context=context):
                 res[base_line_id]['subtotal'] += sale_order_line['price_subtotal']
                 res[base_line_id]['subtotal_cost'] += sale_order_line['total_purchase_price']
-                res[base_line_id]['subtotal_margin'] = res[base_line_id]['subtotal'] - res[base_line_id]['subtotal_cost']
+
+            res[base_line_id]['subtotal_margin'] = res[base_line_id]['subtotal'] - res[base_line_id]['subtotal_cost']
+            if res[base_line_id]['subtotal']:
+                res[base_line_id]['subtotal_margin_perc'] = (res[base_line_id]['subtotal_margin'] / res[base_line_id]['subtotal']) * 100
+
         return res
 
     _columns = {
@@ -74,6 +79,9 @@ class SaleOrderLineBase(orm.Model):
         'subtotal_margin': fields.function(_get_subtotal_line, type="float", multi='sums',
                                          method=True, string="Sub Totale Margine",
                                          digits_compute=dp.get_precision('Sale Price'), ),
+        'subtotal_margin_perc': fields.function(_get_subtotal_line, type="float", multi='sums',
+                                           method=True, string="Sub Totale Margine %",
+                                           digits_compute=dp.get_precision('Sale Price'), ),
     }
 
     _defaults = {
