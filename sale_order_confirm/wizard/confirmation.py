@@ -27,11 +27,11 @@
 #
 ##############################################################################
 
-import decimal_precision as dp
 import netsvc
+
+import decimal_precision as dp
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-from tools import ustr
 
 
 class sale_order_confirm_line(orm.TransientModel):
@@ -163,7 +163,7 @@ class sale_order_confirm_line(orm.TransientModel):
         return price_subtotal
 
 
-class sale_order_confirm(orm.TransientModel):
+class SaleOrderConfirm(orm.TransientModel):
     _name = "sale.order.confirm"
     _description = "Confirm wizard for Sale order"
 
@@ -208,7 +208,7 @@ class sale_order_confirm(orm.TransientModel):
         
         context = context or self.pool['res.users'].context_get(cr, uid)
             
-        res = super(sale_order_confirm, self).default_get(cr, uid, fields, context)
+        res = super(SaleOrderConfirm, self).default_get(cr, uid, fields, context)
 
         sale_order = sale_order_obj.browse(cr, uid, context['active_ids'][0], context)
 
@@ -306,72 +306,34 @@ class sale_order_confirm(orm.TransientModel):
             'new_sale_order',
             'confirm_line',
             'client_order_ref',
-            'order_date',
             'partner_shipping_id',
             'confirm_line_qty'
         ], context)
-        new_order_id = False
+        sale_order_id = sale_order_confirm_data['sale_order_id']
+        res = {
+                'type': 'ir.actions.act_window_close'
+            }
 
         if sale_order_confirm_data['new_sale_order'] or not sale_order_confirm_data['confirm_line_qty'] == len(sale_order_confirm_data['confirm_line']):
-            old_sale_order_data = sale_order_obj.read(cr, uid, sale_order_confirm_data['sale_order_id'], ['shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'sale_version_id', 'version', 'name', 'order_policy', 'picking_policy', 'invoice_quantity', 'section_id', 'categ_id'], context)
-            new_sale_order = {}
-            for key in ('shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'contact_id'):
-                new_sale_order[key] = old_sale_order_data.get(key, False) and old_sale_order_data[key][0] or False
-            for key in ('picking_policy', 'order_policy', 'invoice_quantity'):
-                new_sale_order[key] = old_sale_order_data.get(key, False)
-            
-            if not old_sale_order_data['sale_version_id']:
-                old_sale_order_name = old_sale_order_data['name'] + u" V.2"
-                old_sale_order_data['version'] = 2
-                new_sale_order['sale_version_id'] = old_sale_order_data['id']
-            else:
-                old_sale_order_name = old_sale_order_data['name'].split('V')[0] + u"V." + ustr(old_sale_order_data['version'] + 1)
-                new_sale_order['sale_version_id'] = old_sale_order_data['sale_version_id'][0]
-            
-            new_sale_order.update({
-                'version': old_sale_order_data['version'] + 1,
-                'name': old_sale_order_name,
-                'client_order_ref': sale_order_confirm_data['client_order_ref'],
-                'date_confirm': sale_order_confirm_data['order_date'],
-                'partner_shipping_id': sale_order_confirm_data['partner_shipping_id'][0]
-            })
-            # qui creo il nuovo sale.order
-            context['versioning'] = True
-            new_order_id = sale_order_obj.create(cr, uid, new_sale_order, context=context)
-
-            # sequence = 10
+            res = sale_order_obj.action_previous_version(cr, uid, [sale_order_confirm_data['sale_order_id']],
+                                                         context=context)
+            sale_order_id = res['res_id']
+            line_to_delete_ids = sale_order_line_obj.search(cr, uid, [('order_id', '=', sale_order_id)], context=context)
+            sale_order_line_obj.unlink(cr, uid, line_to_delete_ids, context=context)
+            sequence = 10
             for sale_order_confirm_line_data in sale_order_confirm_line_obj.browse(cr, uid, sale_order_confirm_data['confirm_line'], context):
-                sale_order_line_vals = self.get_sale_order_line_vals(cr, uid, new_order_id, sale_order_confirm_line_data, context)
+                sale_order_line_vals = self.get_sale_order_line_vals(cr, uid, sale_order_id, sale_order_confirm_line_data, context)
                 sale_order_line_obj.create(cr, uid, sale_order_line_vals, context=context)
 
-            wf_service.trg_validate(uid, 'sale.order', new_order_id, 'order_confirm', cr)
-            # wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'cancel', cr)
-            sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {'active': False}, context)
-
-            view_ids = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale', 'view_order_form')
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Sale Order',
-                'view_type': 'form',
-                'view_mode': 'form',
-                'view_id': view_ids and view_ids[1] or False,
-                'res_model': 'sale.order',
-                'nodestroy': True,
-                'target': 'current',
-                'res_id': new_order_id,
-            }
-        else:
-            sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {
+        sale_order_obj.write(cr, uid, sale_order_id, {
                 'customer_validation': True,
                 'client_order_ref': sale_order_confirm_data['client_order_ref'],
                 'partner_shipping_id': sale_order_confirm_data['partner_shipping_id'][0]
             }, context)
 
-            wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'order_confirm', cr)
-            # need to write after validation
-            sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {
+        wf_service.trg_validate(uid, 'sale.order', sale_order_id, 'order_confirm', cr)
+        # need to write after validation
+        sale_order_obj.write(cr, uid, sale_order_id, {
                 'date_confirm': sale_order_confirm_data['order_date'],
             }, context)
-            return {
-                'type': 'ir.actions.act_window_close'
-            }
+        return res
