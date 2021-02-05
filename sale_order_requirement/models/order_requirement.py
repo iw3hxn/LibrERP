@@ -156,12 +156,20 @@ class order_requirement(orm.Model):
     def set_state_draft(self, cr, uid, ids, context):
         temp_mrp_bom_model = self.pool['temp.mrp.bom']
         order_requirement_line_model = self.pool['order.requirement.line']
+        purchase_order_model = self.pool['purchase.order']
         line_ids = order_requirement_line_model.search(cr, uid, [('order_requirement_id', 'in', ids), ('state', '!=', 'draft')], context=context)
         purchase_order = []
         production_order = []
         description = []
         if line_ids:
             # search PO
+            purchase_order_ids = []
+            for order in order_requirement_line_model.read(cr, uid, line_ids, ['purchase_order_ids'], context=context):
+                purchase_order_ids += order['purchase_order_ids']
+            purchase_order_ids = list(set(purchase_order_ids))
+            if purchase_order_ids:
+                for order in purchase_order_model.read(cr, uid, purchase_order_ids, ['name'], context=context):
+                    purchase_order.append(order['name'])
             order_ids = temp_mrp_bom_model.search(cr, uid, [('order_requirement_line_id', 'in', line_ids), ('purchase_order_id', '!=', False)], context=context)
             production_ids = temp_mrp_bom_model.search(cr, uid, [('order_requirement_line_id', 'in', line_ids), ('mrp_production_id', '!=', False)], context=context)
             for temp_mrp_bom in temp_mrp_bom_model.browse(cr, uid, production_ids + order_ids, context):
