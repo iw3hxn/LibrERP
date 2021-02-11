@@ -47,19 +47,29 @@ class SaleOrder(orm.Model):
 
         return res
 
-    def action_reopen(self, cr, uid, ids, context=None):
-        for order in self.browse(cr, uid, ids, context):
-            for line in order.order_line:
-                for requirement_line in line.order_requirement_line_ids:
-                    if requirement_line.state != 'draft':
-                        raise orm.except_orm(
-                            _('Error'),
-                            _("You can't reopen Sale Order that already generated Requirement Order")
-                        )
+    def _sale_reopen_order_requirement(self, cr, uid, ids, context=None):
+        order_requirement_line_model = self.pool['order.requirement.line']
+        order_requirement_line_ids = order_requirement_line_model.search(cr, uid, [
+            ('order_requirement_id.sale_order_id', 'in', ids), ('state', '!=', 'draft')
+        ], context=context)
+
+        if order_requirement_line_ids:
+            raise orm.except_orm(
+                _('Error'),
+                _("You can't reopen Sale Order that already generated Requirement Order")
+            )
         order_requirement_model = self.pool['order.requirement']
         order_requirement_ids = order_requirement_model.search(cr, uid, [('sale_order_id', 'in', ids)], context=context)
         order_requirement_model.unlink(cr, uid, order_requirement_ids, context)
+        return True
+
+    def action_reopen(self, cr, uid, ids, context=None):
+        self._sale_reopen_order_requirement(cr, uid, ids, context)
         return super(SaleOrder, self).action_reopen(cr, uid, ids, context=context)
+
+    def action_cancel(self, cr, uid, ids, context=None):
+        self._sale_reopen_order_requirement(cr, uid, ids, context)
+        return super(SaleOrder, self).action_cancel(cr, uid, ids, context=context)
 
     def _get_production_order(self, cr, uid, ids, field_name, model_name, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)

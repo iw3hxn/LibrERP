@@ -111,7 +111,7 @@ class order_requirement(orm.Model):
 
     _columns = {
         'date': fields.date('Data'),
-        'sale_order_id': fields.many2one('sale.order', 'Order', required=True, ondelete='cascade', select=True),
+        'sale_order_id': fields.many2one('sale.order', 'Order', required=True, ondelete='cascade', select=True, auto_join=True),
         'client_order_ref': fields.related('sale_order_id', 'client_order_ref', type='char', string="Customer Reference"),
         'customer_id': fields.related('sale_order_id', 'partner_id', type='many2one', relation='res.partner', string='Customer', store=False),
         'user_id': fields.many2one('res.users', 'User'),
