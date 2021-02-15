@@ -57,7 +57,9 @@ class product_supplierinfo(orm.Model):
                 _logger.error(u'Missing pricelist for supplier {supplier}'.format(supplier=supplier_cost.name.name))
                 result[supplier_cost.id] = 0.0
             else:
-                price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], supplier_cost.product_id.id, 1, supplier_cost.name.id, context=ctx)[pricelist.id] or 0
+                # dragana [15.02.21] price_get can return {}, check if pricelist.id key exists in dict
+                # price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], supplier_cost.product_id.id, 1, supplier_cost.name.id, context=ctx)[pricelist.id] or 0
+                price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], supplier_cost.product_id.id, 1, supplier_cost.name.id, context=ctx).get(pricelist.id, 0) or 0
                 if pricelist:
                     from_currency = pricelist.currency_id.id
                     to_currency = user.company_id.currency_id.id
