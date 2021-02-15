@@ -603,7 +603,11 @@ class product_product(orm.Model):
     def _get_prefered_supplier(self, cr, uid, ids, field_name, arg, context):
         result = {}
         for product in self.browse(cr, uid, ids, context):
-            result[product.id] = product.seller_ids and product.seller_ids[0].name.id or False
+            seller = product.seller_ids and product.seller_ids[0]
+            result[product.id] = {
+                'prefered_supplier': seller and seller.name.id or False,
+                'prefered_supplier_code': seller and seller.product_code or ''
+            }
         return result
     
     def price_get(self, cr, uid, ids, ptype='list_price', context=None):
@@ -649,7 +653,8 @@ class product_product(orm.Model):
                                       help="The cost price is the standard price or, if the product has a bom, "
                                       "the sum of all standard price of its components. it take also care of the "
                                       "bom costing like cost per cylce."),
-        'prefered_supplier': fields.function(_get_prefered_supplier, type='many2one', relation='res.partner', string='Prefered Supplier'),
+        'prefered_supplier': fields.function(_get_prefered_supplier, multi='prefered_supplier', type='many2one', relation='res.partner', string='Prefered Supplier'),
+        'prefered_supplier_code': fields.function(_get_prefered_supplier, multi='prefered_supplier', type='char', string="Prefered Supplier Code"),
         'is_kit': fields.function(_is_kit, fnct_search=_kit_filter, method=True, type="boolean", string="Kit"),
         'bom_lines': fields.function(_get_boms, relation='mrp.bom', string='Boms', type='one2many', method=True),
         'qty_available': fields.function(

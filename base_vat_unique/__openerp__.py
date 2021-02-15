@@ -20,7 +20,7 @@
 ##############################################################################
 {
     "name": "Base VAT Unique check VAT number is unique",
-    "version": "0.3",
+    "version": "3.0.3",
     "author": "vitrum Network",
     "category": "Generic Modules/Base",
     "description": """Check VAT Number is unique.""",

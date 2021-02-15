@@ -40,7 +40,7 @@ class crm_meeting_report_by_province(report_sxw.rml_parse):
         self.year = False
         self.localcontext.update({
             'time': time,
-            'get_provinces': self.get_provinces,
+            'get_provinces': self._get_provinces,
             'truck_description': self.truck_description,
         })
         self.context = context
@@ -69,15 +69,27 @@ class crm_meeting_report_by_province(report_sxw.rml_parse):
         caus_list = self._text_to_array(name, 100)
         return '\n'.join(caus_list)
 
-    def get_provinces(self, form):
+    def _get_provinces(self, data):
         meeting_obj = pooler.get_pool(self.cr.dbname).get('crm.meeting')
         provinces = {}
+        if data.get('form', False):
+            date_from = data['form'].get('date_from', False)
+            date_to = data['form'].get('date_to', False)
+            meeting_search = []
+            if date_from:
+                meeting_search.append(('date', '>=', date_from))
+            if date_to:
+                meeting_search.append(('date', '<=', date_to))
 
-        meeting_search = [('date', '>=', form['date_from']), ('date', '<=', form['date_to'])]
-        if form['user_id']:
-            meeting_search.append(('user_id', '=', form['user_id'][0]))
+            user_id = data['form'].get('user_id', False)
+            if user_id:
+                if not isinstance(user_id, int):
+                    user_id = user_id[0]
+                meeting_search.append(('user_id', '=', user_id))
 
-        meeting_ids = meeting_obj.search(self.cr, self.uid, meeting_search, context=self.context)
+            meeting_ids = meeting_obj.search(self.cr, self.uid, meeting_search, context=self.context)
+        else:
+            meeting_ids = self.ids
         
         if meeting_ids:
             for meeting in meeting_obj.browse(self.cr, self.uid, meeting_ids, self.context):

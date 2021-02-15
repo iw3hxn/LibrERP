@@ -82,12 +82,15 @@ class sale_order(orm.Model):
                 task_obj = self.pool['project.task']
                 analytic_account_line_obj = self.pool['account.analytic.line']
                 unlink_project = True
+                task_to_unlink_ids = []
                 for task in order.project_project.tasks:
                     if not task.work_ids:
-                        task_obj.unlink(cr, uid, [task.id], context=context)
+                        task_to_unlink_ids.append(task.id)
                     else:
                         task_obj.action_close(cr, uid, [task.id], context=context)
                         unlink_project = False
+                if task_to_unlink_ids:
+                    task_obj.unlink(cr, uid, task_to_unlink_ids, context=context)
 
                 analytic_account_line_ids = analytic_account_line_obj.search(cr, uid, [('account_id', '=', order.project_project.analytic_account_id.id)], context=context)
                 sale_order_ids = self.search(cr, uid, [('project_project', '=', order.project_project.id)], context=context)

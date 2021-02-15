@@ -190,6 +190,12 @@ msgid "Subscription"
 msgstr "Abbonamento"
 
 #. module: sale_subscriptions
+#: field:product.product,subscription_product_id:0
+#, python-format
+msgid "Product Connected"
+msgstr "Prodotto Collegato"
+
+#. module: sale_subscriptions
 #: selection:sale.order,order_invoice_duration:0
 msgid "Bimestral"
 msgstr "Bimestrale"

@@ -30,8 +30,16 @@ class ProductProduct(orm.Model):
     _columns = {
         'subscription': fields.boolean('Subscription'),
         'order_duration': fields.selection(ORDER_DURATION, 'Subscription Duration'),
+        'subscription_product_id': fields.many2one('product.product', 'Product Connected', domain=[('type', '!=', 'service')]),
     }
 
     _defaults = {
         'order_duration': 365,
     }
+
+    def onchange_subscription(self, cr, uid, ids, subscription, type, context=None):
+        if not subscription:
+            return {
+                'value': {'subscription_product_id': False}
+            }
+        return {}

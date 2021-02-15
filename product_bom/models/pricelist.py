@@ -32,11 +32,11 @@ _logger.setLevel(logging.DEBUG)
 ENABLE_CACHE = config.get('product_cache', False)
 
 
-class product_pricelist_item(orm.Model):
+class ProductPricelistItem(orm.Model):
     _inherit = "product.pricelist.item"
 
     def _price_field_get(self, cr, uid, context=None):
-        result = super(product_pricelist_item, self)._price_field_get(cr, uid, context)
+        result = super(ProductPricelistItem, self)._price_field_get(cr, uid, context)
         result.append((-4, _('Cost Price include Bom')))
         return result
 
@@ -45,29 +45,29 @@ class product_pricelist_item(orm.Model):
     }
 
 
-class product_pricelist(orm.Model):
+class ProductPricelist(orm.Model):
     _inherit = 'product.pricelist'
 
     def _auto_init(self, cr, context={}):
-        super(product_pricelist, self)._auto_init(cr, context)
+        super(ProductPricelist, self)._auto_init(cr, context)
         cr.execute("SELECT 1 FROM pg_indexes WHERE indexname='product_pricelist_company_id_index'")
         if not cr.fetchone():
             cr.execute('CREATE INDEX product_pricelist_company_id_index ON product_pricelist (company_id)')
 
     def create(self, cr, uid, vals, context=None):
-        res = super(product_pricelist, self).create(cr, uid, vals, context)
+        res = super(ProductPricelist, self).create(cr, uid, vals, context)
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache.empty()
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
-        res = super(product_pricelist, self).write(cr, uid, ids, vals, context)
+        res = super(ProductPricelist, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache.empty()
         return res
 
     def unlink(self, cr, uid, ids, context=None):
-        res = super(product_pricelist, self).unlink(cr, uid, ids, context)
+        res = super(ProductPricelist, self).unlink(cr, uid, ids, context)
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache.empty()
         return res

@@ -10,7 +10,7 @@ from ..util import rounding
 default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
 
 
-class temp_mrp_bom(orm.Model):
+class TempMrpBom(orm.Model):
     _name = 'temp.mrp.bom'
 
     stock_availability = {}
@@ -57,6 +57,13 @@ class temp_mrp_bom(orm.Model):
             res[line['id']] = line['stock_availability'] < line['spare']
         return res
 
+    def _get_connected_document(self, cr, uid, ids, name, args, context=None):
+        res = {}
+        for line in self.read(cr, uid, ids, ['purchase_order_id', 'mrp_production_id'], context=context):
+            res[line['id']] = line['purchase_order_id'] and line['purchase_order_id'][1] or line[
+                'mrp_production_id'] and line['mrp_production_id'][1] or ''
+        return res
+
     def _get_temp_mrp_bom_action(self, cr, uid, ids, name, args, context=None):
         # Return a string describing whether a product is being bought or produced
         res = {}
@@ -100,29 +107,54 @@ class temp_mrp_bom(orm.Model):
     def get_color(self, cr, uid, ids, field_name, arg, context):
         res = {}
         for line in self.read(cr, uid, ids, ['level'], context):
-            row_color = temp_mrp_bom.get_color_bylevel(line['level'])
+            row_color = self.get_color_bylevel(line['level'])
             res[line['id']] = row_color
         return res
 
     def action_toggle_manufactured(self, cr, uid, ids, context):
-        line = self.browse(cr, uid, ids, context)[0]
-        ordreqline_obj = self.pool['order.requirement.line']
-        if line.level == 0 or line.is_leaf:
-            return True
-        temp_dict = {'is_manufactured': not line.is_manufactured}
-        line.write(temp_dict)
+        if not ids:
+            return False
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        line = self.read(cr, uid, ids[0], ['level', 'is_leaf', 'is_manufactured', 'order_requirement_line_id', 'state'], context)
+        if not line:
+            raise orm.except_orm(
+                _('Error'),
+                _('Press "Reload & Preview" Button'))
+        if line['state'] != 'draft':
+            return False
 
-        ordreqline = ordreqline_obj.browse(cr, uid, line.order_requirement_line_id.id, context)
+        if line['level'] == 0 or line['is_leaf']:
+            return True
+        temp_dict = {'is_manufactured': not line['is_manufactured']}
+        self.write(cr, uid, [ids[0]], temp_dict, context=context)
+
+        ordreqline_model = self.pool['order.requirement.line']
         # Build update value [1, ID, vals]
-        temp_vals = [1, line.id, temp_dict]
-        ordreqline.onchange_temp_mrp_bom_ids(temp_mrp_bom_ids=[temp_vals], context=context)
+        temp_vals = [1, line['id'], temp_dict]
+        ordreqline_model.onchange_temp_mrp_bom_ids(cr, uid, line['order_requirement_line_id'][0], temp_mrp_bom_ids=[temp_vals], context=context)
         return True
 
     def action_toggle_buy(self, cr, uid, ids, context):
-        line = self.browse(cr, uid, ids, context)[0]
-        if line.level == 0 or line.is_manufactured:
+        if not ids:
+            return False
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        line = self.read(cr, uid, ids[0], ['level', 'is_manufactured', 'buy', 'state'], context)
+        if not line:
+            raise orm.except_orm(
+                _('Error'),
+                _('Press "Reload & Preview" Button'))
+        if line['state'] != 'draft':
+            return False
+
+        if line['level'] == 0 or line['is_manufactured']:
             return True
-        line.write({'buy': not line.buy})
+        self.write(cr, uid, [ids[0]], {
+            'buy': not line['buy'],
+            'purchase_order_line_id': False,
+            'purchase_order_id': False
+        }, context=context)
         return True
 
     def update_supplier(self, cr, uid, ids, context):
@@ -134,13 +166,17 @@ class temp_mrp_bom(orm.Model):
         return True
 
     _columns = {
+        'active': fields.boolean(required=True),
+        'state': fields.selection(
+            [('cancel', 'Cancelled'), ('draft', 'Draft'), ('done', 'Done')], 'State', required=True, default='draft'
+        ),
         'name': fields.char('Name', size=160, readonly=True),
         'type': fields.selection([('normal', 'Normal BoM'), ('phantom', 'Sets / Phantom')], 'BoM Type', required=True,
                                  help="If a sub-product is used in several products, it can be useful to create its own BoM. " \
                                       "Though if you don't want separated production orders for this sub-product, select Set/Phantom as BoM type. " \
                                       "If a Phantom BoM is used for a root product, it will be sold and shipped as a set of components, instead of being produced."),
         'level_name': fields.char('Level', readonly=True),
-        'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True,
+        'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True, index=True,
                                                      ondelete='cascade', select=True, auto_join=True),
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True, ondelete='cascade'),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
@@ -154,10 +190,6 @@ class temp_mrp_bom(orm.Model):
         'product_efficiency': fields.float('Manufacturing Efficiency', required=True,
                                            help="A factor of 0.9 means a loss of 10% within the production process."),
         'product_rounding': fields.float('Product Rounding', help="Rounding applied on the product quantity."),
-        'type': fields.selection([('normal','Normal BoM'),('phantom','Sets / Phantom')], 'BoM Type', required=True,
-                                 help= "If a sub-product is used in several products, it can be useful to create its own BoM. "\
-                                 "Though if you don't want separated production orders for this sub-product, select Set/Phantom as BoM type. "\
-                                 "If a Phantom BoM is used for a root product, it will be sold and shipped as a set of components, instead of being produced."),
         'partial_cost': fields.float('Partial Cost', readonly=True),
         'cost': fields.float('Cost', readonly=True),
         'product_type': fields.char('Pr.Type', size=10, readonly=True),
@@ -191,15 +223,113 @@ class temp_mrp_bom(orm.Model):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, store=False),
         'sequence': fields.integer('Sequence index'),
         'is_out_of_stock': fields.function(_is_out_of_stock, method=True, type='boolean', string='Out of Stock', readonly=True),
-        'temp_mrp_bom_action': fields.function(_get_temp_mrp_bom_action, method=True, type='char', string='Action', readonly=True)
+        'temp_mrp_bom_action': fields.function(_get_temp_mrp_bom_action, method=True, type='char', string='Action', readonly=True),
+        'connected_document': fields.function(_get_connected_document, method=True, type='char', string="Document", readonly=True),
+        'user_id': fields.many2one('res.users', 'User'),
     }
 
     _order = 'sequence,level,id'
 
     _defaults = {
+        'active': True,
         'is_manufactured': True,
-        'level': 1  # Useful for insertion of new temp mrp boms
+        'level': 1,  # Useful for insertion of new temp mrp boms
+        'state': 'draft'
     }
+
+    def _manufacture_bom(self, cr, uid, temp, context):
+        mrp_production_model = self.pool['mrp.production']
+        uom_model = self.pool['product.uom']
+
+        product = temp.product_id
+
+        user_id = temp.user_id or temp.order_requirement_line_id.user_id or False
+
+        # Search for another production order for the same sale order
+        mrp_production_domain = [('product_id', '=', product.id),
+                                 ('sale_id', '=', temp.sale_order_id.id),
+                                 ('state', '=', 'draft')]
+        if user_id:
+            mrp_production_domain.append(('user_id', '=', user_id.id))
+
+        mrp_productions_ids = mrp_production_model.search_browse(cr, uid, mrp_production_domain, context=context)
+
+        append_production = False
+        # If another production order for the same sale order is present and not started, append to it
+        #   but ONLY if the production order has a bom (production orders confirmed)
+        if mrp_productions_ids:
+            # Take first that has a bom
+            for mrp_production in mrp_productions_ids:
+                bom_point = mrp_production.temp_bom_id
+                bom_id = mrp_production.temp_bom_id.id
+                if bom_point or bom_id:
+                    append_production = True
+                    break
+
+        # From for above, mrp_production is the mrp order to which to append
+        if append_production:
+            mrp_production_id = mrp_production.id
+            # Calculate qty according to UoM
+            qty = uom_model._compute_qty(cr, uid, temp.product_uom.id, temp.product_qty, mrp_production.product_uom.id)
+
+            newqty = mrp_production.product_qty + qty
+
+            mrp_production_model.write(cr, uid, mrp_production_id,
+                                     {'product_qty': newqty}, context)
+        else:
+            # Create new
+            mrp_production_values = mrp_production_model.product_id_change(cr, uid, [], product.id)['value']
+
+            mrp_production_values.update({
+                'analytic_account_id': temp.sale_order_id.project_id and temp.sale_order_id.project_id.id or False,
+                'product_id': product.id,
+                'product_qty': temp.product_qty,
+                'sale_id': temp.sale_order_id.id,
+                # 'sale_name': temp.sale_order_id.name,
+                # 'sale_ref': temp.sale_order_id.client_order_ref or '',
+                'is_from_order_requirement': True,
+                'temp_bom_id': temp.id,
+                'level': temp.level,
+                'notes': temp.order_requirement_line_id.order_requirement_id.internal_note or '',
+            })
+            if user_id:
+                mrp_production_values.update(user_id=user_id.id)
+
+            # Create manufacturing order
+            mrp_production_id = mrp_production_model.create(cr, uid, mrp_production_values, context=context)
+
+        if isinstance(mrp_production_id, (int, long)):
+            mrp_production_ids = [mrp_production_id]
+        else:
+            mrp_production_ids = mrp_production_id
+
+        mrp_production_model.action_compute(cr, uid, mrp_production_ids, context=context)
+        self.write(cr, uid, temp.id, {'mrp_production_id': mrp_production_id}, context)
+        return True
+
+    def manufacture_or_purchase_rec(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
+        is_split = user.company_id.split_mrp_production
+        for line in self.browse(cr, uid, ids, context):
+            self._manufacture_or_purchase_rec(cr, uid, line, is_split, context)
+        return True
+
+    def _manufacture_or_purchase_rec(self, cr, uid, line, is_split, context=None):
+        # todo test line.state != 'draft'
+        if line.state != 'draft':
+            return False
+        if line.is_manufactured:
+            # self._manufacture_bom(cr, uid, temp, context)
+            # When splitting orders, create MRP order for every non-leaf bom (excluding level 0 already done)
+            if is_split and line.level > 0:
+                self._manufacture_bom(cr, uid, line, context)
+            for child in line.bom_lines:
+                self._manufacture_or_purchase_rec(cr, uid, child, is_split, context)
+        else:
+            self.pool['order.requirement.line']._purchase_bom(cr, uid, line, context)
+        line.write({'state': 'done'})
+        return True
 
     def action_add(self, cr, uid, ids, context):
         line = self.browse(cr, uid, ids, context)[0]
@@ -268,12 +398,22 @@ class temp_mrp_bom(orm.Model):
         if level == 1:
             return bool(parents_ids)
         for parent in parents_ids:
-            vals = parent[2]
-            if temp_mrp_bom.check_parents(vals, temp_mrp_bom_ids):
+            values = parent[2]
+            if TempMrpBom.check_parents(values, temp_mrp_bom_ids):
                 return True
         return False
 
-    def onchange_supplier_id(self, cr, uid, ids, supplier_id, context=None):
+    def onchange_purchase_order_line_id(self, cr, uid, ids, purchase_order_line_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        ret = {
+            'purchase_order_id': False
+        }
+        if purchase_order_line_id:
+            order_id = self.pool['purchase.order.line'].read(cr, uid, purchase_order_line_id, ['order_id'], context=context, load='_obj')['order_id']
+            ret['purchase_order_id'] = order_id
+        return {'value': ret}
+
+    def onchange_supplier_id(self, cr, uid, ids, supplier_id, product_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         ctx = context.copy()
         partner_obj = self.pool['res.partner']
@@ -389,6 +529,16 @@ class temp_mrp_bom(orm.Model):
 
         _explode_rec(bom_father, bom_factor)
         return result, result2
+
+    def action_view_connected_document(self, cr, uid, ids, context=None):
+        line = self.browse(cr, uid, ids, context)[0]
+        if line.purchase_order_id:
+            return line.action_view_purchase_order()
+        elif line.mrp_production_id:
+            return line.action_view_mrp_production()
+        raise orm.except_orm(
+            _('Error'),
+            _('Missing document to open'))
 
     def action_view_purchase_order(self, cr, uid, ids, context=None):
         line = self.browse(cr, uid, ids, context)[0]

@@ -31,6 +31,6 @@ class ItalyAdeTaxNature(orm.Model):
     def get_non_taxable_nature(self, cr, uid, context=None):
         nature_ids = self.search(cr, uid, [('active', '=', True)], context=context)
         return [
-            (nature.code, nature.name)
+            (nature.code, "[{}] {}".format(nature.code, nature.name))
             for nature in self.browse(cr, uid, nature_ids, context=context)
         ]

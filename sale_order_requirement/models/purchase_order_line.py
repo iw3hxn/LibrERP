@@ -34,3 +34,25 @@ class PurchaseOrderLine(orm.Model):
             'temp_mrp_bom_ids': []
         })
         return super(PurchaseOrderLine, self).copy_data(cr, uid, id, default, context=context)
+
+    def name_get(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = []
+        if context.get('purchase_order_full_name', False):
+            for line in self.read(cr, uid, ids, ['order_id'], context):
+                res.append((line['id'], line['order_id'][1]))
+        else:
+            res = super(PurchaseOrderLine, self).name_get(cr, uid, ids)
+        return res
+
+    def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if context.get('purchase_order_full_name', False):
+            name2 = ''
+            args2 = args
+            args2.append(('order_id.name', 'ilike', name))
+            res = super(PurchaseOrderLine, self).name_search(cr, uid, name2, args, operator, context, limit)
+        else:
+            res = super(PurchaseOrderLine, self).name_search(cr, uid, name, args, operator, context, limit)
+
+        return res

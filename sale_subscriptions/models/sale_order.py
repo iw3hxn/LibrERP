@@ -230,17 +230,21 @@ class SaleOrder(orm.Model):
                     'order_start_date': order_end_date + datetime.timedelta(days=1),
                     'validation_date': False,
                     'origin': order.name,
-                    'validation_user': False
+                    'validation_user': False,
+                    'client_order_ref': False
                 }
-                new_order_id = self.copy(cr, uid, [order.id], values, context)
-                
-                order_obj.write(cr, uid, [order.id], {'automatically_create_new_subscription': False}, context)
-                
-                new_line_ids = line_obj.search(cr, uid, [('order_id', '=', new_order_id)], context=context)
-                new_lines = line_obj.browse(cr, uid, new_line_ids, context)
-                for line in new_lines:
-                    if not line.product_id.subscription or line.suspended:
-                        line_obj.unlink(cr, uid, [line.id])
+                try:
+                    new_order_id = self.copy(cr, uid, order.id, values, context)
+
+                    order_obj.write(cr, uid, [order.id], {'automatically_create_new_subscription': False}, context)
+
+                    new_line_ids = line_obj.search(cr, uid, [('order_id', '=', new_order_id)], context=context)
+                    new_lines = line_obj.browse(cr, uid, new_line_ids, context)
+                    for line in new_lines:
+                        if not line.product_id.subscription or line.suspended:
+                            line_obj.unlink(cr, uid, [line.id])
+                except Exception as e:
+                    _logger.error("Error on duplicate Sale Order ID {}: {}".format(order.id, e))
         
         # We should return smth, if not we will get an error
         return {'value': {}}
@@ -569,3 +573,40 @@ class SaleOrder(orm.Model):
         order_line_obj.write(cr, uid, order_line_ids, {}, context=context)
         self.write(cr, uid, ids, {}, context=context)
         return res
+
+    def service_only(self, cr, uid, orders, context):
+        service = super(SaleOrder, self).service_only(cr, uid, orders, context)
+        for order in orders:
+            if order.order_line:
+                for order_line in order.order_line:
+                    if order_line.product_id and order_line.product_id.subscription_product_id:
+                        return False
+        return service
+
+    def _create_pickings_and_procurements(self, cr, uid, order, order_lines, picking_id=False, context=None):
+        picking_id = super(SaleOrder, self)._create_pickings_and_procurements(cr, uid, order, order_lines, picking_id, context)
+
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        move_obj = self.pool['stock.move']
+        picking_obj = self.pool['stock.picking']
+
+        for line in order_lines:
+            if line.state == 'done':
+                continue
+            product_id = line.product_id
+            if product_id:
+                if product_id.type == 'service' and product_id.subscription_product_id:
+                    if not picking_id:
+                        picking_id = picking_obj.create(cr, uid,
+                                                        self._prepare_order_picking(cr, uid, order, context=context))
+                    date_planned = self._get_date_planned(cr, uid, order, line, order.date_confirm, context=context)
+                    move_line_vals = self._prepare_order_line_move(cr, uid, order, line, picking_id,
+                                                                                     date_planned, context=context)
+                    move_line_vals['product_id'] = product_id.subscription_product_id.id
+                    move_id = move_obj.create(cr, uid, move_line_vals, context=context)
+
+        wf_service = netsvc.LocalService("workflow")
+        if picking_id:
+            wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
+
+        return picking_id

@@ -62,6 +62,9 @@ Example:
 
     $ pyxbgen -u fornituraIvp_2018_v1.xsd -m vat_settlement_IVP18_1_2_4
     Python for urn:www.agenziaentrate.gov.it:specificheTecniche:sco:ivp requires 3 modules
+    
+    $ pyxbgen -u DatiFatturav2.1.1.xsd -m dati_fattura_v_2_1_1__1_2_4
+    Python for http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v2.0 requires 2 modules
 
 
 Installation

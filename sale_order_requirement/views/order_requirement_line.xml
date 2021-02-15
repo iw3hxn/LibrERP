@@ -33,10 +33,13 @@
                     <field name="supplier_ids" invisible="1"/>
                     <field name="id" invisible="1"/>
                     <field name="user_id" widget="selection" />
+                    <field name="force_purchase_order_line_id" domain="[('product_id', '=', new_product_id), ('partner_id', '=', supplier_id)]"
+                                               attrs="{'readonly': ['|', ('supplier_id','=',False), ('buy', '=', False)]}"
+                                               context="{'purchase_order_full_name': True}" />
                     <group colspan="8" col="8" attrs="{'invisible': [('state','!=','draft')]}">
                         <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/>
                         <button name="reload_bom" string="Reload &amp; Preview" icon="gtk-refresh" type="object"/>
-                        <button name="confirm_suppliers" string="OK" icon="gtk-apply" type="object"
+                        <button name="confirm_suppliers" string="OK" icon="gtk-ok" type="object"
                                 confirm="Are you sure you want to do this?"/>
                     </group>
 <!--                    <group colspan="8" col="8" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),-->
@@ -46,14 +49,17 @@
                                 <field name="sale_order_line_description" colspan="4" nolabel="1"/>
                                 <field name="sale_order_line_notes" colspan="4" nolabel="1"/>
                             </page>
+                        </notebook>
+                        <notebook colspan="4">
                             <page string="BOM" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False), ('is_manufactured','=',False)]}">
-                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context=""
+                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context="{'purchase_order_full_name': True, 'default_user_id': user_id}"
                                        on_change="onchange_temp_mrp_bom_ids(temp_mrp_bom_ids, context)"
                                        attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
                                                                  ('is_manufactured','=',False)],
                                                'readonly':['|',('state','!=','draft'),('is_manufactured','=',False)]}">
                                     <tree string="BoM Structure" editable="bottom"
                                         colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                        <field name="user_id" attrs="{'readonly': ['|', ('is_manufactured','=',False), ('level', '=', 0)]}"/>
                                         <field name="row_color" invisible="1"/>
                                         <field name="is_leaf"/>
                                         <field name="id" invisible="1"/>
@@ -83,17 +89,27 @@
                                                 attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
                                         <field name="cost"/>
                                         <field name="temp_mrp_bom_action"/>
-                                        <button name="action_toggle_manufactured" string="Toggle Manufactured" type="object" icon="gtk-properties" attrs="{'invisible': [('level','=',0)]}"/>
+                                        <button name="action_toggle_manufactured" string="Toggle Manufactured" type="object" icon="gtk-properties"
+                                                attrs="{'invisible': ['|', ('level','=',0), ('state', '!=', 'draft')]}"/>
                                         <field name="is_manufactured" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_leaf','=',True)]}"/>
-                                        <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="terp-dolar" attrs="{'invisible': ['|',('level','=',0),('is_manufactured','=',True)]}"/>
+                                        <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="terp-dolar"
+                                                attrs="{'invisible': ['|', '|', ('level','=',0),('is_manufactured','=',True), ('state', '!=', 'draft')]}"/>
                                         <field name="buy" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_manufactured','=',True)]}"/>
-                                        <field name="supplier_id" on_change="onchange_supplier_id(supplier_id, context)"
+                                        <field name="supplier_id" on_change="onchange_supplier_id(supplier_id, product_id, context)"
                                                attrs="{'required': [('is_manufactured', '=', False)],
                                                     'readonly': ['|',('is_manufactured', '=', True),
                                                                      ('product_type','!=','product'),
                                                                      ('level','=',0)]}"/>
+                                        <field name="purchase_order_line_id" domain="[('product_id', '=', product_id), ('partner_id', '=', supplier_id)]"
+                                               on_change="onchange_purchase_order_line_id(purchase_order_line_id, context)"
+                                               attrs="{'readonly': ['|', ('supplier_id','=',False), ('buy', '=', False)]}"
+                                               context="{'purchase_order_full_name': True}" />
+                                        <field name="purchase_order_id" invisible="1"/>
                                         <field name="supplier_ids" invisible="1"/>
-                                        <!--<button name="update_supplier" string="Reload" type="object" icon="gtk-refresh" />-->
+                                        <field name="mrp_production_id" readonly="1" />
+                                        <field name="state" />
+                                        <button name="manufacture_or_purchase_rec" string="OK" icon="gtk-ok" type="object" attrs="{'invisible': ['|', ('level','=', 0), ('state', '!=', 'draft')]}"
+                                            confirm="Are you sure you want to do this?" groups="sale_order_requirement.open_order_requirement_by_line"/>
                                     </tree>
                                 </field>
                             </page>
@@ -157,10 +173,13 @@
                                 <field name="sale_order_line_description" colspan="4" nolabel="1"/>
                                 <field name="sale_order_line_notes" colspan="4" nolabel="1"/>
                             </page>
+                        </notebook>
+                        <notebook colspan="4">
                             <page string="BOM" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False), ('is_manufactured','=',False)]}">
-                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" readonly="1" widget="one2many_list">
+                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" readonly="1" widget="one2many_list" context="{'default_user_id': user_id}">
                                     <tree string="BoM Structure" editable="top"
                                         colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                        <field name="user_id" />
                                         <field name="row_color" invisible="1"/>
                                         <field name="is_leaf"/>
                                         <field name="level_name"/>
@@ -178,10 +197,13 @@
                                         <field name="is_manufactured" readonly="1" invisible="1"/>
                                         <field name="buy" readonly="1" invisible="1"/>
                                         <field name="supplier_id"  readonly="1"/>
-                                        <field name="purchase_order_id" />
-                                        <button string="View" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>
-                                        <field name="mrp_production_id" />
-                                        <button string="View" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>
+                                        <field name="connected_document" readonly="1"/>
+                                        <button string="View Connected Document" name="action_view_connected_document" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('connected_document','=',False)]}"/>
+<!--                                        <field name="purchase_order_id" invisible="1"/>-->
+<!--                                        <button string="View Purchase Order" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>-->
+<!--                                        <field name="mrp_production_id" invisible="1"/>-->
+<!--                                        <button string="View Production Order" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>-->
+                                        <field name="state" />
                                     </tree>
                                     <form string="BoM Details">
                                         <field name="product_id" readonly="1"/>
@@ -205,6 +227,7 @@
                                         <field name="supplier_id"  readonly="1"/>
                                         <newline />
                                         <field name="mrp_production_id" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
+                                        <field name="state" widget="statusbar" statusbar_colors='{"draft":"red","done":"black","cancel":"grey"}'/>
                                     </form>
                                 </field>
                             </page>
@@ -258,7 +281,7 @@
                     <field name="row_color" invisible="1"/>
                     <field name="user_id" />
                     <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in" attrs="{'invisible': [('has_bom','=',False)]}" />
-                    <field name="has_bom" />
+                    <field name="has_bom" invisible="1"/>
                     <field name="product_id"/>
                     <field name="new_product_id"/>
                     <field name="qty" sum="qty"/>
@@ -268,10 +291,10 @@
                     <field name="sale_order_line_id" invisible="1"/>
                     <button context="" name="%(action_add_sale_order_line)d" icon="gtk-add" type="action" help="Add Sale Order Line"
                             attrs="{'invisible': [('sale_order_line_id', '!=', False)]}"/>
-
                     <button context="" name="action_open_bom" icon="terp-mrp" type="object" help="Start to Work on BOM" states="draft" />
                     <button name="action_reload_bom" icon="gtk-refresh" type="object" help="Reload BOM"
-                            attrs="{'invisible': [('state','!=','draft')]}"/>
+                            attrs="{'invisible': ['|', ('state','!=','draft'), ('temp_mrp_bom_ids', '=', False)]}"/>
+                    <field name="temp_mrp_bom_ids" invisible="1"/>
                     <field name="production_orders_state"/>
                     <field name="purchase_orders_approved"/>
                     <field name="purchase_orders_state"/>

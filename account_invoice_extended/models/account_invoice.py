@@ -23,6 +23,8 @@
 ##############################################################################
 
 import time
+
+import decimal_precision as dp
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
@@ -366,3 +368,35 @@ class account_invoice(orm.Model):
         result = super(account_invoice, self).action_move_create(cr, uid, ids, context)
         res = self._force_paid_zero_invoice(cr, uid, ids, context)
         return result
+
+    def group_lines(self, cr, uid, iml, line, inv):
+        """Merge account move lines (and hence analytic lines) if invoice line hashcodes are equals"""
+        obj_precision = self.pool['decimal.precision']
+        line2 = super(account_invoice, self).group_lines(cr, uid, iml, line, inv)
+
+        sum_credit = 0
+        sum_debit = 0
+        for line in line2:
+            if line[2].get('credit'):
+                credit = round(line[2]['credit'], obj_precision.precision_get(cr, uid, 'Account'))
+                line[2]['credit'] = credit
+                sum_credit += credit
+            if line[2].get('debit'):
+                debit = round(line[2]['debit'], obj_precision.precision_get(cr, uid, 'Account'))
+                line[2]['debit'] = debit
+                sum_debit += debit
+
+        if sum_debit != sum_credit:
+            am = sum_credit - sum_debit
+            line2.append(
+                (0, 0, {
+                    'name': 'Round',
+                    'partner_id': inv.partner_id.id,
+                    'date': inv.date_invoice,
+                    'debit': (am > 0) and am or 0.0,
+                    'credit': (am < 0) and -am or 0.0,
+                    'quantity': 1,
+                    'account_id': inv.account_id.id
+                }))
+        return line2
+

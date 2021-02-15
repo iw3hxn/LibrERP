@@ -46,7 +46,7 @@ class NewInvoices(orm.Model):
             company = self.pool['res.users'].browse(cr, uid, uid, context).company_id
             body += u'{company.name}'.format(company=company)
             mail_message = self.pool['mail.message']
-            subject = u'Report importazione fatture elettroniche'
+            subject = u'{}: Report importazione fatture elettroniche'.format(company.name)
             email_from = parameter_model.get_param(cr, uid, 'email_einvoices_report_from').encode('utf-8')
             email_to = parameter_model.get_param(cr, uid, 'email_einvoices_report_send_to').encode('utf-8')
             mail_message.schedule_with_attach(cr, uid, email_from, [email_to], subject, body, subtype='html')

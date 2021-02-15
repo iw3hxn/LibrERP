@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #    Copyright (C) 2017    SHS-AV s.r.l. <https://www.zeroincombenze.it>
-#    Copyright (C) 2017    Didotech srl <http://www.didotech.com>
+#    Copyright (C) 2017-2021    Didotech srl <http://www.didotech.com>
 #
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
@@ -17,66 +17,45 @@ try:
     from unidecode import unidecode
     if os.environ.get('SPESOMETRO_VERSION', '2.1') == '2.0':
         SPESOMETRO_VERSION = '2.0'
-        from openerp.addons.l10n_it_ade.bindings.dati_fattura_v_2_0 import (
-            DatiFattura,
-            VersioneType,
-            DatiFatturaHeaderType,
-            DichiaranteType,
-            CodiceFiscaleType,
-            DTEType,
-            CedentePrestatoreDTEType,
-            IdentificativiFiscaliType,
-            IdentificativiFiscaliITType,
-            IdFiscaleITType,
-            IdFiscaleType,
-            CessionarioCommittenteDTEType,
-            AltriDatiIdentificativiNoSedeType,
-            AltriDatiIdentificativiNoCAPType,
-            IdentificativiFiscaliNoIVAType,
-            IndirizzoType,
-            IndirizzoNoCAPType,
-            # RettificaType,
-            DatiFatturaBodyDTEType,
-            DatiGeneraliType,
-            DatiRiepilogoType,
-            DatiIVAType,
-            DTRType,
-            CessionarioCommittenteDTRType,
-            CedentePrestatoreDTRType,
-            DatiFatturaBodyDTRType,
-            DatiGeneraliDTRType,
-            )
+        from openerp.addons.l10n_it_ade.bindings import dati_fattura_v_2_0 as dati_fattura
     else:
         SPESOMETRO_VERSION = '2.1'
-        from openerp.addons.l10n_it_ade.bindings.dati_fattura_v_2_1 import (
-            DatiFattura,
-            VersioneType,
-            DatiFatturaHeaderType,
-            DichiaranteType,
-            CodiceFiscaleType,
-            DTEType,
-            CedentePrestatoreDTEType,
-            IdentificativiFiscaliType,
-            IdentificativiFiscaliITType,
-            IdFiscaleITType,
-            IdFiscaleType,
-            CessionarioCommittenteDTEType,
-            AltriDatiIdentificativiITType,
-            AltriDatiIdentificativiType,
-            IdentificativiFiscaliNoIVAType,
-            IndirizzoType,
-            # IndirizzoNoCAPType,
-            # RettificaType,
-            DatiFatturaBodyDTEType,
-            DatiGeneraliDTEType,
-            DatiRiepilogoType,
-            DatiIVAType,
-            DTRType,
-            CessionarioCommittenteDTRType,
-            CedentePrestatoreDTRType,
-            DatiFatturaBodyDTRType,
-            DatiGeneraliDTRType,
-            )
+        # from openerp.addons.l10n_it_ade.bindings import dati_fattura_v_2_1 as dati_fattura
+        from openerp.addons.l10n_it_ade.bindings import dati_fattura_v_2_1_1 as dati_fattura
+
+    DatiFattura = dati_fattura.DatiFattura
+    VersioneType = dati_fattura.VersioneType
+    DatiFatturaHeaderType = dati_fattura.DatiFatturaHeaderType
+    DichiaranteType = dati_fattura.DichiaranteType
+    CodiceFiscaleType = dati_fattura.CodiceFiscaleType
+    DTEType = dati_fattura.DTEType
+    CedentePrestatoreDTEType = dati_fattura.CedentePrestatoreDTEType
+    IdentificativiFiscaliType = dati_fattura.IdentificativiFiscaliType
+    IdentificativiFiscaliITType = dati_fattura.IdentificativiFiscaliITType
+    IdFiscaleITType = dati_fattura.IdFiscaleITType
+    IdFiscaleType = dati_fattura.IdFiscaleType
+    CessionarioCommittenteDTEType = dati_fattura.CessionarioCommittenteDTEType
+    AltriDatiIdentificativiITType = dati_fattura.AltriDatiIdentificativiITType
+    AltriDatiIdentificativiType = dati_fattura.AltriDatiIdentificativiType
+    IdentificativiFiscaliNoIVAType = dati_fattura.IdentificativiFiscaliNoIVAType
+    IndirizzoType = dati_fattura.IndirizzoType
+    # RettificaType = dati_fattura.RettificaType
+    DatiFatturaBodyDTEType = dati_fattura.DatiFatturaBodyDTEType
+    DatiGeneraliDTEType = dati_fattura.DatiGeneraliDTEType
+    DatiRiepilogoType = dati_fattura.DatiRiepilogoType
+    DatiIVAType = dati_fattura.DatiIVAType
+    DTRType = dati_fattura.DTRType
+    CessionarioCommittenteDTRType = dati_fattura.CessionarioCommittenteDTRType
+    CedentePrestatoreDTRType = dati_fattura.CedentePrestatoreDTRType
+    DatiFatturaBodyDTRType = dati_fattura.DatiFatturaBodyDTRType
+    DatiGeneraliDTRType = dati_fattura.DatiGeneraliDTRType
+
+    if SPESOMETRO_VERSION == '2.0':
+        AltriDatiIdentificativiNoSedeType = dati_fattura.AltriDatiIdentificativiNoSedeType
+        AltriDatiIdentificativiNoCAPType = dati_fattura.AltriDatiIdentificativiNoCAPType
+        IndirizzoNoCAPType = dati_fattura.IndirizzoNoCAPType
+        DatiGeneraliType = dati_fattura.DatiGeneraliType
+
     #   ANNType)
 except ImportError as err:
     _logger.debug(err)

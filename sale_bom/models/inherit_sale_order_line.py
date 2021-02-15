@@ -24,7 +24,7 @@ import decimal_precision as dp
 from openerp import tools
 
 
-class sale_order_line(orm.Model):
+class SaleOrderLine(orm.Model):
     _inherit = "sale.order.line"
     
     _columns = {
@@ -39,13 +39,20 @@ class sale_order_line(orm.Model):
 
     def _get_mrp_bom_value(self, cr, uid, ids, bom_line, price_unit, sequence, context=None):
 
+        if bom_line.product_uom.category_id.id != bom_line.product_id.uom_id.category_id.id:
+            uos_coeff = bom_line.product_id.uos_coeff or 1
+            qty = bom_line.product_qty * uos_coeff
+        else:
+            qty = self.pool['product.uom']._compute_qty(cr, uid, from_uom_id=bom_line.product_uom.id, qty=bom_line.product_qty,
+                                       to_uom_id=bom_line.product_id.uom_id.id)
+
         line_bom = {
             'parent_id': False,
             'product_id': bom_line.product_id.id,
             'product_uom_qty': bom_line.product_qty,
             'product_uom': bom_line.product_uom.id,
             'price_unit': price_unit,
-            'price_subtotal': bom_line.product_qty * price_unit,
+            'price_subtotal': qty * price_unit,
             'sequence': sequence,
         }
         if ids and len(ids) == 1:
@@ -57,7 +64,7 @@ class sale_order_line(orm.Model):
                           lang=False, update_tax=True, date_order=False,
                           packaging=False, fiscal_position=False, flag=False, context=None):
 
-        result = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product_id, qty, uom, qty_uos, uos, name, partner_id,
+        result = super(SaleOrderLine, self).product_id_change(cr, uid, ids, pricelist, product_id, qty, uom, qty_uos, uos, name, partner_id,
                                                                 lang, update_tax, date_order, packaging, fiscal_position, flag, context)
         context = context or self.pool['res.users'].context_get(cr, uid)
         # if not isinstance(ids, list):
@@ -65,14 +72,14 @@ class sale_order_line(orm.Model):
         if not context.get('calculate_bom', True):
             return result
         if product_id:
-            uom_obj = self.pool['product.uom']
+            uom_model = self.pool['product.uom']
             product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
             sequence = 0
             if product.bom_lines:
                 result['value']['with_bom'] = True
 
                 mrp_bom = product.bom_lines[0]
-                # line_mrp_bom_obj = self.pool.get('sale.order.line.mrp.bom')
+                # line_mrp_bom_model = self.pool.get('sale.order.line.mrp.bom')
                 mrp_bom_ids = [mrp_bom.id]
                 if mrp_bom.bom_lines:
                     result['value']['mrp_bom'] = []
@@ -110,14 +117,12 @@ class sale_order_line(orm.Model):
                         if value:
                             routing_ids.append(value)
 
-                    workcenter_obj = self.pool['mrp.routing.workcenter']
-                    workcenter_ids = workcenter_obj.search(cr, uid, [('routing_id', 'in', routing_ids)], context=context)
-                    for wline in workcenter_obj.browse(cr, uid, workcenter_ids, context):
-                        wc = wline.workcenter_id
-                        cycle = wline.cycle_nbr
-                        price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
+                    workcenter_model = self.pool['mrp.routing.workcenter']
+                    workcenter_ids = workcenter_model.search(cr, uid, [('routing_id', 'in', routing_ids)], context=context)
+                    for wline in workcenter_model.browse(cr, uid, workcenter_ids, context):
+                        price += wline.total_cost
                 price /= mrp_bom.product_qty
-                price = uom_obj._compute_price(cr, uid, mrp_bom.product_uom.id, price, mrp_bom.product_id.uom_id.id)
+                price = uom_model._compute_price(cr, uid, mrp_bom.product_uom.id, price, mrp_bom.product_id.uom_id.id)
                 result['value']['cost_price_unit_routing'] = price
 
             else:
@@ -154,7 +159,7 @@ class sale_order_line(orm.Model):
 
         res = {'purchase_price': price + cost_price_unit_routing}
 
-                    # convert_to_price_uom = (lambda price: product_uom_obj._compute_price(
+                    # convert_to_price_uom = (lambda price: product_uom_model._compute_price(
                     #     cr, uid, product.uom_id.id,
                     #     price, price_uom_id))
                     # if rule.price_surcharge:

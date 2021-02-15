@@ -7,5 +7,5 @@
 # by Antonio Maria Vigliotti <antoniomaria.vigliotti@gmail.com>
 #
 from . import vat_settlement_v_18
-from . import dati_fattura_v_2_1
+# from . import dati_fattura_v_2_1
 # from . import fatturapa_v_1_2

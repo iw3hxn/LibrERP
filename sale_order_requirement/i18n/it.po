@@ -34,6 +34,12 @@ msgid "Product BOM"
 msgstr "Distinta Base"
 
 #. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/order_requirement_line.py:789
+#, python-format
+msgid "There are same processed line'"
+msgstr "Ci sono alcune righe processate"
+
+#. module: sale_order_requirement
 #: field:temp.mrp.bom,purchase_order_line_id:0
 msgid "Purchase Order Line"
 msgstr "Riga Ordine Acquisto"
@@ -224,6 +230,12 @@ msgid "Purchase Order"
 msgstr "Ordine Acquisto"
 
 #. module: sale_order_requirement
+#: field:order.requirement.line,force_purchase_order_line_id:0
+msgid "Force Order Line"
+msgstr "Forza Ordine Acquisto"
+
+
+#. module: sale_order_requirement
 #: view:order.requirement.line:0
 #: field:temp.mrp.bom,mrp_routing_id:0
 #: field:temp.mrp.routing,mrp_routing_id:0
@@ -382,6 +394,7 @@ msgstr "Ritorna a Bozza"
 
 #. module: sale_order_requirement
 #: selection:order.requirement,state:0
+#: selection:temp.mrp.bom,state:0
 #: selection:order.requirement.line,state:0
 msgid "Draft"
 msgstr "Bozza"
@@ -391,11 +404,6 @@ msgstr "Bozza"
 #: field:temp.mrp.bom,buy:0
 msgid "Buy"
 msgstr "Acquista"
-
-#. module: sale_order_requirement
-#: selection:order.requirement.line,state:0
-msgid "Done"
-msgstr "Fatto"
 
 #. module: sale_order_requirement
 #: field:purchase.order,sale_order_ids:0
@@ -443,16 +451,19 @@ msgstr "Fornitore"
 
 #. module: sale_order_requirement
 #: view:order.requirement.line:0
+#: view:temp.mrp.bom:0
 msgid "Are you sure you want to do this?"
 msgstr "Sicuro di confermare?"
 
 #. module: sale_order_requirement
 #: selection:order.requirement,state:0
+#: selection:temp.mrp.bom,state:0
 msgid "Confirmed"
 msgstr "Confermato"
 
 #. module: sale_order_requirement
 #: selection:order.requirement,state:0
+#: selection:temp.mrp.bom,state:0
 #: selection:order.requirement.line,state:0
 msgid "Cancelled"
 msgstr "Annullato"
@@ -564,6 +575,7 @@ msgstr "Numero Ordine Cliente"
 
 #. module: sale_order_requirement
 #: field:order.requirement,user_id:0
+#: field:temp.mrp.bom,user_id:0
 msgid "User"
 msgstr "Utente"
 
@@ -574,6 +586,13 @@ msgstr "Da Sviluppare"
 
 #. module: sale_order_requirement
 #: view:order.requirement:0
+msgid "Missing SO Line"
+msgstr "Senza Ordine"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+#: selection:order.requirement.line,state:0
+#: selection:temp.mrp.bom,state:0
 msgid "Done"
 msgstr "Completato"
 
@@ -735,11 +754,29 @@ msgstr "Riga"
 
 #. module: sale_order_requirement
 #: view:order.requirement:0
+#: view:temp.mrp.bom:0
 msgid "View Purchase Order"
 msgstr "Visualizza Ordini Acquisto"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+#: view:temp.mrp.bom:0
+msgid "View Production Order"
+msgstr "Visualizza Ordini Produzione"
 
 #. module: sale_order_requirement
 #: view:purchase.order:0
 #: field:purchase.order,customer_account_invoice_ids:0
 msgid "Customer Invoice"
 msgstr "Fatture Clienti"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Reload & Preview"
+msgstr "Ricarica"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,state:0
+#: field:temp.mrp.bom,state:0
+msgid "State"
+msgstr "Stato"

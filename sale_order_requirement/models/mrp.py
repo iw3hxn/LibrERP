@@ -22,13 +22,13 @@ class mrp_bom(orm.Model):
         result = {}
         if context is None:
             context = {}
-        bom_obj = self.pool['mrp.bom']
+        bom_model = self.pool['mrp.bom']
         bom_id = context and context.get('active_id', False) or False
         cr.execute('select id from mrp_bom')
         if all(bom_id != r[0] for r in cr.fetchall()):
             ids.sort()
             bom_id = ids[0]
-        bom_parent = bom_obj.browse(cr, uid, bom_id, context=context)
+        bom_parent = bom_model.browse(cr, uid, bom_id, context=context)
         for bom in self.browse(cr, uid, ids, context=context):
             if bom_parent or (bom.id == bom_id):
                 result[bom.id] = map(lambda x: x.id, bom.bom_lines)
@@ -40,10 +40,10 @@ class mrp_bom(orm.Model):
             # Changed from inherited -> is GOOD ALSO bom.type=='buy',
             # it was -> and (bom.product_id.supply_method=='produce'))
             if bom.type == 'phantom' or ok:
-                sids = bom_obj.search(cr, uid, [('bom_id', '=', False),
-                                                ('product_id', '=', bom.product_id.id)])
+                sids = bom_model.search(cr, uid, [('bom_id', '=', False),
+                                                  ('product_id', '=', bom.product_id.id)])
                 if sids:
-                    bom2 = bom_obj.browse(cr, uid, sids[0], context=context)
+                    bom2 = bom_model.browse(cr, uid, sids[0], context=context)
                     result[bom.id] += map(lambda x: x.id, bom2.bom_lines)
 
         return result

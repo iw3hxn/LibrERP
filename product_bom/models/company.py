@@ -24,7 +24,7 @@ from openerp.tools.config import config
 ENABLE_CACHE = config.get('product_cache', False)
 
 
-class res_company(orm.Model):
+class ResCompany(orm.Model):
 
     _inherit = 'res.company'
 
@@ -44,7 +44,7 @@ class res_company(orm.Model):
     }
 
     def write(self, cr, uid, ids, vals, context=None):
-        res = super(res_company, self).write(cr, uid, ids, vals, context)
+        res = super(ResCompany, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE and 'exclude_routing' in vals:
             self.pool['product.product'].product_cost_cache.empty()
         return res

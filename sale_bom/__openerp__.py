@@ -30,7 +30,8 @@ This module adds the 'BOM' on sales order.
     "depends": [
         'sale',
         'mrp',
-        'dt_product_serial'
+        'dt_product_serial',
+        'mrp_bom_standard_price'
     ],
     "demo_xml": [],
     "update_xml": [

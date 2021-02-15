@@ -59,6 +59,9 @@
                                 <button name="action_check" string="Corrente" type="object" icon="gtk-apply"
                                         attrs="{'invisible': [('is_store','==', 0)]}"/>
                                 <field name="subtotal" sum="totale"/>
+                                <field name="subtotal_cost" sum="totale" groups="sale.view_margin"/>
+                                <field name="subtotal_margin" sum="totale" groups="sale.view_margin"/>
+                                <field name="subtotal_margin_perc" groups="sale.view_margin"/>
                             </tree>
                         </field>
                     </field>

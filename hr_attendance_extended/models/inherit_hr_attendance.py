@@ -33,6 +33,7 @@ class Hr_Attendance(orm.Model):
         dt_format = tools.DEFAULT_SERVER_DATETIME_FORMAT
         tz = context.get('tz', 'UTC')
         for hr_attendance in self.browse(cr, uid, ids, context=context):
+            tz = hr_attendance.employee_id.user_id.context_tz or 'UTC'
             res[hr_attendance.id] = hr_attendance.name and tools.server_to_local_timestamp(
                 hr_attendance.name, dt_format, dt_format, tz) or False
         return res
@@ -47,7 +48,7 @@ class Hr_Attendance(orm.Model):
         'name_tz': fields.function(_get_date_tz, method=True, type='char', string='Date with TZ', store={
             'hr.attendance': (lambda self, cr, uid, ids, c={}: ids, ['name'], 50)
         }),
-        'day': fields.function(_day_compute, type='char', string='Day', select=1, size=32, store={
+        'day': fields.function(_day_compute, type='date', string='Day', select=1, size=32, store={
             'hr.attendance': (lambda self, cr, uid, ids, c={}: ids, ['name'], 100)
         }),
     }

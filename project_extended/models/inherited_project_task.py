@@ -32,11 +32,12 @@ class project_task(orm.Model):
     _group_by_full = {}
     
     def name_get(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not len(ids):
             return []
         res = []
         for record in self.browse(cr, SUPERUSER_ID, ids, context=context):
-            if record.project_id:
+            if record.project_id and 'search_default_project_id' not in context.keys():
                 name = record.project_id.name[:30] + ' : ' + record.name
             else:
                 name = record.name

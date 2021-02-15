@@ -9,9 +9,12 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                  <field name="purchase_ok" position="after">
-                    <!--<field name="subscription" on_change="onchange_subscription(subscription)"/>-->
-                     <field name="subscription" />
+                     <field name="subscription" on_change="onchange_subscription(subscription, type, context)"/>
                      <field name="order_duration" attrs="{'invisible': [('subscription', '=', 0)]}"/>
+                </field>
+                <field name="type" position="after">
+                    <field name="subscription_product_id" attrs="{'invisible': ['|', ('subscription', '=', 0), ('type', '!=', 'service')]}"/>
+
                 </field>
             </field>
         </record>
