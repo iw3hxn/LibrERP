@@ -21,3 +21,5 @@
 
 from . import select_fiscal_position
 from . import check_account_invoive
+from . import inherit_sale_make_invoice_advance
+
