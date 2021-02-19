@@ -27,7 +27,43 @@ class crm_make_sale(orm.TransientModel):
     """ Make sale  order for crm """
 
     _inherit = "crm.make.sale"
-    
+
+    def _create_sale_order_vals(self, cr, uid, lead, make, partner, context):
+        partner_obj = self.pool['res.partner']
+        partner = make.partner_id
+        partner_addr = partner_obj.address_get(cr, uid, [partner.id], ['default', 'invoice', 'delivery', 'contact'])
+        pricelist_id = partner.property_product_pricelist.id
+        fpos_id = partner.property_account_position and partner.property_account_position.id or False
+        payment_term = partner.property_payment_term and partner.property_payment_term.id or False
+        if not partner and lead.partner_id:
+            partner = lead.partner_id
+            fpos_id = partner.property_account_position and partner.property_account_position.id or False
+            payment_term = partner.property_payment_term and partner.property_payment_term.id or make.shop_id.payment_default_id and make.shop_id.payment_default_id.id or False
+            partner_addr = partner_obj.address_get(cr, uid, [partner.id], ['default', 'invoice', 'delivery', 'contact'])
+            pricelist_id = partner.property_product_pricelist and partner.property_product_pricelist.id or make.shop_id.pricelist_id and make.shop_id.pricelist_id.id
+        if False in partner_addr.values():
+            raise orm.except_orm(_('Data Insufficient!'), _('Customer has no addresses defined!'))
+
+        vals = {
+            'origin': _('Opportunity: %s') % str(lead.id),
+            'section_id': lead.section_id and lead.section_id.id or False,
+            'categ_id': lead.categ_id and lead.categ_id.id or False,
+            'shop_id': make.shop_id.id,
+            'partner_id': partner.id,
+            'pricelist_id': pricelist_id,
+            'partner_invoice_id': partner_addr['invoice'],
+            'partner_order_id': lead.partner_address_id and lead.partner_address_id.id or lead.partner_address_id,
+            'partner_shipping_id': lead.partner_address_id and lead.partner_address_id.id or partner_addr['delivery'],
+            'date_order': fields.date.context_today(self, cr, uid, context=context),
+            'fiscal_position': fpos_id,
+            'payment_term': payment_term,
+            'user_id': make.user_id.id,
+            # 'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id,
+            'note': lead.description or '',
+            'contact_id': lead.contact_id and lead.contact_id.id or False
+        }
+        return vals
+
     def makeOrder(self, cr, uid, ids, context=None):
         """
         This function  create Quotation on given case.
@@ -49,41 +85,10 @@ class crm_make_sale(orm.TransientModel):
 
         for make in self.browse(cr, uid, ids, context=context):
             partner = make.partner_id
-            partner_addr = partner_obj.address_get(cr, uid, [partner.id], ['default', 'invoice', 'delivery', 'contact'])
             partner.write({'customer': True})
-            pricelist_id = partner.property_product_pricelist.id
-            fpos_id = partner.property_account_position and partner.property_account_position.id or False
-            payment_term = partner.property_payment_term and partner.property_payment_term.id or False
             new_ids = []
             for lead in lead_obj.browse(cr, uid, data, context=context):
-                if not partner and lead.partner_id:
-                    partner = lead.partner_id
-                    fpos_id = partner.property_account_position and partner.property_account_position.id or False
-                    payment_term = partner.property_payment_term and partner.property_payment_term.id or make.shop_id.payment_default_id and make.shop_id.payment_default_id.id or False
-                    partner_addr = partner_obj.address_get(cr, uid, [partner.id], ['default', 'invoice', 'delivery', 'contact'])
-                    pricelist_id = partner.property_product_pricelist and partner.property_product_pricelist.id or make.shop_id.pricelist_id and make.shop_id.pricelist_id.id
-                if False in partner_addr.values():
-                    raise orm.except_orm(_('Data Insufficient!'), _('Customer has no addresses defined!'))
-
-                vals = {
-                    'origin': _('Opportunity: %s') % str(lead.id),
-                    'section_id': lead.section_id and lead.section_id.id or False,
-                    'categ_id': lead.categ_id and lead.categ_id.id or False,
-                    'shop_id': make.shop_id.id,
-                    'partner_id': partner.id,
-                    'pricelist_id': pricelist_id,
-                    'partner_invoice_id': partner_addr['invoice'],
-                    'partner_order_id': lead.partner_address_id and lead.partner_address_id.id or lead.partner_address_id,
-                    'partner_shipping_id': lead.partner_address_id and lead.partner_address_id.id or partner_addr['delivery'],
-                    'date_order': fields.date.context_today(self, cr, uid, context=context),
-                    'fiscal_position': fpos_id,
-                    'payment_term': payment_term,
-                    'user_id': make.user_id.id,
-                    # 'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id,
-                    'note': lead.description or '',
-                    'contact_id': lead.contact_id and lead.contact_id.id or False
-                }
-                
+                vals = self._create_sale_order_vals(cr, uid, lead, make, partner, context)
                 new_id = sale_obj.create(cr, uid, vals, context=context)
                 sale_order = sale_obj.browse(cr, uid, new_id, context=context)
                 lead_obj.write(cr, uid, [lead.id], {
