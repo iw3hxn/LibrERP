@@ -161,24 +161,63 @@ class order_requirement(orm.Model):
         purchase_order = []
         production_order = []
         description = []
+        purchase_order_to_clear = {}
         if line_ids:
-            # search PO
+            # search PO #
             purchase_order_ids = []
-            for order in order_requirement_line_model.read(cr, uid, line_ids, ['purchase_order_ids'], context=context):
-                purchase_order_ids += order['purchase_order_ids']
-            purchase_order_ids = list(set(purchase_order_ids))
-            if purchase_order_ids:
-                for order in purchase_order_model.read(cr, uid, purchase_order_ids, ['name'], context=context):
-                    purchase_order.append(order['name'])
+            # for order in order_requirement_line_model.read(cr, uid, line_ids, ['purchase_order_ids'], context=context):
+            #     purchase_order_ids += order['purchase_order_ids']
+            # purchase_order_ids = list(set(purchase_order_ids))
+            # if purchase_order_ids:
+            #     for order in purchase_order_model.read(cr, uid, purchase_order_ids, ['name', 'state'], context=context):
+            #         purchase_order.append(order['name'])
+
             order_ids = temp_mrp_bom_model.search(cr, uid, [('order_requirement_line_id', 'in', line_ids), ('purchase_order_id', '!=', False)], context=context)
             production_ids = temp_mrp_bom_model.search(cr, uid, [('order_requirement_line_id', 'in', line_ids), ('mrp_production_id', '!=', False)], context=context)
-            for temp_mrp_bom in temp_mrp_bom_model.browse(cr, uid, production_ids + order_ids, context):
+            for temp_mrp_bom in temp_mrp_bom_model.browse(cr, uid, list(set(production_ids + order_ids)), context):
                 if temp_mrp_bom.purchase_order_id:
-                    if temp_mrp_bom.purchase_order_id.name not in purchase_order:
-                        purchase_order.append(temp_mrp_bom.purchase_order_id.name)
+                    purchase_order_id = temp_mrp_bom.purchase_order_id
+                    if purchase_order_id.state == 'draft':
+                        if purchase_order_id not in purchase_order_to_clear:
+                            purchase_order_to_clear[purchase_order_id] = []
+                        purchase_order_to_clear[purchase_order_id].append(temp_mrp_bom.sale_order_id.id)
+                        purchase_order_line_id = temp_mrp_bom.purchase_order_line_id
+                        if purchase_order_line_id:
+                            purchase_qty = purchase_order_line_id.product_qty
+                            line_qty = temp_mrp_bom.product_qty
+                            if line_qty == purchase_qty:
+                                purchase_order_line_id.unlink()
+                            else:
+                                purchase_order_line_id.write({
+                                    'product_qty': purchase_qty - line_qty,
+                                    'order_requirement_ids': [(3, temp_mrp_bom.order_requirement_line_id.order_requirement_id.id)],
+                                    'order_requirement_line_ids': [(3, temp_mrp_bom.order_requirement_line_id.id)],
+                                    'temp_mrp_bom_ids': [(3, temp_mrp_bom.id)],
+                                })
+                        temp_mrp_bom.write({
+                            'purchase_order_id': False,
+                            'purchase_order_line_id': False,
+                            'state': 'draft'
+                        })
+                    else:
+                        purchase_order.append(purchase_order_id.name)
+
+                    # if temp_mrp_bom.purchase_order_id.name not in purchase_order:
+                    #     purchase_order.append(temp_mrp_bom.purchase_order_id.name)
                 if temp_mrp_bom.mrp_production_id:
-                    if temp_mrp_bom.mrp_production_id.name not in production_order:
+                    if temp_mrp_bom.mrp_production_id.state == 'draft':
+                        temp_mrp_bom.mrp_production_id.unlink()
+                        temp_mrp_bom.write({
+                            'mrp_production_id': False,
+                            'state': 'draft'
+                        })
+                    elif temp_mrp_bom.mrp_production_id.name not in production_order:
                         production_order.append(temp_mrp_bom.mrp_production_id.name)
+
+        for po in purchase_order_to_clear:
+            po.write({
+                'sale_order_ids': [(3, so_id) for so_id in list(set(purchase_order_to_clear[po]))]
+            })
 
         if purchase_order or production_order:
             description.append(_(u'Please delete below'))

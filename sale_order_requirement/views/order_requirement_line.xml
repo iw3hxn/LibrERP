@@ -33,12 +33,13 @@
                     <field name="supplier_ids" invisible="1"/>
                     <field name="id" invisible="1"/>
                     <field name="user_id" widget="selection" />
+                    <field name="split_mrp_production" />
                     <field name="force_purchase_order_line_id" domain="[('product_id', '=', new_product_id), ('partner_id', '=', supplier_id)]"
                                                attrs="{'readonly': ['|', ('supplier_id','=',False), ('buy', '=', False)]}"
                                                context="{'purchase_order_full_name': True}" />
                     <group colspan="8" col="8" attrs="{'invisible': [('state','!=','draft')]}">
                         <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/>
-                        <button name="reload_bom" string="Reload &amp; Preview" icon="gtk-refresh" type="object"/>
+                        <button name="reload_bom" string="Reload &amp; Preview" icon="gtk-network" type="object"/>
                         <button name="confirm_suppliers" string="OK" icon="gtk-ok" type="object"
                                 confirm="Are you sure you want to do this?"/>
                     </group>

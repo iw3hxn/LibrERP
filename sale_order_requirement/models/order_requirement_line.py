@@ -714,6 +714,7 @@ class OrderRequirementLine(orm.Model):
         'original_cost': fields.float('Original Cost', readonly=True),
         'has_bom': fields.function(_has_bom, method=True, type='boolean', string='Product has bom?', readonly=True),
         'user_id': fields.many2one('res.users', 'User'),
+        'split_mrp_production': fields.boolean('Split Production order from order requirement'),
     }
 
     _defaults = {
@@ -724,7 +725,8 @@ class OrderRequirementLine(orm.Model):
     def default_get(self, cr, uid, fields, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(OrderRequirementLine, self).default_get(cr, uid, fields, context)
-
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
+        res['split_mrp_production'] = user.company_id.split_mrp_production
         if context.get('order_id'):
             order = self.pool['order.requirement'].read(cr, uid, context['order_id'], ['order_requirement_line_ids'], context)
             res['sequence'] = (len(order['order_requirement_line_ids']) + 1) * 100
@@ -787,7 +789,8 @@ class OrderRequirementLine(orm.Model):
 
         if done_line_to_clear_ids:
             raise orm.except_orm(_(u'Error !'), _(u'There are same processed line'))
-        temp_mrp_bom_model.unlink(cr, uid, all_line_to_clear_ids, context)
+        # temp_mrp_bom_model.unlink(cr, uid, all_line_to_clear_ids, context)
+        temp_mrp_bom_model.write(cr, uid, all_line_to_clear_ids, {'active': False}, context)
         self.write(cr, uid, ids, {'new_product_id': False}, context)
         return True
 
@@ -1151,9 +1154,10 @@ class OrderRequirementLine(orm.Model):
 
     def _manufacture_or_purchase_all(self, cr, uid, line, context):
         # line is a order_requirement_line, not a bom line
-        user = self.pool['res.users'].browse(cr, uid, uid, context)
-
-        split_mrp_production = user.company_id.split_mrp_production
+        # user = self.pool['res.users'].browse(cr, uid, uid, context)
+        #
+        # split_mrp_production = user.company_id.split_mrp_production
+        split_mrp_production = line.split_mrp_production
 
         if not line.temp_mrp_bom_ids:
             return
@@ -1194,6 +1198,8 @@ class OrderRequirementLine(orm.Model):
 
     def action_open_bom(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
+        if not ids:
+            return False
         line = self.browse(cr, uid, ids, context)[0]
 
         # is_manufactured = line.is_manufactured

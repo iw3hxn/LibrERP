@@ -252,14 +252,14 @@ class TempMrpBom(orm.Model):
         if user_id:
             mrp_production_domain.append(('user_id', '=', user_id.id))
 
-        mrp_productions_ids = mrp_production_model.search_browse(cr, uid, mrp_production_domain, context=context)
+        mrp_productions_ids = mrp_production_model.search(cr, uid, mrp_production_domain, context=context)
 
         append_production = False
         # If another production order for the same sale order is present and not started, append to it
         #   but ONLY if the production order has a bom (production orders confirmed)
         if mrp_productions_ids:
             # Take first that has a bom
-            for mrp_production in mrp_productions_ids:
+            for mrp_production in mrp_production_model.browse(cr, uid, mrp_productions_ids, context):
                 bom_point = mrp_production.temp_bom_id
                 bom_id = mrp_production.temp_bom_id.id
                 if bom_point or bom_id:
@@ -310,8 +310,9 @@ class TempMrpBom(orm.Model):
     def manufacture_or_purchase_rec(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         user = self.pool['res.users'].browse(cr, uid, uid, context)
-        is_split = user.company_id.split_mrp_production
+        # is_split = user.company_id.split_mrp_production
         for line in self.browse(cr, uid, ids, context):
+            is_split = line.order_requirement_line_id.split_mrp_production
             self._manufacture_or_purchase_rec(cr, uid, line, is_split, context)
         return True
 
@@ -487,9 +488,7 @@ class TempMrpBom(orm.Model):
         # NOTE: MRP.BOM version will find only the first-level children. Not good for temp.mrp.bom
         # WARNING: PHANTOM KITS NOT MANAGED
 
-        company_id = self.pool['res.users']._get_company(cr, uid, context=context)
-        split_mrp_production = self.pool['res.company'].read(cr, uid, company_id, ['split_mrp_production'], context)['split_mrp_production']
-
+        split_mrp_production = bom_father.order_requirement_line_id.split_mrp_production
         result = []
         result2 = []
 
