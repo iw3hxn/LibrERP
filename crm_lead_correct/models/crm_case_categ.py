@@ -58,9 +58,16 @@ class CrmCaseCateg(orm.Model):
         return value
 
     _columns = {
+        'active': fields.boolean("Active"),
+        'sequence': fields.integer('Sequence'),
         'name': fields.char('Name', size=64, required=True, translate=False),
         'color': fields.selection(COLOR_SELECTION, 'Color'),
         'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,)
-
     }
-    _order = "name"
+
+    _defaults = {
+        'sequence': 10,
+        "active": True
+    }
+
+    _order = "sequence, name"
