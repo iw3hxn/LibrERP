@@ -254,10 +254,13 @@ class TempMrpBom(orm.Model):
 
         mrp_productions_ids = mrp_production_model.search(cr, uid, mrp_production_domain, context=context)
 
+        if isinstance(mrp_productions_ids, (int, long)):
+            mrp_productions_ids = [mrp_productions_ids]
+
         append_production = False
         # If another production order for the same sale order is present and not started, append to it
         #   but ONLY if the production order has a bom (production orders confirmed)
-        if mrp_productions_ids and len(mrp_productions_ids) > 0:
+        if mrp_productions_ids:
             # Take first that has a bom
             for mrp_production in mrp_production_model.browse(cr, uid, mrp_productions_ids, context):
                 bom_point = mrp_production.temp_bom_id
