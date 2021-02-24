@@ -386,7 +386,7 @@ class account_invoice(orm.Model):
                 line[2]['debit'] = debit
                 sum_debit += debit
 
-        if sum_debit != sum_credit:
+        if abs(sum_debit - sum_credit) > 0.01:
             am = sum_credit - sum_debit
             line2.append(
                 (0, 0, {
