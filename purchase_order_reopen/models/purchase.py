@@ -131,17 +131,25 @@ class purchase_order(orm.Model):
                         stock_move_obj.write(cr, uid, move_ids, {'state': 'cancel'}, context=context)
 
                         #stock_picking_obj.action_cancel(cr, uid, [pick.id])
+            else:
+                pick = False
 
             # for some reason datas_fname has .pdf.pdf extension
-            report_ids = report_xml_obj.search(cr, uid, [('model', '=', 'purchase.order'), ('attachment', '!=', False)], context=context)
+            report_ids = report_xml_obj.search(cr, uid, [
+                ('model', '=', 'purchase.order'),
+                ('attachment', '!=', False)
+            ], context=context)
+
             for report in report_xml_obj.browse(cr, uid, report_ids, context):
-                if report.attachment:
+                if pick and report.attachment:
                     aname = report.attachment.replace('object', 'pick')
                     if eval(aname):
                         aname = eval(aname) + '.pdf'
-                        attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'purchase.order'),
-                                                                         ('datas_fname', '=', aname),
-                                                                         ('res_id', '=', order.id)], context=context)
+                        attachment_ids = attachment_obj.search(cr, uid, [
+                            ('res_model', '=', 'purchase.order'),
+                            ('datas_fname', '=', aname),
+                            ('res_id', '=', order.id)
+                        ], context=context)
                         for a in attachment_obj.browse(cr, uid, attachment_ids, context):
                             vals = {
                                 'name': a.name.replace('.pdf', now + '.pdf'),
@@ -161,7 +169,6 @@ class purchase_order(orm.Model):
         #self.log_purchase(cr, uid, ids, context=context)
 
         return True
-
 
 #    def button_reopen(self, cr, uid, ids, context=None):
 #        _logger = logging.getLogger(__name__)   
