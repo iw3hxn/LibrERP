@@ -21,7 +21,7 @@
 
 {
     "name": "Purchase Order Reopen",
-    "version": "1.5",
+    "version": "1.6.0",
     "author": "Camptocamp Austria",
     "category": 'Purchase Management',
     'complexity': "normal",
@@ -39,8 +39,7 @@ as associated pickings or invoices are canceled if possible
         "stock_picking_reopen",
         #"account_invoice_reopen"
     ],
-    'init_xml': [],
-    'update_xml': [
+    'data': [
         'purchase_view.xml',
         'purchase_workflow.xml'
     ],
@@ -48,5 +47,3 @@ as associated pickings or invoices are canceled if possible
     'installable': True,
     'auto_install': True,
 }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
