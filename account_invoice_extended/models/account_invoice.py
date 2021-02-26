@@ -385,8 +385,8 @@ class account_invoice(orm.Model):
                 debit = round(line[2]['debit'], obj_precision.precision_get(cr, uid, 'Account'))
                 line[2]['debit'] = debit
                 sum_debit += debit
-
-        if abs(sum_debit - sum_credit) > 0.01:
+        diff = round(abs(sum_debit - sum_credit), obj_precision.precision_get(cr, uid, 'Account'))
+        if diff >= 0.01:
             am = sum_credit - sum_debit
             line2.append(
                 (0, 0, {
