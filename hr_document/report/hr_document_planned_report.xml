@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report auto="False" id="hr_document_planned_report" model="hr.employee" name="hr.document.planned"
+                rml="hr_document/report/hr_document_planned_report.rml" string="Documents Planned"/>
+    </data>
+</openerp>

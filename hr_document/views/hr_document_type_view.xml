@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--
+    ======================
+    Documents Type
+    ======================
+    -->
+        <record id="view_document_type_form" model="ir.ui.view">
+            <field name="name">hr.document.type.form</field>
+            <field name="model">hr.document.type</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Document Type">
+                    <group col="4" colspan="4">
+                        <separator colspan="4" string="Define document type"/>
+                        <field name="name" select="1"/>
+                        <field name="code"/>
+                        <field name="has_date_option"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="view_document_type_tree" model="ir.ui.view">
+            <field name="name">hr.document.type.tree</field>
+            <field name="model">hr.document.type</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Document Type" editable="top">
+                    <field name="name" select="1"/>
+                    <field name="code"/>
+                    <field name="has_date_option"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_document_type_filter" model="ir.ui.view">
+            <field name="name">hr.document.type.filter</field>
+            <field name="model">hr.document.type</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Document Type">
+                    <field name="name"/>
+                    <field name="code"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="open_module_tree_document_type" model="ir.actions.act_window">
+            <field name="name">Document Type</field>
+            <field name="res_model">hr.document.type</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_document_type_filter"/>
+        </record>
+        <menuitem action="open_module_tree_document_type" id="menu_hr_document_type_tree" parent="hr.menu_hr_management"
+                  groups="base.group_hr_manager" sequence="6"/>
+
+    </data>
+</openerp>

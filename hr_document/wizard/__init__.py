@@ -26,4 +26,5 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-import hr_document_expiry_bymonth
+from . import hr_document_expiry_bymonth
+from . import hr_document_planned_bymonth

@@ -2,58 +2,6 @@
 <openerp>
     <data>
 
-        <!--
-    ======================
-    Documents Type
-    ======================
-    -->
-        <record id="view_document_type_form" model="ir.ui.view">
-            <field name="name">hr.document.type.form</field>
-            <field name="model">hr.document.type</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Document Type">
-                    <group col="4" colspan="4">
-                        <separator colspan="4" string="Define document type"/>
-                        <field name="name" select="1"/>
-                        <field name="code"/>
-                        <field name="has_date_option"/>
-                    </group>
-                </form>
-            </field>
-        </record>
-        <record id="view_document_type_tree" model="ir.ui.view">
-            <field name="name">hr.document.type.tree</field>
-            <field name="model">hr.document.type</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Document Type" editable="top">
-                    <field name="name" select="1"/>
-                    <field name="code"/>
-                    <field name="has_date_option"/>
-                </tree>
-            </field>
-        </record>
-        <record id="view_document_type_filter" model="ir.ui.view">
-            <field name="name">hr.document.type.filter</field>
-            <field name="model">hr.document.type</field>
-            <field name="type">search</field>
-            <field name="arch" type="xml">
-                <search string="Document Type">
-                    <field name="name"/>
-                    <field name="code"/>
-                </search>
-            </field>
-        </record>
-
-        <record id="open_module_tree_document_type" model="ir.actions.act_window">
-            <field name="name">Document Type</field>
-            <field name="res_model">hr.document.type</field>
-            <field name="view_type">form</field>
-            <field name="search_view_id" ref="view_document_type_filter"/>
-        </record>
-        <menuitem action="open_module_tree_document_type" id="menu_hr_document_type_tree" parent="hr.menu_hr_management"
-                  groups="base.group_hr_manager" sequence="6"/>
 
         <!--
     ======================
@@ -76,6 +24,7 @@
                                        on_change="onchange_document_type_id(document_type_id)"/>
                                 <field name="valid_start_date" attrs="{'required':[('has_date_option','=',True)]}"/>
                                 <field name="valid_end_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                <field name="planned_date" />
                                 <field name="has_date_option" invisible="1"/>
                                 <field name="employee_id"/>
                                 <field name="active"/>
@@ -102,6 +51,7 @@
                     <field name="document_type_id"/>
                     <field name="valid_start_date"/>
                     <field name="valid_end_date"/>
+                    <field name="planned_date" />
                     <field name="employee_id"/>
                 </tree>
             </field>
@@ -131,6 +81,16 @@
                     <field name="document_type_id" widget="selection"/>
                     <field name="valid_start_date"/>
                     <field name="valid_end_date"/>
+                    <separator orientation="vertical"/>
+                        <field name="date_from" filter_domain="[('planned_date','&gt;=',self)]" string="Planned Date From"/>
+                        <field name="date_to" filter_domain="[('planned_date','&lt;=',self)]" string="Planned Date To"/>
+                    <separator orientation="vertical"/>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Employee" context="{'group_by': 'employee_id'}" icon="terp-personal"/>
+                        <filter string="Planned" context="{'group_by': 'planned_date'}" icon="terp-folder-orange"/>
+                        <filter string="Document" context="{'group_by': 'document_type_id'}" icon="terp-document-new"/>
+                    </group>
                 </search>
             </field>
         </record>
@@ -153,51 +113,6 @@
         <menuitem action="open_module_tree_document" id="menu_hr_document_tree" parent="hr.menu_hr_main"
                   groups="base.group_hr_manager"/>
         <menuitem action="open_module_tree_my_document" id="menu_my_hr_document_tree" parent="hr.menu_hr_main"/>
-        <!--
-======================
-Employee
-======================
--->
 
-        <record model="ir.ui.view" id="view_employee_form_inherit">
-            <field name="name">hr.employee.form.inherit</field>
-            <field name="type">form</field>
-            <field name="model">hr.employee</field>
-            <field name="inherit_id" ref="hr.view_employee_form"/>
-            <field name="arch" type="xml">
-                <notebook position="inside">
-                    <page string="Documents" groups="base.group_hr_manager">
-                        <field name="document_ids" nolabel="1">
-                            <form>
-                                <group>
-                                    <field name="name"/>
-                                    <field name="document_type_id" widget="selection"
-                                           on_change="onchange_document_type_id(document_type_id)"/>
-                                    <field name="valid_start_date" attrs="{'required':[('has_date_option','=',True)]}"/>
-                                    <field name="valid_end_date" attrs="{'required':[('has_date_option','=',True)]}"/>
-                                    <field name="has_date_option" invisible="1"/>
-                                    <field name="active"/>
-                                </group>
-                                <separator/>
-                                <!--			      <group>
-                                                                <field name="web_gallery_doc_ids" />
-                                                              </group>
-                                -->
-                            </form>
-                            <tree colors="red:valid_end_date and (valid_end_date&lt;current_date)" editable="top">
-                                <field name="name"/>
-                                <field name="document_type_id"/>
-                                <field name="valid_start_date"/>
-                                <field name="valid_end_date"/>
-                                <newline/>
-                                <!--
-                                                                <field name="web_gallery_doc_ids" />
-                                -->
-                            </tree>
-                        </field>
-                    </page>
-                </notebook>
-            </field>
-        </record>
     </data>
 </openerp>

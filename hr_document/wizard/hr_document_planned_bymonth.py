@@ -26,6 +26,35 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-from . import hr_document_expiry_report
-from . import hr_document_planned_report
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+import time
+from openerp.osv import orm, fields
+
+
+class hr_document_planned_bymonth(orm.TransientModel):
+    _name = 'hr.document.planned.bymonth'
+    _description = 'Print Monthly Document Expiry Report'
+    _columns = {
+        'date_from': fields.date("Planned Start Date"),
+        'date_to': fields.date("Planned End Date"),
+    }
+
+    _defaults = {
+         'date_from': lambda *a: time.strftime('%Y-%m-01'),
+         'date_to': lambda *a: time.strftime('%Y-%m-%d'),
+    }
+
+    def print_report(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        datas = {'ids': context.get('active_ids', [])}
+        res = self.read(cr, uid, ids, ['date_from', 'date_to'], context=context)
+        res = res and res[0] or {}
+        datas['form'] = res
+        datas['form']['ids'] = context.get('active_ids', [])
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'hr.document.planned',
+            'datas': datas,
+       }
+
+

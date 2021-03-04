@@ -26,6 +26,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-from . import hr_document_expiry_report
-from . import hr_document_planned_report
+from openerp.osv import orm, fields
+
+
+class HrEmployee(orm.Model):
+    _description = "Employee"
+    _inherit = 'hr.employee'
+    _columns = {
+        'document_ids': fields.one2many('hr.document', 'employee_id', 'Documents'),
+    }
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

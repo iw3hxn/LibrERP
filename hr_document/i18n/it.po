@@ -124,6 +124,11 @@ msgid "Valid End Date"
 msgstr "Data Fine Validità"
 
 #. module: hr_document
+#: field:hr.document,planned_date:0
+msgid "Planned Date"
+msgstr "Data Pianificata"
+
+#. module: hr_document
 #: field:hr.document,has_date_option:0
 #: field:hr.document.type,has_date_option:0
 msgid "Has date options ?"

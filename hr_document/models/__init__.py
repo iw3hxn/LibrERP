@@ -26,6 +26,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-from . import hr_document_expiry_report
-from . import hr_document_planned_report
+from . import hr_document
+from . import hr_document_type
+from . import inherit_hr_employee
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

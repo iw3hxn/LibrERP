@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--
+======================
+Employee
+======================
+-->
+
+        <record model="ir.ui.view" id="view_employee_form_inherit">
+            <field name="name">hr.employee.form.inherit</field>
+            <field name="type">form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Documents" groups="base.group_hr_manager">
+                        <field name="document_ids" nolabel="1">
+                            <form>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="document_type_id" widget="selection"
+                                           on_change="onchange_document_type_id(document_type_id)"/>
+                                    <field name="valid_start_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                    <field name="valid_end_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                    <field name="has_date_option" invisible="1"/>
+                                    <field name="active"/>
+                                </group>
+                                <separator/>
+                            </form>
+                            <tree colors="red:valid_end_date and (valid_end_date&lt;current_date)" editable="top">
+                                <field name="name"/>
+                                <field name="document_type_id"/>
+                                <field name="valid_start_date"/>
+                                <field name="valid_end_date"/>
+                                <newline/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</openerp>

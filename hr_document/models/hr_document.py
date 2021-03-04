@@ -27,31 +27,54 @@
 #
 ##############################################################################
 from openerp.osv import orm, fields
-
-class hr_document_type(orm.Model):
-    _description = "Documents Types"
-    _name = 'hr.document.type'
-    _columns = {
-        'name': fields.char("Document Type", size=256, required=True),
-        'code': fields.char("Code", size=64),
-        'has_date_option': fields.boolean('Has date options ?'),
-    }
-    _order = "name"
+import datetime
 
 
-class hr_document(orm.Model):
+class HrDocument(orm.Model):
     _description = "HR Employee Document"
     _name = 'hr.document'
+
+    def _get_document_years(self, cr, uid, fields, context=None):
+        result = []
+        first_document_ids = self.search(cr, uid, [('valid_start_date', '!=', False)], order='date asc', limit=1, context=context)
+        if first_document_ids:
+            first_document = self.browse(cr, uid, first_document_ids[0], context)
+            first_year = datetime.datetime.strptime(first_document.valid_start_date, '%Y-%m-%d').year
+        else:
+            first_year = datetime.date.today().year
+
+        for year in range(int(first_year), int(datetime.date.today().year) + 1):
+            result.append((str(year), str(year)))
+
+        return result
+
+    def _get_document_year(self, cr, uid, ids, field_name, arg, context):
+
+        result = {}
+        for document in self.browse(cr, uid, ids, context):
+            if document.date:
+                result[document.id] = datetime.datetime.strptime(document.valid_start_date, '%Y-%m-%d').year
+            else:
+                result[document.id] = False
+
+        return result
+
     _columns = {
+        'year': fields.function(_get_document_year, 'Year', type='selection', selection=_get_document_years,
+                                method=True, help="Select year"),
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+
         'name': fields.char("Document", size=256, required=True),
-        'document_type_id':fields.many2one('hr.document.type','Document Type'),
-        'employee_id':fields.many2one('hr.employee','Employee', ondelete='cascade', required=True),
+        'document_type_id': fields.many2one('hr.document.type', 'Document Type'),
+        'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade', required=True),
         'valid_start_date': fields.date("Valid Start Date"),
         'valid_end_date': fields.date("Valid End Date"),
+        'planned_date': fields.date("Planned Date"),
         'comments': fields.text('Comments'),
         'has_date_option': fields.boolean('Has date options ?'),
         'active': fields.boolean('Active'),
-#        'web_gallery_doc_ids': fields.one2many('web.gallery.docs', 'document_ids', 'Documents'),
+        #        'web_gallery_doc_ids': fields.one2many('web.gallery.docs', 'document_ids', 'Documents'),
     }
     _defaults = {
         'active': 1,
@@ -64,22 +87,13 @@ class hr_document(orm.Model):
                 return False
         return True
 
-    _constraints = [(_check_dates, 'Error! Documents start date must be lower then contract end date.', ['has_date_option','valid_start_date', 'valid_end_date'])]  
-    
+    _constraints = [(_check_dates, 'Error! Documents start date must be lower then contract end date.',
+                     ['has_date_option', 'valid_start_date', 'valid_end_date'])]
+
     def onchange_document_type_id(self, cr, uid, ids, document_type_id, context=None):
         has_date_option = False
         if document_type_id:
             document_type_obj = self.pool['hr.document.type']
-            document_type = document_type_obj.browse(cr,uid,[document_type_id],context)
-            if document_type and document_type[0].has_date_option == True:has_date_option = True
+            document_type = document_type_obj.browse(cr, uid, [document_type_id], context)
+            if document_type and document_type[0].has_date_option == True: has_date_option = True
         return {'value': {'has_date_option': has_date_option}}
-
-
-class hr_employee(orm.Model):
-    _description = "Employee"
-    _inherit = 'hr.employee'
-    _columns = {
-        'document_ids': fields.one2many('hr.document', 'employee_id', 'Documents'),
-    }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

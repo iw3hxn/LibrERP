@@ -26,6 +26,42 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-from . import hr_document_expiry_report
-from . import hr_document_planned_report
+import time
+from report import report_sxw
+import pooler
+import datetime
+
+class hr_document_planned_report(report_sxw.rml_parse):
+
+    def __init__(self, cr, uid, name, context):
+        super(hr_document_planned_report, self).__init__(cr, uid, name, context=context)
+        self.month = False
+        self.year = False
+        self.localcontext.update({
+            'time': time,
+            'get_employee': self.get_employee,
+            'get_emp_documents': self.get_emp_documents,
+        })
+
+    def get_employee(self, form):
+        result = []
+        periods = []
+        emp = pooler.get_pool(self.cr.dbname).get('hr.employee')
+        emp_ids = form['ids']
+        result = emp.browse(self.cr, self.uid, emp_ids)
+        self.date_from = form['date_from']
+        self.date_to = form['date_to']
+        return result
+
+    def get_emp_documents(self, obj):
+        result = []
+        periods = []
+        doc = pooler.get_pool(self.cr.dbname).get('hr.document')
+        doc_ids = doc.search(self.cr, self.uid, [('employee_id', '=', obj.id), ('planned_date', '>=', self.date_from), ('planned_date', '<=', self.date_to)])
+        result = doc.browse(self.cr, self.uid, doc_ids)
+        return result
+
+report_sxw.report_sxw('report.hr.document.planned', 'hr.employee', 'addons/hr_document/report/hr_document_planned_report.rml', parser=hr_document_planned_report, header='internal')
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
