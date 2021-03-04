@@ -45,12 +45,17 @@ class project_project(orm.Model):
                 task_obj = self.pool['project.task']
                 for task in user.company_id.work_order_default_task_ids:
                     vals = {
-                        'name': u"{0}: {1}".format(name_prefix, task.name),
+                        'name': task.name,
                         'project_id': project_id,
                         'planned_hours': task.planned_hours,
                         'remaining_hours': task.planned_hours,
                         'user_id': task.user_id and task.user_id.id or False,
                     }
+                    if name_prefix:
+                        vals.update({
+                            'name': u"{0}: {1}".format(name_prefix, task.name),
+                        })
+
                     task_obj.create(cr, uid, vals, context)
                 self.pool['project.project'].write(cr, uid, project_id, {'state': 'open'}, context)
         return project_id

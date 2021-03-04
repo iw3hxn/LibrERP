@@ -101,22 +101,28 @@ class sale_order(orm.Model):
 
         return result
 
+    def _get_invoice_ratio(self, order):
+        invoice_ratio = 3
+        if order.order_policy == 'picking':
+            invoice_ratio = 1
+        return invoice_ratio
+
     def action_cancel_draft(self, cr, uid, ids, context=None):
         result = super(sale_order, self).action_cancel_draft(cr, uid, ids, context)
         orders = self.browse(cr, uid, ids, context=context)
         for order in orders:
             shop = order.shop_id
             if (not order.project_project) and (not order.project_id) and shop and shop.project_required and (not order.project_project or not context.get('versioning', False)):
-                if order.order_policy == 'picking':
-                    invoice_ratio = 1
-                else:
-                    invoice_ratio = 3
+                invoice_ratio = self._get_invoice_ratio(order)
                 value = {
                     'name': order.name,
                     'partner_id': order.partner_id and order.partner_id.id or False,
-                    'to_invoice': invoice_ratio,
                     'state': 'pending',
                 }
+                if invoice_ratio:
+                    value.update({
+                        'to_invoice': invoice_ratio
+                    })
                 # i use this mode because if there are no project_id on shop use default value
                 if shop.project_id:
                     value['parent_id'] = shop.project_id.id
@@ -168,13 +174,19 @@ class sale_order(orm.Model):
             sequence = 10
             if order.project_project and order.company_id.create_task:
                 project_id = order.project_project.id
-                if order.order_policy == 'picking':
-                    invoice_ratio = 1
-                else:
-                    invoice_ratio = 3
+                invoice_ratio = self._get_invoice_ratio(order)
                 project_name = self._change_project_name(cr, uid, ids, order, context)
+                project_value = {'state': 'open'}
+                if invoice_ratio:
+                    project_value.update({
+                        'to_invoice': invoice_ratio
+                    })
+                if project_name:
+                    project_value.update({
+                        'name': project_name
+                    })
 
-                self.pool['project.project'].write(cr, uid, project_id, {'to_invoice': invoice_ratio, 'state': 'open', 'name': project_name}, context=context)
+                self.pool['project.project'].write(cr, uid, project_id, project_value, context=context)
                 for order_line in order.order_line:
                     task_number = 1
                     if order_line.product_id and order_line.product_id.is_kit:
@@ -300,22 +312,23 @@ class sale_order(orm.Model):
         order_id = super(sale_order, self).create(cr, uid, values, context)
         order = self.browse(cr, uid, order_id, context=context)
         shop = self.pool['sale.shop'].browse(cr, uid, values['shop_id'], context=context)
-        if order.order_policy == 'picking':
-            invoice_ratio = 1
-        else:
-            invoice_ratio = 3
 
         if (not values.get('project_project', False)) and (not values.get('project_id', False)) and shop and shop.project_required and (not order.project_project or not context.get('versioning', False)):
+            invoice_ratio = self._get_invoice_ratio(order)
             project_values = {
                 'name': values['name'].split(' ')[0],
                 'partner_id': values.get('partner_id', False),
                 'contact_id': values.get('partner_order_id', False),
                 'pricelist_id': values.get('pricelist_id', False),
-                'to_invoice': invoice_ratio,
+
                 'state': 'pending',
                 'warn_manager': True,
                 'user_id': shop.project_manager_id and shop.project_manager_id.id or order.user_id and order.user_id.id or False,
             }
+            if invoice_ratio:
+                project_values.update({
+                    'to_invoice': invoice_ratio,
+                })
 
             if shop.member_ids:
                 project_values['members'] = [(6, 0, [user.id for user in shop.member_ids])]
