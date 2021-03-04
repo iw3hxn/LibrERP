@@ -21,6 +21,7 @@
 
 from . import inherit_account_invoice
 from . import inherit_account_invoice_line
+from . import inherit_account_payment_term
 from . import inherit_product_product
 from . import inherit_purchase_order
 from . import inherit_res_company

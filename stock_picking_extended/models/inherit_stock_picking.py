@@ -344,6 +344,14 @@ class stock_picking(orm.Model):
         where = [('id', 'in', res)]
         return where
 
+    def _compute_payment_term_id(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for picking in self.browse(cr, uid, ids, context):
+            payment_term_id = picking.sale_id and picking.sale_id.payment_term and picking.sale_id.payment_term.id or False
+            res[picking.id] = payment_term_id
+        return res
+
     _columns = {
         'stock_journal_id': fields.many2one('stock.journal', 'Stock Journal', select=True, states={'done': [('readonly', True)]}),
         'type': fields.selection([('out', 'Sending Goods'), ('in', 'Getting Goods'), ('internal', 'Internal')],
@@ -371,8 +379,7 @@ class stock_picking(orm.Model):
             ("2binvoiced", "To Be Invoiced"),
             ("none", "Not Applicable")], "Invoice Control",
             select=True, required=True, readonly=False),
-        'client_order_ref': fields.related(
-            'sale_id', 'client_order_ref', type='char',
+        'client_order_ref': fields.related('sale_id', 'client_order_ref', type='char',
             string='Customer Reference'),
         'credit_limit': fields.function(_credit_limit, string="Remaining Credit Limit", type='float', readonly=True,
                                         method=True),
@@ -380,11 +387,6 @@ class stock_picking(orm.Model):
                                                string=_('Fido Residuo Visibile'), store=False, readonly=True),
         # 'weight': fields.float('Gross weight', digits_compute=dp.get_precision('Stock Weight'), help="The gross weight in Kg."),
         # 'weight_net': fields.float('Net weight', digits_compute=dp.get_precision('Stock Weight'), help="The net weight in Kg."),
-        'customer_id': fields.related('sale_id', 'partner_id', type='many2one', relation='res.partner',
-                                      string='Customer', readonly=True, store={
-                                        'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['sale_id'], 6000),
-                                        'sale.order': (_get_picking_sale, ['partner_id'], 6000),
-                                        }),
         'order_type': fields.function(_get_order_type, string="Order Type", type="selection", selection=[
             ('client', 'Client'),
             ('internal', 'Internal'),
@@ -398,8 +400,6 @@ class stock_picking(orm.Model):
                                            'stock.move': (_get_picking_move, ['state'], 6000),
                                        }),
         'order_ready': fields.boolean(string='Order Ready'),
-        'creation_date': fields.related('sale_id', 'create_date', type='date', string='Inserted on', store=False,
-                                        readonly=True),
         'street': fields.related('address_delivery_id', 'street', type='char', string='Street', store=False),
         'city': fields.related('address_delivery_id', 'city', type='char', string='City', store=False),
         'province': fields.related('address_delivery_id', 'province', type='many2one', relation='res.province',
@@ -418,14 +418,18 @@ class stock_picking(orm.Model):
                                         'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['customer_id'], 6000),
                                         'res.partner': (_get_picking_partner, ['section_id'], 6000),
                                         }),
+        'creation_date': fields.related('sale_id', 'create_date', type='date', string='Inserted on', store=False,
+                                        readonly=True),
+        'customer_id': fields.related('sale_id', 'partner_id', type='many2one', relation='res.partner',
+                                      string='Customer', readonly=True, store={
+                'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['sale_id'], 6000),
+                'sale.order': (_get_picking_sale, ['partner_id'], 6000),
+            }),
         'sale_user_id': fields.related('sale_id', 'user_id', type='many2one', relation='res.users',
                                 string='Sale User', readonly=True, store={
                                     'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id'], 6000),
                                 }),
         'board_date': fields.related('sale_id', 'date_confirm', type='date', string='Order Board Delivery date'),
-        'amount_partial': fields.function(_get_amount_partial, type='float', string='Partial Amount (VAT Excluded)',
-                                          readonly=True,
-                                          store=False),
         'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)',
                                        readonly=True,
                                        store={
@@ -433,8 +437,11 @@ class stock_picking(orm.Model):
                                            lambda self, cr, uid, ids, c=None: ids, ['sale_id', 'state'], 5000),
                                            'sale.order': (_get_picking_sale, ['amount_untaxed', 'state'], 6000),
                                        }),
-        'payment_term_id': fields.related('sale_id', 'payment_term', type='many2one', relation='account.payment.term',
+        'payment_term_id': fields.function(_compute_payment_term_id, type='many2one', relation='account.payment.term',
                                           string="Payment Term"),
+        'amount_partial': fields.function(_get_amount_partial, type='float', string='Partial Amount (VAT Excluded)',
+                                          readonly=True,
+                                          store=False),
         'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number",
                                     store={
                                         'stock.picking': (
