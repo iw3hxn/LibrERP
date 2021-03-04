@@ -42,4 +42,5 @@ class CrmSaleStage(orm.Model):
         'name': fields.selection(_get_sale_order_state, 'Order State', required=True),
         'shop_id': fields.many2one('sale.shop', 'Shop'),
         'stage_id': fields.many2one('crm.case.stage', 'Stage', required=True),
+        'update_amount': fields.boolean(string="Update Amount")
     }

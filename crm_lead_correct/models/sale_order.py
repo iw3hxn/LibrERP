@@ -68,6 +68,12 @@ class SaleOrder(orm.Model):
             if lead_ids:
                 crm_sale_stage_ids = crm_sale_stage_obj.search(cr, uid, [('shop_id', '=', order.shop_id.id), ('name', '=', state)], context=context)
                 if crm_sale_stage_ids:
-                    stage_id = crm_sale_stage_obj.read(cr, uid, crm_sale_stage_ids[0], ['stage_id'], load='_obj')['stage_id']
-                    crm_obj.write(cr, uid, lead_ids, {'stage_id': stage_id}, context.update({'force_stage_id': True}))
+                    crm_sale_stage = crm_sale_stage_obj.browse(cr, uid, crm_sale_stage_ids[0], context)
+                    stage_id = crm_sale_stage.stage_id.id
+                    crm_value = {'stage_id': stage_id}
+                    if crm_sale_stage.update_amount:
+                        crm_value.update({
+                            'planned_revenue': order.amount_untaxed
+                        })
+                    crm_obj.write(cr, uid, lead_ids, crm_value, context.update({'force_stage_id': True}))
         return super(SaleOrder, self).hook_sale_state(cr, uid, orders, vals, context)
