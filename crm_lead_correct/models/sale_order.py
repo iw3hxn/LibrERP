@@ -57,23 +57,24 @@ class SaleOrder(orm.Model):
         return res
 
     def hook_sale_state(self, cr, uid, orders, vals, context):
-        crm_obj = self.pool['crm.lead']
-        crm_sale_stage_obj = self.pool['crm.sale.stage']
+        crm_model = self.pool['crm.lead']
+        crm_sale_stage_model = self.pool['crm.sale.stage']
         state = vals.get('state', False)
         for order in orders:
-            lead_ids = crm_obj.search(cr, uid, [('sale_order_id', '=', order.id)], context=context)
+            lead_ids = crm_model.search(cr, uid, [('sale_order_id', '=', order.id)], context=context)
             if context.get('active_model', '') == 'crm.lead':
                 lead_ids.append(context.get('active_id'))
                 lead_ids = list(set(lead_ids))
             if lead_ids:
-                crm_sale_stage_ids = crm_sale_stage_obj.search(cr, uid, [('shop_id', '=', order.shop_id.id), ('name', '=', state)], context=context)
+                crm_sale_stage_ids = crm_sale_stage_model.search(cr, uid, [('shop_id', '=', order.shop_id.id), ('name', '=', state)], context=context)
                 if crm_sale_stage_ids:
-                    crm_sale_stage = crm_sale_stage_obj.browse(cr, uid, crm_sale_stage_ids[0], context)
+                    crm_sale_stage = crm_sale_stage_model.browse(cr, uid, crm_sale_stage_ids[0], context)
                     stage_id = crm_sale_stage.stage_id.id
                     crm_value = {'stage_id': stage_id}
+                    crm_value.update(crm_model.onchange_stage_id(cr, uid, lead_ids, stage_id)['value'])
                     if crm_sale_stage.update_amount:
                         crm_value.update({
                             'planned_revenue': order.amount_untaxed
                         })
-                    crm_obj.write(cr, uid, lead_ids, crm_value, context.update({'force_stage_id': True}))
+                    crm_model.write(cr, uid, lead_ids, crm_value, context.update({'force_stage_id': True}))
         return super(SaleOrder, self).hook_sale_state(cr, uid, orders, vals, context)
