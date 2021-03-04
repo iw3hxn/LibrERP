@@ -51,7 +51,7 @@ class project_project(orm.Model):
                         'remaining_hours': task.planned_hours,
                         'user_id': task.user_id and task.user_id.id or False,
                     }
-                    if name_prefix:
+                    if name_prefix.replace('/', ''):
                         vals.update({
                             'name': u"{0}: {1}".format(name_prefix, task.name),
                         })
