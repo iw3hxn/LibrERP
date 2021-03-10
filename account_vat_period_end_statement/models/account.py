@@ -235,7 +235,7 @@ class AccountVatPeriodEndStatement(orm.Model):
 
     _name = "account.vat.period.end.statement"
     _rec_name = 'date'
-    _order = 'date'
+    _order = 'date desc'
     _columns = {
 
         # 'name': fields.char('Descrizione', required=True),
