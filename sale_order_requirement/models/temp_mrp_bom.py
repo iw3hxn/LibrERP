@@ -15,6 +15,21 @@ class TempMrpBom(orm.Model):
 
     stock_availability = {}
 
+    def write(self, cr, uid, ids, vals, context=None):
+
+        res = super(TempMrpBom, self).write(cr, uid, ids, vals, context)
+        if context.get('active_model') == 'order.requirement.line' and isinstance(ids, (int, long)) and vals.get('product_qty'):
+            product_qty = vals['product_qty']
+            for line in self.browse(cr, uid, ids, context).bom_lines:
+                if line.state != 'draft':
+                    raise orm.except_orm(
+                        _('Error'),
+                        _('I can change QTY on on draft line'))
+                new_qty = line.original_qty * product_qty
+                line.write({'product_qty': new_qty})
+
+        return res
+
     def name_get(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = []
@@ -234,7 +249,8 @@ class TempMrpBom(orm.Model):
         'active': True,
         'is_manufactured': True,
         'level': 1,  # Useful for insertion of new temp mrp boms
-        'state': 'draft'
+        'state': 'draft',
+        'product_qty': 1
     }
 
     def _manufacture_bom(self, cr, uid, temp, context):
