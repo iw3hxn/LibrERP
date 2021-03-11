@@ -47,7 +47,7 @@ COLOR_SELECTION = [('aqua', (u"Aqua")),
 class CrmCaseCateg(orm.Model):
     _inherit = 'crm.case.categ'
 
-    def get_color(self, cr, uid, ids, field_name, arg, context):
+    def _get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
         for categ in self.read(cr, uid, ids, ['color'], context):
             if categ['color']:
@@ -57,12 +57,21 @@ class CrmCaseCateg(orm.Model):
 
         return value
 
+    def _compute_sale_order_number(self, cr, uid, ids, field_name, arg, context):
+        value = {}
+        sale_order_model = self.pool['sale.order']
+        for categ_id in ids:
+            value[categ_id] = sale_order_model.search(cr, uid, [('categ_id', '=', categ_id)], context=context, count=True)
+
+        return value
+
     _columns = {
         'active': fields.boolean("Active"),
         'sequence': fields.integer('Sequence'),
         'name': fields.char('Name', size=64, required=True, translate=False),
         'color': fields.selection(COLOR_SELECTION, 'Color'),
-        'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,)
+        'row_color': fields.function(_get_color, 'Row color', type='char', readonly=True, method=True,),
+        'sale_order_number': fields.function(_compute_sale_order_number, string='Sale Order #', type='integer', readonly=True)
     }
 
     _defaults = {

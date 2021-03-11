@@ -15,8 +15,8 @@
                     <field name="color" />
                     <field name="row_color" invisible="1" />
                     <field name="object_id" invisible="1"/>
+                    <field name="sale_order_number" />
                     <field name="section_id"/>
-                    
                 </tree>
             </field>
         </record>
