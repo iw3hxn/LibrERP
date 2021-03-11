@@ -57,6 +57,14 @@ class CrmCaseCateg(orm.Model):
 
         return value
 
+    def _compute_crm_order_number(self, cr, uid, ids, field_name, arg, context):
+        value = {}
+        crm_lead_model = self.pool['crm.lead']
+        for categ_id in ids:
+            value[categ_id] = crm_lead_model.search(cr, uid, [('categ_id', '=', categ_id)], context=context, count=True)
+
+        return value
+
     def _compute_sale_order_number(self, cr, uid, ids, field_name, arg, context):
         value = {}
         sale_order_model = self.pool['sale.order']
@@ -71,6 +79,8 @@ class CrmCaseCateg(orm.Model):
         'name': fields.char('Name', size=64, required=True, translate=False),
         'color': fields.selection(COLOR_SELECTION, 'Color'),
         'row_color': fields.function(_get_color, 'Row color', type='char', readonly=True, method=True,),
+        'crm_order_number': fields.function(_compute_crm_order_number, string='CRM #', type='integer',
+                                             readonly=True),
         'sale_order_number': fields.function(_compute_sale_order_number, string='Sale Order #', type='integer', readonly=True)
     }
 
