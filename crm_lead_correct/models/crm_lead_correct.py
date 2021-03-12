@@ -493,6 +493,11 @@ class CrmLead(orm.Model):
         if vals.get('vat', False):
             vals['vat'] = vals['vat'].upper()
 
+        if vals.get('categ_id'):
+            for lead in self.browse(cr, uid, ids, context):
+                if lead.sale_order_id:
+                    lead.sale_order_id.write({'categ_id': vals['categ_id']})
+
         return result
 
     def copy(self, cr, uid, ids, default, context=None):

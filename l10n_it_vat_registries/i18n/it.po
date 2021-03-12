@@ -197,7 +197,7 @@ msgstr "Fattura Fornitore nr"
 #. modules: l10n_it_vat_registries
 #: field:wizard.registro.iva,fiscal_page_base:0
 msgid "Last printed page"
-msgstr "Stampa da Pagina"
+msgstr "Num. Pagina Bollato"
 
 #. module: l10n_it_vat_registries
 #: field:wizard.registro.iva,tax_sign:0

@@ -70,19 +70,19 @@
                                         <field name="level_name"/>
                                         <field name="product_id" context="{'line_id':parent.id}"
                                                on_change="onchange_temp_product_id(id,product_id,product_qty,is_manufactured,context)"
-                                               attrs="{'readonly': [('level','=',0)]}"/>
+                                               attrs="{'readonly': ['|', ('level','=',0), ('state', '!=', 'draft')]}"/>
                                         <field name="original_qty"/>
 
                                         <!--<button name="action_add" string="Add" type="object" icon="gtk-add"  attrs="{'invisible': [('level', '=', '0')]}" />-->
 
-                                        <field name="product_qty" attrs="{'readonly': [('level','=',0)]}"
+                                        <field name="product_qty" attrs="{'readonly': ['|', ('level','=',0), ('state', '!=', 'draft')]}"
                                                context="{'line_id':parent.id}"
                                                on_change="onchange_temp_product_qty(product_qty, context)"/>
 
                                         <!--<button name="action_remove" string="Add" type="object" icon="gtk-remove"  attrs="{'invisible': [('level', '=', '0')]}" />-->
 
                                         <field name="product_uom" readonly="1"/>
-                                        <field name="mrp_routing_id"/>
+                                        <field name="mrp_routing_id" readonly="1"/>
                                         <field name="stock_availability"/>
                                         <field name="spare"/>
                                         <field name="is_out_of_stock" invisible="1"/>
@@ -100,7 +100,8 @@
                                                attrs="{'required': [('is_manufactured', '=', False)],
                                                     'readonly': ['|',('is_manufactured', '=', True),
                                                                      ('product_type','!=','product'),
-                                                                     ('level','=',0)]}"/>
+                                                                     ('level','=',0),
+                                                                     ('state', '!=', 'draft')]}"/>
                                         <field name="purchase_order_line_id" domain="[('product_id', '=', product_id), ('partner_id', '=', supplier_id)]"
                                                on_change="onchange_purchase_order_line_id(purchase_order_line_id, context)"
                                                attrs="{'readonly': ['|', ('supplier_id','=',False), ('buy', '=', False)]}"
@@ -108,7 +109,7 @@
                                         <field name="purchase_order_id" invisible="1"/>
                                         <field name="supplier_ids" invisible="1"/>
                                         <field name="mrp_production_id" readonly="1" />
-                                        <field name="state" />
+                                        <field name="state" readonly="1"/>
                                         <button name="manufacture_or_purchase_rec" string="OK" icon="gtk-ok" type="object" attrs="{'invisible': ['|', ('level','=', 0), ('state', '!=', 'draft')]}"
                                             confirm="Are you sure you want to do this?" groups="sale_order_requirement.open_order_requirement_by_line"/>
                                     </tree>

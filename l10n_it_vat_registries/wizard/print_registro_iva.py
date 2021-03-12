@@ -37,6 +37,7 @@ class wizard_registro_iva(osv.osv_memory):
             'account.period', 'registro_iva_periods_rel', 'period_id',
             'registro_id', 'Periods',
             help='Select periods you want retrieve documents from',
+            domain=[('special', '=', False)],
             required=True),
         'type': fields.selection([
             ('customer', 'Customer Invoices'),

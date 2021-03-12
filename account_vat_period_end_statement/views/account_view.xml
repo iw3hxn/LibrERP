@@ -139,7 +139,7 @@
         <field name="model">account.vat.period.end.statement</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Vat statement">
+            <tree string="Vat statement"  colors="grey:state=='paid'; blue:state == 'draft';">
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="type" />
                 <field name="name" />
@@ -165,7 +165,7 @@
         <field name="name">account.tax.tree.ip17</field>
         <field name="model">account.tax</field>
         <field name="inherit_id" ref="account.view_tax_tree"/>
-        <field name="type">form</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Account Tax">
                 <field name="type_tax_use"/>

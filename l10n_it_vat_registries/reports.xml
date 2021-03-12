@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="ir_header_webkit_vat_registry_sale" model="ir.header_webkit">
             <field name="orientation">Landscape</field>
             <field name="format">A4</field>
@@ -84,7 +84,7 @@
     <body style="border:0; margin: 0;" onload="subst()">
         <table style="border-top: 1px solid black; width: 100%">
             <tr >
-                <td style="text-align:right;font-size:12;" width="95%">Page ${objects[0].period_id and objects[0].period_id.fiscalyear_id and objects[0].period_id.fiscalyear_id.name or ''|entity}/<span class="page"/></td><td style="text-align:left;font-size:12;"></td>
+                <td style="text-align:right;font-size:12;" width="95%"> ${formatLang(start_date(),date=True)| entity} al ${formatLang(end_date(),date=True)| entity} - Pagina ${objects[0].period_id and objects[0].period_id.fiscalyear_id and objects[0].period_id.fiscalyear_id.name or ''|entity}/<span class="page"/></td><td style="text-align:left;font-size:12;"></td>
             </tr>
         </table>
     </body>
@@ -178,7 +178,7 @@ thead{
     <body style="border:0; margin: 0;" onload="subst()">
         <table style="border-top: 1px solid black; width: 100%">
             <tr >
-                <td style="text-align:right;font-size:12;" width="95%">Page ${objects[0].period_id and objects[0].period_id.fiscalyear_id and objects[0].period_id.fiscalyear_id.name or ''|entity}/<span class="page"/></td><td style="text-align:left;font-size:12;"></td>
+                <td style="text-align:right;font-size:12;" width="95%"> ${formatLang(start_date(),date=True)| entity} al ${formatLang(end_date(),date=True)| entity} - Pagina ${objects[0].period_id and objects[0].period_id.fiscalyear_id and objects[0].period_id.fiscalyear_id.name or ''|entity}/<span class="page"/></td><td style="text-align:left;font-size:12;"></td>
             </tr>
         </table>
     </body>
@@ -272,7 +272,7 @@ thead{
     <body style="border:0; margin: 0;" onload="subst()">
         <table style="border-top: 1px solid black; width: 100%">
             <tr >
-                <td style="text-align:right;font-size:12;" width="95%">Page ${objects[0].period_id and objects[0].period_id.fiscalyear_id and objects[0].period_id.fiscalyear_id.name or ''|entity}/<span class="page"/></td><td style="text-align:left;font-size:12;"></td>
+                <td style="text-align:right;font-size:12;" width="95%"> ${formatLang(start_date(),date=True)| entity} al ${formatLang(end_date(),date=True)| entity} - Pagina ${objects[0].period_id and objects[0].period_id.fiscalyear_id and objects[0].period_id.fiscalyear_id.name or ''|entity}/<span class="page"/></td><td style="text-align:left;font-size:12;"></td>
             </tr>
         </table>
     </body>
