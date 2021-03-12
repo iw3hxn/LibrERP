@@ -4,7 +4,7 @@
 #    Copyright (C) 2004-2012 Pexego Sistemas Informáticos. All Rights Reserved
 #    $Alejandro Núñez Liz$
 #    $Omar Castiñeira Saavedra$
-#    Copyright (C) 2013-2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2013-2021 Didotech srl (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
         
         El filtro por pedido de venta activo, no funciona en la web.
         """,
-    "version": "3.8.18.14",
+    "version": "3.8.19.14",
     "author": "Pexego, Didotech SRL",
     "website": "http://www.pexego.es",
     "category": "Sales/Version",
