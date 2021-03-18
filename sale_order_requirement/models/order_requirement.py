@@ -7,6 +7,12 @@ from datetime import date, datetime
 from openerp.osv import orm, fields
 from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 
+STATE_SELECTION = [
+    ('draft', 'Draft'),
+    ('done', 'Confirmed'),
+    ('cancel', 'Cancelled')
+]
+
 
 class order_requirement(orm.Model):
 
@@ -121,12 +127,9 @@ class order_requirement(orm.Model):
         'month': fields.function(_get_day, type='integer', string='Month', method=True, multi='day_of_week', store={
             'order.requirement': (lambda self, cr, uid, ids, c={}: ids, ['date'], 30),
         }),
-        'state': fields.selection([
-            ('draft', 'Draft'),
-            ('done', 'Confirmed'),
-            ('cancel', 'Cancelled')
-        ], 'Order State', readonly=True),
+        'state': fields.selection(STATE_SELECTION, 'Order State', readonly=True),
         'order_requirement_line_ids': fields.one2many('order.requirement.line', 'order_requirement_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)]}),
+        'full_order_requirement_line_ids': fields.one2many('full.order.requirement.line', 'order_requirement_id', 'Full Order Lines', readonly=True),
         'note': fields.text('Order Note'),
         'internal_note': fields.related('sale_order_id', 'picking_ids', 'internal_note', type='text', string='Internal Note'),
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),

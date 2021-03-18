@@ -3,3 +3,4 @@ access_order_requirement,access_order_requirement,model_order_requirement,,1,1,1
 access_order_requirement_line,access_order_requirement_line,model_order_requirement_line,,1,1,1,1
 access_temp_mrp_bom,access_temp_mrp_bom,model_temp_mrp_bom,,1,1,1,1
 access_temp_mrp_routing,access_temp_mrp_routing,model_temp_mrp_routing,,1,1,1,1
+access_full_order_requirement_line,access_full_order_requirement_line,model_full_order_requirement_line,,1,1,1,1

@@ -5,8 +5,8 @@ import decimal_precision as dp
 import tools
 from openerp.osv import orm, fields
 from tools.translate import _
+from openerp.addons.sale_order_requirement.models.order_requirement import STATE_SELECTION
 
-import temp_mrp_bom
 
 from ..util import rounding
 
@@ -693,9 +693,7 @@ class OrderRequirementLine(orm.Model):
                                         relation='sale.order', type='many2one', readonly=True),
         'sequence': fields.integer('Sequence',
                                    help="Gives the sequence order when displaying a list of sales order lines."),
-        'state': fields.selection(
-            [('cancel', 'Cancelled'), ('draft', 'Draft'), ('done', 'Done')], 'State', required=True, readonly=True,
-        ),
+        'state': fields.selection(STATE_SELECTION, 'State', required=True, readonly=True),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_id': fields.function(_get_purchase_order_id, string='Purchase Order', type='many2one', relation='purchase.order'),
         'force_purchase_order_line_id': fields.many2one('purchase.order.line', "Force Order Line"),
@@ -1235,7 +1233,8 @@ class OrderRequirementLine(orm.Model):
 
         if is_manufactured and not line.temp_mrp_bom_ids:
             # if line.product_id.
-            temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id, qty_mult, False, 0, 0, True, True, context)
+            product = line.new_product_id or line.product_id
+            temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, product, qty_mult, False, 0, 0, True, True, context)
             if temp_ids:
                 temp_mrp_bom_model = self.pool['temp.mrp.bom']
                 temp = temp_ids[0]

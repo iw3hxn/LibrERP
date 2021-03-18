@@ -45,14 +45,37 @@
                     <group col="1" colspan="2" string="Internal Note">
                         <field name="internal_note" nolabel="1"/>
                     </group>
-                    <group col="1" colspan="4">
-                        <field name="order_requirement_line_ids" nolabel="1" context="{'order_id': id}"/>
-                    </group>
-                    <button name="set_state_draft" string="Return to Draft" type="object" icon="gtk-ok" states="done,cancel" />
-                    <newline />
-                    <field name="user_id" />
-                    <field name="state" widget="statusbar" statusbar_colors='{"draft":"red","done":"black","cancel":"grey"}'/>
-                    <button name="action_view_purchase_order" string="View Purchase Order" type="object" icon="STOCK_FULLSCREEN"/>
+                    <notebook colspan="4">
+                        <page string="Order Requeriment">
+                            <group col="1" colspan="4">
+                                <field name="order_requirement_line_ids" nolabel="1" context="{'order_id': id}"/>
+                            </group>
+                            <button name="set_state_draft" string="Return to Draft" type="object" icon="gtk-ok" states="done,cancel" />
+                            <newline />
+                            <field name="user_id" />
+                            <field name="state" widget="statusbar" statusbar_colors='{"draft":"red","done":"black","cancel":"grey"}'/>
+                            <button name="action_view_purchase_order" string="View Purchase Order" type="object" icon="STOCK_FULLSCREEN"/>
+                        </page>
+                        <page string="Full Explosion Order">
+                            <field name="full_order_requirement_line_ids" nolabel="1">
+                                <tree colors="brown:level==0">
+                                    <field name="level" invisible="1"/>
+                                    <field name="level_name" />
+                                    <field name="id" invisible="1"/>
+                                    <field name="bom_parent_id" />
+                                    <field name="bom_id" />
+                                    <field name="order_requirement_id" invisible="1"/>
+                                    <field name="product_id" />
+                                    <field name="qty" />
+                                    <field name="product_uom" />
+                                    <field name="supplier_id" />
+                                    <field name="categ_id" />
+                                    <field name="state" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
                 </form>
            </field>
         </record>

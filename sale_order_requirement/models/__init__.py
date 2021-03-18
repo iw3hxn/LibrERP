@@ -1,4 +1,5 @@
 from . import account_analytic_line
+from . import full_order_requirement_line
 from . import mrp
 from . import mrp_production
 from . import mrp_production_product_line

@@ -4,7 +4,7 @@
 import decimal_precision as dp
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-
+from openerp.addons.sale_order_requirement.models.order_requirement import STATE_SELECTION
 from ..util import rounding
 
 default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
@@ -12,6 +12,7 @@ default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
 
 class TempMrpBom(orm.Model):
     _name = 'temp.mrp.bom'
+    _description = "Temporary Bom Line"
 
     stock_availability = {}
 
@@ -182,8 +183,7 @@ class TempMrpBom(orm.Model):
 
     _columns = {
         'active': fields.boolean(required=True),
-        'state': fields.selection(
-            [('cancel', 'Cancelled'), ('draft', 'Draft'), ('done', 'Done')], 'State', required=True, default='draft'
+        'state': fields.selection(STATE_SELECTION, 'State', required=True, default='draft'
         ),
         'name': fields.char('Name', size=160, readonly=True),
         'type': fields.selection([('normal', 'Normal BoM'), ('phantom', 'Sets / Phantom')], 'BoM Type', required=True,
