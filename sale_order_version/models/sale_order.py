@@ -5,7 +5,7 @@
 #    $Alejandro Núñez Liz$
 #    $Omar Castiñeira Saavedra$
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2021 Didotech srl (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -56,14 +56,22 @@ class SaleOrder(orm.Model):
             ids = [ids]
         order_ids = []
         for sale in self.browse(cr, uid, ids, context):
-            order_ids += self.search(cr, uid, ['|', ('sale_version_id', '=', sale.sale_version_id.id),
-                                               ('id', '=', sale.sale_version_id.id), '|', ('active', '=', False),
-                                               ('active', '=', True)], context=context)
+            if sale.sale_version_id.id:
+                domain = [
+                    ('sale_version_id', '=', sale.sale_version_id.id)
+                ]
+            else:
+                domain = [
+                    ('sale_version_id', '=', sale.id)
+                ]
+
+            order_ids += self.search(cr, uid, domain, context=context)
             version = self.read(cr, uid, order_ids[0], ['version'])['version']
             sale.write({'active': True, 'version': version})
 
-        order_ids_deactivate = list(set(order_ids) - set(ids))
-        self.write(cr, uid, order_ids_deactivate, {'active': False}, context=context)
+        if order_ids:
+            order_ids_deactivate = list(set(order_ids) - set(ids))
+            self.write(cr, uid, order_ids_deactivate, {'active': False}, context=context)
 
         mod_obj = self.pool['ir.model.data']
         res = mod_obj.get_object_reference(cr, uid, 'sale', 'view_order_form')
