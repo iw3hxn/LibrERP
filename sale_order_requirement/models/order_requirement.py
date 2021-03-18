@@ -158,6 +158,7 @@ class order_requirement(orm.Model):
 
     def set_state_draft(self, cr, uid, ids, context):
         temp_mrp_bom_model = self.pool['temp.mrp.bom']
+        temp_mrp_routing_model = self.pool['temp.mrp.routing']
         order_requirement_line_model = self.pool['order.requirement.line']
         purchase_order_model = self.pool['purchase.order']
         line_ids = order_requirement_line_model.search(cr, uid, [('order_requirement_id', 'in', ids), ('state', '!=', 'draft')], context=context)
@@ -234,7 +235,15 @@ class order_requirement(orm.Model):
         if description:
             raise orm.except_orm(_(u'Error !'), '\n'.join(description))
 
-        order_requirement_line_model.write(cr, uid, line_ids, {'state': 'draft'}, context)
+        order_requirement_line_model.write(cr, uid, line_ids, {'state': 'draft', 'new_product_id': False}, context)
+        all_line_to_clear_ids = temp_mrp_bom_model.search(cr, uid, [('order_requirement_line_id', 'in', line_ids)],
+                                                          context=context)
+        temp_mrp_bom_model.write(cr, uid, all_line_to_clear_ids, {'active': False}, context)
+
+        temp_mrp_routing_ids = temp_mrp_routing_model.search(cr, uid, [('order_requirement_line_id', 'in', line_ids)],
+                                                          context=context)
+        temp_mrp_routing_model.unlink(cr, uid, temp_mrp_routing_ids, context=context)
+
         order_requirement_line_model.action_reload_bom(cr, uid, line_ids, context)
         self.write(cr, uid, ids, {'state': 'draft'}, context)
         return True
