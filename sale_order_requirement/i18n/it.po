@@ -755,6 +755,12 @@ msgstr "Riga"
 #. module: sale_order_requirement
 #: view:order.requirement:0
 #: view:temp.mrp.bom:0
+msgid "View Manufacturing Order"
+msgstr "Visualizza Ordini Produzione"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+#: view:temp.mrp.bom:0
 msgid "View Purchase Order"
 msgstr "Visualizza Ordini Acquisto"
 

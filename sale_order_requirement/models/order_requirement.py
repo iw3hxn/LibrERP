@@ -276,3 +276,23 @@ class order_requirement(orm.Model):
             'context': "{'type':'out_refund'}",
             'type': 'ir.actions.act_window',
         }
+
+    def action_view_manufacturing_order(self, cr, uid, ids, context=None):
+        order = self.browse(cr, uid, ids, context)[0]
+        production_ids = []
+        for line in order.order_requirement_line_ids:
+            for bom_line in line.temp_mrp_bom_ids:
+                if bom_line.mrp_production_id.id:
+                    production_ids.append(bom_line.mrp_production_id.id)
+
+        production_ids = list(set(production_ids))
+        mod_model = self.pool['ir.model.data']
+        act_model = self.pool['ir.actions.act_window']
+        action_id = mod_model.get_object_reference(cr, uid, 'mrp', 'mrp_production_action')
+        action_res = action_id and action_id[1]
+        action = act_model.read(cr, uid, action_res, [], context)
+        action.update({
+            'domain': "[('id', 'in', %s)]" % production_ids,
+            'context': "{}"
+        })
+        return action
