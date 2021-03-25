@@ -183,8 +183,7 @@ class TempMrpBom(orm.Model):
 
     _columns = {
         'active': fields.boolean(required=True),
-        'state': fields.selection(STATE_SELECTION, 'State', required=True, default='draft'
-        ),
+        'state': fields.selection(STATE_SELECTION, 'State', required=True, default='draft'),
         'name': fields.char('Name', size=160, readonly=True),
         'type': fields.selection([('normal', 'Normal BoM'), ('phantom', 'Sets / Phantom')], 'BoM Type', required=True,
                                  help="If a sub-product is used in several products, it can be useful to create its own BoM. " \

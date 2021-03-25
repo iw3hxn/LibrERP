@@ -13,6 +13,13 @@ class FullOrderRequirementLine(orm.Model):
     _auto = False
     _order = 'bom_id, bom_parent_id'
 
+    def get_color(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        for line in self.read(cr, uid, ids, ['level'], context):
+            row_color = self.pool['temp.mrp.bom'].get_color_bylevel(line['level'])
+            res[line['id']] = row_color
+        return res
+
     _columns = {
         'level': fields.integer("Level"),
         'level_name': fields.char('Level Name'),
@@ -34,8 +41,9 @@ class FullOrderRequirementLine(orm.Model):
 
         'bom_parent_id': fields.integer("BOM Parent ID"),
         'bom_id': fields.integer("BOM ID"),
-
-
+        'is_leaf': fields.boolean('Leaf', readonly=True),
+        'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True,
+                                     store=False),
 
     }
 
@@ -44,74 +52,70 @@ class FullOrderRequirementLine(orm.Model):
 
         cr.execute("""
             CREATE or REPLACE view full_order_requirement_line AS (
-                SELECT * FROM (
-                    SELECT 
-                        temp_mrp_bom.bom_id as bom_parent_id,
-                        temp_mrp_bom.id as bom_id,
-                        temp_mrp_bom.level_name as level_name,
-                        temp_mrp_bom.sequence * 100000 + temp_mrp_bom.order_requirement_line_id as id,
-                        temp_mrp_bom.level AS level,
-                        temp_mrp_bom.product_id AS product_id,
-                        
-                        order_requirement.id AS order_requirement_id,
-                        temp_mrp_bom.supplier_id AS supplier_id,
-                        temp_mrp_bom.product_qty AS qty,
-                        temp_mrp_bom.product_uom AS product_uom,
-                        temp_mrp_bom.user_id AS user_id,
-                        temp_mrp_bom.state AS state,
-                        temp_mrp_bom.buy AS buy,
-                        temp_mrp_bom.is_manufactured AS is_manufactured,
-                        product_template.categ_id AS categ_id,
-                        temp_mrp_bom.order_requirement_line_id AS order_requirement_line_id,
-                        temp_mrp_bom.sequence AS sequence
-                     FROM
-                        order_requirement,
-                        order_requirement_line,
-                        temp_mrp_bom,
-                        product_product,
-                        product_template
-                    WHERE
-                        temp_mrp_bom.order_requirement_line_id = order_requirement_line.id 
-                        AND order_requirement_line.order_requirement_id = order_requirement.id
-                        AND temp_mrp_bom.product_id = product_product.id
-                        AND product_product.product_tmpl_id = product_template.id
-                        AND temp_mrp_bom.active = 'True'
-              
-    
-                    UNION
+                SELECT 
+                    *,
+                    row_number() OVER ()::INTEGER AS id
                     
-                    SELECT 
-                        0 AS bom_parent_id,
-                        0 AS bom_id,
-                        '' AS level_name,
-                        order_requirement_line.id AS id,
-                        0 AS level,
-                        order_requirement_line.product_id AS product_id,
-                        order_requirement.id AS order_requirement_id,
-                        order_requirement_line.supplier_id AS supplier_id,
-                        order_requirement_line.qty AS qty,
-                        product_template.uom_id AS product_uom,
-                        order_requirement_line.user_id AS user_id,
-                        order_requirement_line.state AS state,
-                        order_requirement_line.buy AS buy,
-                        order_requirement_line.is_manufactured AS is_manufactured,
-                        product_template.categ_id AS categ_id,
-                        order_requirement_line.id AS order_requirement_line_id,
-                        order_requirement_line.id AS sequence
+                    FROM ( 
+                        SELECT 
+                            temp_mrp_bom.is_leaf, 
+                            temp_mrp_bom.bom_id AS bom_parent_id,
+                            temp_mrp_bom.id AS bom_id,
+                            temp_mrp_bom.level_name,
+                            temp_mrp_bom.level,
+                            temp_mrp_bom.product_id,
+                            order_requirement.id AS order_requirement_id,
+                            temp_mrp_bom.supplier_id,
+                            temp_mrp_bom.product_qty AS qty,
+                            temp_mrp_bom.product_uom,
+                            temp_mrp_bom.user_id,
+                            temp_mrp_bom.state,
+                            temp_mrp_bom.buy,
+                            temp_mrp_bom.is_manufactured,
+                            product_template.categ_id,
+                            temp_mrp_bom.order_requirement_line_id,
+                            temp_mrp_bom.sequence
                         
-                        FROM
-                            order_requirement,
+                        FROM order_requirement,
+                            order_requirement_line,
+                            temp_mrp_bom,
+                            product_product,
+                            product_template
+                        WHERE temp_mrp_bom.order_requirement_line_id = order_requirement_line.id 
+                                AND order_requirement_line.order_requirement_id = order_requirement.id 
+                                AND temp_mrp_bom.product_id = product_product.id 
+                                AND product_product.product_tmpl_id = product_template.id 
+                                AND temp_mrp_bom.active = true
+                        
+                        UNION
+                        
+                        SELECT 
+                            True AS is_leaf,
+                            0 AS bom_parent_id,
+                            0 AS bom_id,
+                            ''::character varying AS level_name,
+                            0 AS level,
+                            order_requirement_line.product_id,
+                            order_requirement.id AS order_requirement_id,
+                            order_requirement_line.supplier_id,
+                            order_requirement_line.qty,
+                            product_template.uom_id AS product_uom,
+                            order_requirement_line.user_id,
+                            order_requirement_line.state,
+                            order_requirement_line.buy,
+                            order_requirement_line.is_manufactured,
+                            product_template.categ_id,
+                            order_requirement_line.id AS order_requirement_line_id,
+                            order_requirement_line.id AS sequence
+                        FROM order_requirement,
                             order_requirement_line,
                             product_product,
                             product_template
-                        WHERE
-                            order_requirement_line.order_requirement_id = order_requirement.id
-                            AND order_requirement_line.product_id = product_product.id
-                            AND product_product.product_tmpl_id = product_template.id
-                            AND order_requirement_line.id not in (select order_requirement_line_id from temp_mrp_bom)
-                    
-                    ) AS A
-                    ORDER BY order_requirement_line_id, sequence            
-                
-                );
+                        WHERE order_requirement_line.order_requirement_id = order_requirement.id 
+                            AND order_requirement_line.product_id = product_product.id 
+                            AND product_product.product_tmpl_id = product_template.id 
+                            AND NOT (order_requirement_line.id IN ( SELECT temp_mrp_bom.order_requirement_line_id
+                        FROM temp_mrp_bom))) a
+                  ORDER BY a.order_requirement_line_id, a.sequence
+            )
             """)
