@@ -180,7 +180,17 @@ class stock_picking(orm.Model):
     def _get_group_keys(self, cr, uid, partner, picking, context=None):
         res = super(stock_picking, self)._get_group_keys(cr, uid, partner, picking, context)
         if picking.cig:
-            res = '{0}_CIG{1}'.format(res, picking.cig)
+            try:
+                res = '{0}_CIG{1}'.format(res, picking.cig)
+            except UnicodeEncodeError:
+                raise orm.except_orm(
+                    _('Error!'),
+                    _(u"CIG '{}' contains non ASCII characters".format(picking.cig)))
         if picking.cup:
-            res = '{0}_CUP{1}'.format(res, picking.cup)
+            try:
+                res = '{0}_CUP{1}'.format(res, picking.cup)
+            except UnicodeEncodeError:
+                raise orm.except_orm(
+                    _('Error!'),
+                    _(u"CUP '{}' contains non ASCII characters".format(picking.cup)))
         return res

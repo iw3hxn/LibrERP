@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2010 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
-#    Copyright (C) 2014 Didotech SRL (<http://didotech.com>).
+#    Copyright (C) 2014-2021 Didotech SRL (<http://didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -22,7 +22,7 @@
 
 {
     'name': 'Italian Localisation - Sale',
-    'version': '3.11.24.25',
+    'version': '3.11.25.25',
     'category': 'Localisation/Italy',
     'description': """OpenERP Italian Localization - Sale version
 
