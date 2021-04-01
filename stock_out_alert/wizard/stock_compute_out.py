@@ -28,21 +28,22 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-class stock_compute_out(osv.osv_memory):
+
+class StockComputeOut(osv.osv_memory):
     _name = 'stock.compute.out'
     _description = 'Stock Compute Out'
 
     _columns = {
-        'data': fields.binary('File', readonly=True),
-        'name': fields.char('Filename', 16, readonly=True),
+        'name': fields.text("Text"),
+        'name_json': fields.text("Json"),
         'state': fields.selection(
-                    ( ('draft','draft'),('done','done') )),
+            (('draft', 'draft'), ('done', 'done'))),
     }
-    _defaults = { 
+    _defaults = {
         'state': lambda *a: 'draft',
     }
 
-    def compute_out(self, cr, uid, ids, context={}):
+    def compute_out(self, cr, uid, ids, context=None):
         """
         @param self: The object pointer.
         @param cr: A database cursor
@@ -50,14 +51,12 @@ class stock_compute_out(osv.osv_memory):
         @param ids: List of IDs selected
         @param context: A standard dictionary
         """
-        #form_data = self.browse(cr, uid, ids)[0]
-        move_obj = self.pool.get('stock.move')
-        prod_list = move_obj._check_op_stock_availability(cr, uid, context)
-        email_body = move_obj.make_stock_out_email(cr, uid, prod_list, context)
-        if _logger.isEnabledFor(logging.DEBUG):
-            _logger.debug("\n" + email_body)
-        out=base64.encodestring(email_body.encode('utf-8') + "\n")
-        base64.encodestring("á")
-        return self.write(cr, uid, ids, {'state':'done', 'data': out, 'name':'stock_out.txt'}, context=context)
+        # form_data = self.browse(cr, uid, ids)[0]
+        stock_move_model = self.pool['stock.move']
+        prod_list = stock_move_model._check_op_stock_availability(cr, uid, context)
+        res = stock_move_model._get_stock_out(cr, uid, prod_list, context)
+        mail = stock_move_model._get_email_body(cr, uid, res, context)
 
-stock_compute_out()
+
+        return self.write(cr, uid, ids, {'state': 'done', 'name': mail}, context=context)
+

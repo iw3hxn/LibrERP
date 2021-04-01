@@ -11,8 +11,7 @@
                     <label string="This report allows you to check the stock availability based on the product stock rules. By default, a scheduler is launched automatically every night by OpenERP, and the result is send by email to all user in 'Warehouse Management / Stock Monitor' group." colspan="4"/>
                     <group col="2" fill="0" states="done">
                         <separator colspan="2" string="Report done"/>
-                        <field name="name" invisible="1" />
-                        <field name="data" colspan="2" nolabel="1" readonly="1" filename="name"/>
+                        <field name="name" nolabel="1" />
                     </group>
                     <separator colspan="4"/>
                     <group col="2" colspan="4">

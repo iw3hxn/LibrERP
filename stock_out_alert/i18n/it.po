@@ -70,9 +70,9 @@ msgid ""
 "By default, a scheduler is launched automatically every night by OpenERP, and the result "
 "is send by email to all user in 'Warehouse Management / Stock Monitor' group."
 msgstr ""
-"Este reporte permite verificar la disponibilidad de los productos basados en las reglas de stock. "
-"Por defecto, una tarea es lanzada automáticamente todas las noches por OpenERP, y el resultado "
-"es enviado por mail a todos los usuarios del grupo 'Warehouse Management / Stock Monitor'."
+"This report allows you to check the stock availability based on the product stock rules. "
+"By default, a scheduler is launched automatically every night by OpenERP, and the result "
+"is send by email to all user in 'Warehouse Management / Stock Monitor' group."
 
 #. module: stock_out_alert
 #: view:stock.compute.out:0

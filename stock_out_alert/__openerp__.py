@@ -22,8 +22,8 @@
 ##############################################################################
 
 {
-    "name" : "Stock Out Alert",
-    "description":"""
+    "name": "Stock Out Alert",
+    "description": """
 Report 'Products Out of Stock', allows you to check the stock availability
 based on the product stock rules.
 
@@ -31,13 +31,19 @@ Add a scheduler launched automatically every night by OpenERP,
 and the result is send by email to all user in
 'Warehouse Management / Stock Monitor' group.
 """,
-    "version" : "0.1.1",
-    "author" : "Enterprise Objects Consulting",
-    "website" : "http://www.eoconsulting.com.ar",
-    "category" : "Warehouse Management",
-    "depends" : ["stock", "procurement", "purchase"],
-    "data" : [ "scheduler_data.xml", 'wizard/stock_compute_out_view.xml' ],
-    "images" : [ 'images/stock_out_alert_report.png','images/stock_out_alert_wizard.jpeg',],
+    "version": "0.1.1.1",
+    "author": "Enterprise Objects Consulting",
+    "website": "http://www.eoconsulting.com.ar",
+    "category": "Warehouse Management",
+    "depends": [
+        "stock",
+        "procurement",
+        "purchase"],
+    "data": [
+        "scheduler_data.xml",
+        "wizard/stock_compute_out_view.xml"
+    ],
+    "images": ['images/stock_out_alert_report.png', 'images/stock_out_alert_wizard.jpeg', ],
     "active": False,
     "installable": True
 }

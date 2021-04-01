@@ -56,13 +56,15 @@ class stock_move(osv.osv):
                 email_from = tools.config.get('email_from', False)
                 if not email_from:
                     email_from = str(user_obj.browse(cr, uid, uid, context=context).user_email)
-                wm_monitor_id = group_obj.search(cr, uid, [('name', '=', 'Stock Monitor'), ('category_id.name', '=', 'Warehouse Management')],
+                wm_monitor_id = group_obj.search(cr, uid, [('name', '=', 'Stock Monitor'),
+                                                           ('category_id.name', '=', 'Warehouse Management')],
                                                  context=context)[0]
                 email_to = [str(u.user_email) for u in group_obj.browse(cr, uid, wm_monitor_id, context=context).users]
                 mail_message_obj.schedule_with_attach(cr, uid,
                                                       email_from,
                                                       email_to,
-                                                      "ERP - " + str(len(prod_list)) + " " + _("products out of stock found"),
+                                                      "ERP - " + str(len(prod_list)) + " " + _(
+                                                          "products out of stock found"),
                                                       email_body,
                                                       attachments=None,
                                                       subtype='plain',
@@ -141,6 +143,7 @@ class stock_move(osv.osv):
                 'qty': p['qty'],
                 'uom': p['uom'],
                 'origin': p['origin'] if 'origin' in p and p['origin'] else '',
+                'purchase_order': '' if (p['product'].last_purchase_order_id.state == 'done' or not p['product'].last_purchase_order_id) else p['product'].last_purchase_order_id.name
             }
             res[company.id]['locations'][location.id]['products'].append(res_prod)
         return res
@@ -164,18 +167,18 @@ class stock_move(osv.osv):
                 if len(location_data['products']) == 0:
                     body += "  %s" % _("No product out of stock found.")
                 else:
-	            for product_data in location_data['products']:
-        		purchase_order = '-' if (product_data['product'].last_purchase_order_id.state == 'done' or not product_data['product'].last_purchase_order_id) else product_data['product'].last_purchase_order_id.name
-                    	product_reg = {
-				'name': ("[%s] %s" % (product_data['product'].default_code, product_data['product'].name))[0:37],
-                        	'qty_available': "%s %s" % (product_data['product'].qty_available, product_data['product'].product_tmpl_id.uom_id.name),
-                        	'virtual_available': "%s %s" % (product_data['product'].virtual_available,
-                                                        product_data['product'].product_tmpl_id.uom_id.name),
-                        	'needed': "%s %s" % (product_data['qty'], product_data['uom'].name),
-                        	'purchase_order': purchase_order
-
-                    	}
-                    	body += "  %(name)-38s%(qty_available)15s\t%(virtual_available)15s\t%(needed)15s\t%(purchase_order)10s\n" % product_reg
+                    for product_data in location_data['products']:
+                        product_reg = {
+                            'name': ("[%s] %s" % (product_data['product'].default_code, product_data['product'].name))[
+                                    0:37],
+                            'qty_available': "%s %s" % (
+                            product_data['product'].qty_available, product_data['product'].product_tmpl_id.uom_id.name),
+                            'virtual_available': "%s %s" % (product_data['product'].virtual_available,
+                                                            product_data['product'].product_tmpl_id.uom_id.name),
+                            'needed': "%s %s" % (product_data['qty'], product_data['uom'].name),
+                            'purchase_order': product_data['purchase_order']
+                        }
+                        body += "  %(name)-38s%(qty_available)15s\t%(virtual_available)15s\t%(needed)15s\t%(purchase_order)10s\n" % product_reg
         return body
 
     def make_stock_out_email(self, cr, uid, prod_list, context={}):
@@ -186,4 +189,3 @@ class stock_move(osv.osv):
         res = self._get_stock_out(cr, uid, prod_list, context)
         mail = self._get_email_body(cr, uid, res, context)
         return mail
-
