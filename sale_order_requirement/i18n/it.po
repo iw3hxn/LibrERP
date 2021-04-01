@@ -1,64 +1,370 @@
-#. module: sale_order_requirement
-#: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement_line
-msgid "Order Requirement Line"
-msgstr "Riga Fabbisogno Ordine"
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* sale_order_requirement
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-01 08:57+0000\n"
+"PO-Revision-Date: 2021-04-01 08:57+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
 
 #. module: sale_order_requirement
-#: field:purchase.order.line,order_requirement_line_ids:0
-msgid "Order requirement lines"
-msgstr "Righe fabbisogno ordine"
+#: view:full.order.requirement.line:0
+#: model:ir.actions.act_window,name:sale_order_requirement.action_view_full_order_requirement_line
+#: model:ir.ui.menu,name:sale_order_requirement.menu_view_full_order_requirement_line
+msgid "Full Order Requirement Line"
+msgstr "Full Order Requirement Line"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,seq:0
-msgid "Line #"
-msgstr "Nr. linea"
-
-#. module: sale_order_requirement
-#: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement
-#: model:ir.ui.menu,name:sale_order_requirement.menu_view_order_requirement
-#: view:order.requirement:0
-#: view:order.requirement.line:0
-msgid "Order Requirement"
-msgstr "Fabbisogno Ordine"
-
-#. module: sale_order_requirement
-#: field:order.requirement,week_nbr:0
-msgid "Week Number"
-msgstr "Settimana n."
-
-#. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/order_requirement_line.py:1022
-#: code:addons/sale_order_requirement/models/stock_move.py:96
-#, python-format
-msgid "Product BOM"
-msgstr "Distinta Base"
-
-#. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/order_requirement_line.py:789
-#, python-format
-msgid "There are same processed line'"
-msgstr "Ci sono alcune righe processate"
-
-#. module: sale_order_requirement
-#: field:temp.mrp.bom,purchase_order_line_id:0
-msgid "Purchase Order Line"
-msgstr "Riga Ordine Acquisto"
-
-#. module: sale_order_requirement
+#: field:full.order.requirement.line,is_leaf:0
 #: field:temp.mrp.bom,is_leaf:0
 msgid "Leaf"
 msgstr "Foglia"
 
 #. module: sale_order_requirement
-#: view:mrp.production:0
-msgid "Main Products"
-msgstr "Prodotti Principali"
+#: sql_constraint:mrp.production:0
+#: sql_constraint:stock.picking:0
+msgid "Reference must be unique per Company!"
+msgstr "Il riferimento deve essere univoco per ogni Azienda!"
 
 #. module: sale_order_requirement
-#: model:ir.model,name:sale_order_requirement.model_mrp_production
-#: field:temp.mrp.bom,mrp_production_id:0
-msgid "Manufacturing Order"
-msgstr "Ordine di Produzione"
+#: view:order.requirement.line:0
+#: view:stock.picking:0
+msgid "Open BOM"
+msgstr "Esplodi Distinta"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Are you sure you want to do this?"
+msgstr "Sicuro di confermare?"
+
+#. module: sale_order_requirement
+#: help:order.requirement.line,purchase_orders_state:0
+msgid "Approved Purchase Order Line Arrived/Total"
+msgstr "Approved Purchase Order Line Arrived/Total"
+
+#. module: sale_order_requirement
+#: view:full.order.requirement.line:0
+msgid "Group By..."
+msgstr "Raggruppa Per..."
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_temp_mrp_bom
+msgid "temp.mrp.bom"
+msgstr "temp.mrp.bom"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "BOM"
+msgstr "Distinta Base"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_full_order_requirement_line
+msgid "full.order.requirement.line"
+msgstr "full.order.requirement.line"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,row_color:0
+msgid "Row Color"
+msgstr "Colore Riga"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,connected_document:0
+msgid "Document"
+msgstr "Document"
+
+#. module: sale_order_requirement
+#: field:full.order.requirement.line,is_manufactured:0
+#: field:order.requirement.line,is_manufactured:0
+#: field:temp.mrp.bom,is_manufactured:0
+msgid "Manufacture"
+msgstr "Produci"
+
+#. module: sale_order_requirement
+#: selection:mrp.bom,product_type:0
+msgid "Service"
+msgstr "Servizio"
+
+#. module: sale_order_requirement
+#: help:order.requirement.line,buy:0
+msgid "If checked, product will be bought, otherwise is taken from stock"
+msgstr "If checked, product will be bought, otherwise is taken from stock"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,company_id:0
+msgid "Company"
+msgstr "Company"
+
+#. module: sale_order_requirement
+#: help:order.requirement.line,is_manufactured:0
+msgid "If checked product is manufactured. If not, BOM is read-only"
+msgstr "Se selezionato il prodotto è da produrre altrimenti la distinta è in sola lettura"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,product_rounding:0
+msgid "Product Rounding"
+msgstr "Product Rounding"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_temp_mrp_routing
+msgid "temp.mrp.routing"
+msgstr "temp.mrp.routing"
+
+#. module: sale_order_requirement
+#: field:mrp.bom,child_buy_and_produce_ids:0
+#: field:order.requirement.line,temp_mrp_bom_ids:0
+msgid "BoM Hierarchy"
+msgstr "Gerarchia Distinta"
+
+#. module: sale_order_requirement
+#: field:order.requirement,date_to:0
+msgid "Date to"
+msgstr "Al"
+
+#. module: sale_order_requirement
+#: view:mrp.production:0
+msgid "Manufacturing Orders related to main products (hide children BoM)"
+msgstr "Ordine di Produzione collegato al Prodotto"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/stock_move.py:341
+#, python-format
+msgid "Production already finished"
+msgstr "Production already finished"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,temp_mrp_bom_id:0
+msgid "Temp BoM"
+msgstr "Temp BoM"
+
+#. module: sale_order_requirement
+#: report:order.requirement.explosion:0
+msgid "INTERNAL NOTE"
+msgstr "INTERNAL NOTE"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,stock_availability:0
+#: field:temp.mrp.bom,stock_availability:0
+msgid "Stock Availability"
+msgstr "Disponibilità Magazzino"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Start to Work on BOM"
+msgstr "Inizia a Lavorare sul Prodotto"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/order_requirement_line.py:1256
+#: code:addons/sale_order_requirement/models/order_requirement_line.py:1278
+#: code:addons/sale_order_requirement/models/sale_order_line.py:40
+#: code:addons/sale_order_requirement/models/stock_move.py:305
+#: field:stock.move,product_bom_ids:0
+#, python-format
+msgid "Product BOM"
+msgstr "Distinta Base"
+
+#. module: sale_order_requirement
+#: view:sale.order:0
+#: field:sale.order,mrp_production_ids:0
+#: field:stock.move,production_order_state:0
+#: view:stock.picking:0
+msgid "Production Order"
+msgstr "Ordini di Produzione"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,split_mrp_production:0
+#: field:res.company,split_mrp_production:0
+msgid "Split Production order from order requirement"
+msgstr "Dividi l'Ordine di Produzione dal Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line.add:0
+msgid "Ok"
+msgstr "Ok"
+
+#. module: sale_order_requirement
+#: field:full.order.requirement.line,level:0
+#: field:mrp.production,level:0
+#: field:temp.mrp.bom,level:0
+#: field:temp.mrp.bom,level_name:0
+msgid "Level"
+msgstr "Livello"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,supplier_ids:0
+#: field:temp.mrp.bom,supplier_ids:0
+msgid "Suppliers"
+msgstr "Fornitori"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,sale_order_id:0
+#: view:purchase.order:0
+#: field:temp.mrp.bom,sale_order_id:0
+msgid "Sale Order"
+msgstr "Ordine di Vendita"
+
+#. module: sale_order_requirement
+#: view:mrp.production:0
+msgid "Compute Data"
+msgstr "Elabora Dati"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,workcenter_id:0
+msgid "Workcenter"
+msgstr "Centro di Lavoro"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/order_requirement.py:277
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:572
+#: model:ir.model,name:sale_order_requirement.model_purchase_order
+#: field:order.requirement.line,purchase_order_id:0
+#: field:order.requirement.line.add.match,order_id:0
+#: field:temp.mrp.bom,purchase_order_id:0
+#, python-format
+msgid "Purchase Order"
+msgstr "Ordine Acquisto"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_mrp_bom
+msgid "Bill of Material"
+msgstr "Distinta Base"
+
+#. module: sale_order_requirement
+#: field:purchase.order.line,order_requirement_ids:0
+#: view:sale.order:0
+msgid "Order Requirements"
+msgstr "Order Requirements"
+
+#. module: sale_order_requirement
+#: view:mrp.production:0
+msgid "Consumed Products"
+msgstr "Prodotti Utilizzati"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "Order/Customer Ref"
+msgstr "Ordine/Riferimento Cliente"
+
+#. module: sale_order_requirement
+#: selection:full.order.requirement.line,state:0
+#: selection:order.requirement,state:0
+#: selection:order.requirement.line,state:0
+#: selection:temp.mrp.bom,state:0
+msgid "Cancelled"
+msgstr "Annullato"
+
+#. module: sale_order_requirement
+#: field:full.order.requirement.line,level_name:0
+msgid "Level Name"
+msgstr "Nome Livello"
+
+#. module: sale_order_requirement
+#: constraint:mrp.production:0
+msgid "Order quantity cannot be negative or zero!"
+msgstr "La quantità dell'ordine non può essere negativa o uguale a zero!"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/stock_move.py:341
+#, python-format
+msgid "UserError"
+msgstr "UserError"
+
+#. module: sale_order_requirement
+#: field:mrp.bom,product_type:0
+msgid "Product Type"
+msgstr "Tipo Prodotto"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "OK"
+msgstr "OK"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_stock_move
+msgid "Stock Move"
+msgstr "Movimento di magazzino"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,partial_cost:0
+msgid "Partial Cost"
+msgstr "Costo Parziale"
+
+#. module: sale_order_requirement
+#: selection:temp.mrp.bom,type:0
+msgid "Normal BoM"
+msgstr "Normal BoM"
+
+#. module: sale_order_requirement
+#: model:res.groups,name:sale_order_requirement.open_order_requirement_by_line
+msgid "Manage Order Requirement By Line"
+msgstr "Manage Order Requirement By Line"
+
+#. module: sale_order_requirement
+#: field:mrp.production,analytic_account_id:0
+#: field:stock.move,analytic_account_id:0
+msgid "Analytic Account"
+msgstr "Analytic Account"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "View Connected Document"
+msgstr "View Connected Document"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,purchase_order_line_ids:0
+msgid "Purchase Order lines"
+msgstr "Purchase Order lines"
+
+#. module: sale_order_requirement
+#: field:order.requirement,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_sale_order
+msgid "Sales Order"
+msgstr "Ordine di vendita"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line.add,order_line:0
+msgid "Order Line"
+msgstr "Riga"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/mrp_production.py:154
+#, python-format
+msgid "Found a production order to enqueue to, but it does not have a bill of material: "
+msgstr "Trovato un ordine di produzione a cui accodare, ma è senza distinta: "
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Linea d'ordine di vendita"
+
+#. module: sale_order_requirement
+#: selection:full.order.requirement.line,state:0
+#: selection:order.requirement,state:0
+#: selection:order.requirement.line,state:0
+#: selection:temp.mrp.bom,state:0
+msgid "Confirmed"
+msgstr "Confermato"
+
+#. module: sale_order_requirement
+#: field:mrp.production,temp_bom_id:0
+msgid "Bill of Material Line"
+msgstr "Bill of Material Line"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,product_efficiency:0
+msgid "Manufacturing Efficiency"
+msgstr "Manufacturing Efficiency"
 
 #. module: sale_order_requirement
 #: constraint:mrp.bom:0
@@ -67,29 +373,62 @@ msgid "BoM line product should not be same as BoM product."
 msgstr "Il prodotto della riga della BoM non dovrebbe essere lo stesso del prodotto della BoM."
 
 #. module: sale_order_requirement
-#: field:temp.mrp.routing,order_requirement_line_id:0
-msgid "Order requirement line"
-msgstr "Riga Fabbisogno Ordine"
+#: view:order.requirement:0
+msgid "Missing SO Line"
+msgstr "Senza Ordine"
 
 #. module: sale_order_requirement
-#: field:res.company,split_mrp_production:0
-msgid "Split Production order from order requirement"
-msgstr "Dividi l'Ordine di Produzione dal Fabbisogno Ordine"
+#: constraint:res.company:0
+msgid "Error! You can not create recursive companies."
+msgstr "Attenzione: non puoi creare aziende ricorsive"
 
 #. module: sale_order_requirement
 #: view:order.requirement.line:0
-msgid "BOM"
-msgstr "Distinta Base"
+msgid "qty"
+msgstr "qty"
+
+#. module: sale_order_requirement
+#: view:full.order.requirement.line:0
+#: field:full.order.requirement.line,supplier_id:0
+#: field:order.requirement.line,supplier_id:0
+#: field:temp.mrp.bom,supplier_id:0
+msgid "Supplier"
+msgstr "Fornitore"
+
+#. module: sale_order_requirement
+#: field:full.order.requirement.line,state:0
+#: field:order.requirement.line,state:0
+#: field:temp.mrp.bom,state:0
+msgid "State"
+msgstr "Stato"
+
+#. module: sale_order_requirement
+#: help:temp.mrp.bom,product_uos:0
+msgid "Product UOS (Unit of Sale) is the unit of measurement for the invoicing and promotion of stock."
+msgstr "Product UOS (Unit of Sale) is the unit of measurement for the invoicing and promotion of stock."
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/purchase_order.py:44
+#, python-format
+msgid "The selected supplier has a minimal quantity set to {qty} for product \"{product}\""
+msgstr "Il fornitore ha un minimo d'ordine di {qty} per il prodotto \"{product}\""
 
 #. module: sale_order_requirement
 #: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement_line
+#: field:mrp.production,order_requirement_line_id:0
+#: view:sale.order:0
 msgid "Order Requirement Line"
 msgstr "Riga Fabbisogno Ordine"
 
 #. module: sale_order_requirement
-#: field:temp.mrp.routing,row_color:0
-msgid "Row Color"
-msgstr "Colore Riga"
+#: field:stock.move,temp_mrp_bom_ids:0
+msgid "Bom Structure"
+msgstr "Bom Structuresgid \"BoM Structuresgstr \"Struttura Distinta"
+
+#. module: sale_order_requirement
+#: field:order.requirement,order_requirement_line_ids:0
+msgid "Order Lines"
+msgstr "Order Lines"
 
 #. module: sale_order_requirement
 #: view:order.requirement.line:0
@@ -97,45 +436,66 @@ msgid "Save"
 msgstr "Salva"
 
 #. module: sale_order_requirement
-#: view:order.requirement.line:0
-msgid "Reload &amp; Preview"
-msgstr "Ricarica &amp; Preview"
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-msgid "BoM Details"
-msgstr "Dettagli Distinta"
-
-#. module: sale_order_requirement
-#: field:temp.mrp.bom,desired_qty:0
-msgid "Desired Qty"
-msgstr "Q.tà Desiderata"
-
-#. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/mrp_production.py:135
-#, python-format
-msgid "Found a production order to enqueue to, but it does not have a bill of material: "
-msgstr "Trovato un ordine di produzione a cui accodare, ma è senza distinta: "
-
-#. module: sale_order_requirement
-#: field:temp.mrp.routing,temp_mrp_bom_id:0
-msgid "Temp BoM"
-msgstr "Temp BoM"
-
-#. module: sale_order_requirement
-#: help:order.requirement.line,is_manufactured:0
-msgid "If checked product is manufactured. If not, BOM is read-only"
-msgstr "Se selezionato il prodotto è da produrre altrimenti la distinta è in sola lettura"
-
-#. module: sale_order_requirement
-#: field:mrp.bom,child_buy_and_produce_ids:0
-msgid "BoM Hierarchy"
-msgstr "Gerarchia Distinta"
-
-#. module: sale_order_requirement
 #: view:mrp.production:0
-msgid "Manufacturing Orders related to main products (hide children BoM)"
-msgstr "Ordine di Produzione collegato al Prodotto"
+msgid "Are you sure?"
+msgstr "Are you sure?"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+#: field:order.requirement.line,sale_order_line_id:0
+msgid "Sale Order Line"
+msgstr "Riga Ordine di Vendita"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,original_qty:0
+msgid "Original Qty"
+msgstr "Q.tà Originale"
+
+#. module: sale_order_requirement
+#: field:mrp.production,is_from_order_requirement:0
+msgid "is from order requirement"
+msgstr "is from order requirement"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_mrp_production_product_line
+msgid "Production Scheduled Product"
+msgstr "Prodotti Programmati"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,force_purchase_order_line_id:0
+msgid "Force Order Line"
+msgstr "Forza Ordine Acquisto"
+
+#. module: sale_order_requirement
+#: view:stock.picking:0
+msgid "Print BOM"
+msgstr "Stampa Distinta Base esplosa"
+
+#. module: sale_order_requirement
+#: help:temp.mrp.bom,type:0
+msgid "If a sub-product is used in several products, it can be useful to create its own BoM. Though if you don't want separated production orders for this sub-product, select Set/Phantom as BoM type. If a Phantom BoM is used for a root product, it will be sold and shipped as a set of components, instead of being produced."
+msgstr "If a sub-product is used in several products, it can be useful to create its own BoM. Though if you don't want separated production orders for this sub-product, select Set/Phantom as BoM type. If a Phantom BoM is used for a root product, it will be sold and shipped as a set of components, instead of being produced."
+
+#. module: sale_order_requirement
+#: view:full.order.requirement.line:0
+msgid "Full Order Requirement"
+msgstr "Espolsione Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:28
+#, python-format
+msgid "I can change QTY on on draft line"
+msgstr "I can change QTY on on draft line"
+
+#. module: sale_order_requirement
+#: report:order.requirement.explosion:0
+msgid "Products to Delivery"
+msgstr "Products to Delivery"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,product_qty:0
+msgid "Product Qty"
+msgstr "Q.tà Necessaria"
 
 #. module: sale_order_requirement
 #: field:order.requirement,new_product_id:0
@@ -144,15 +504,9 @@ msgid "Choosen Product"
 msgstr "Prodotto Scelto"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,has_bom:0
-msgid "Product has bom?"
-msgstr "Distinta"
-
-#. module: sale_order_requirement
-#: field:mrp.production,account_analytic_id:0
-#: field:stock.move,account_analytic_id:0
-msgid "Analytic Account"
-msgstr "Contabilità Analitica"
+#: view:order.requirement.line:0
+msgid "Toggle Buy"
+msgstr "Attiva / Disattiva l'acquisto"
 
 #. module: sale_order_requirement
 #: field:order.requirement.line,order_requirement_id:0
@@ -160,9 +514,19 @@ msgid "Order Reference"
 msgstr "Riferimento Ordine"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,original_cost:0
-msgid "Original Cost"
-msgstr "Costo Originale"
+#: field:order.requirement,full_order_requirement_line_ids:0
+msgid "Full Order Lines"
+msgstr "Full Order Lines"
+
+#. module: sale_order_requirement
+#: selection:mrp.bom,product_type:0
+msgid "Consumable"
+msgstr "Consumabile"
+
+#. module: sale_order_requirement
+#: help:temp.mrp.bom,product_efficiency:0
+msgid "A factor of 0.9 means a loss of 10% within the production process."
+msgstr "A factor of 0.9 means a loss of 10% within the production process."
 
 #. module: sale_order_requirement
 #: field:temp.mrp.routing,cycle:0
@@ -176,40 +540,285 @@ msgid "BoM Routing"
 msgstr "Routing Distinta"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,sale_order_line_description:0
-#: field:temp.mrp.bom,name:0
-#: field:temp.mrp.routing,name:0
-msgid "Name"
-msgstr "Nome"
-
-#. module: sale_order_requirement
-#: field:order.requirement.line,sale_order_line_notes:0
-msgid "Order Line Notes"
-msgstr "Note della Riga"
-
-#. module: sale_order_requirement
 #: field:temp.mrp.routing,hour:0
 msgid "Hour"
 msgstr "Ore"
 
 #. module: sale_order_requirement
-#: field:mrp.production,level:0
-#: field:temp.mrp.bom,level:0
-#: field:temp.mrp.bom,level_name:0
-msgid "Level"
-msgstr "Livello"
+#: view:order.requirement.line:0
+msgid "Reload & Preview"
+msgstr "Ricarica"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,supplier_ids:0
-msgid "Suppliers"
-msgstr "Fornitori"
+#: view:order.requirement:0
+msgid "Return to Draft"
+msgstr "Ritorna a Bozza"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,sale_order_id:0
-#: field:temp.mrp.bom,sale_order_id:0
-#: view:purchase.order:0
-msgid "Sale Order"
-msgstr "Ordine di Vendita"
+#: view:order.requirement.line:0
+msgid "Toggle Manufactured"
+msgstr "Attiva / Disattiva Produzione"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_procurement_order
+msgid "Procurement"
+msgstr "Approvvigionamento"
+
+#. module: sale_order_requirement
+#: constraint:stock.picking:0
+msgid "Error! For a Partner must be only one DDT reference for year."
+msgstr "Errore! Per un Fornitore il numero di DDT deve essere univoco"
+
+#. module: sale_order_requirement
+#: help:temp.mrp.bom,product_rounding:0
+msgid "Rounding applied on the product quantity."
+msgstr "Rounding applied on the product quantity."
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:558
+#, python-format
+msgid "Missing document to open"
+msgstr "Missing document to open"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,sequence:0
+#: field:temp.mrp.routing,sequence:0
+msgid "Sequence"
+msgstr "Sequenza"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "To Deploy"
+msgstr "Da Sviluppare"
+
+#. module: sale_order_requirement
+#: field:sale.order.line,order_requirement_line_ids:0
+msgid "Order requirement lines"
+msgstr "Order requirement lines"
+
+#. module: sale_order_requirement
+#: report:order.requirement.explosion:0
+msgid "Delivery Date"
+msgstr "Delivery Date"
+
+#. module: sale_order_requirement
+#: field:order.requirement,month:0
+msgid "Month"
+msgstr "Mese"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "View Manufacturing Orders"
+msgstr "Visualizza Ordini di Produzione"
+
+#. module: sale_order_requirement
+#: constraint:stock.move:0
+msgid "You can not move products from or to a location of the type view."
+msgstr "Non puoi muovere dei prodotti da o per una locazione di tipo vista"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+#: view:stock.move:0
+msgid "BoM Structure"
+msgstr "Struttura Distinta"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "Full Explosion Order"
+msgstr "Esplosione Ordine"
+
+#. module: sale_order_requirement
+#: report:order.requirement.explosion:0
+msgid "Partner Ref"
+msgstr "Partner Ref"
+
+#. module: sale_order_requirement
+#: view:full.order.requirement.line:0
+#: field:full.order.requirement.line,categ_id:0
+msgid "Category"
+msgstr "Categoria"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,sequence:0
+msgid "Sequence index"
+msgstr "Sequence index"
+
+#. module: sale_order_requirement
+#: field:order.requirement,state:0
+msgid "Order State"
+msgstr "Stato dell'ordine"
+
+#. module: sale_order_requirement
+#: field:res.company,auto_production:0
+msgid "Auto Production from Order Board"
+msgstr "Auto Produzione dalla Lavagna Ordini"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,bom_id:0
+msgid "Parent BoM"
+msgstr "Parent BoM"
+
+#. module: sale_order_requirement
+#: view:mrp.production:0
+msgid "Main Products"
+msgstr "Prodotti Principali"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:592
+#: model:ir.model,name:sale_order_requirement.model_mrp_production
+#: field:temp.mrp.bom,mrp_production_id:0
+#, python-format
+msgid "Manufacturing Order"
+msgstr "Ordine di Produzione"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_purchase_order_line
+#: field:temp.mrp.bom,purchase_order_line_id:0
+msgid "Purchase Order Line"
+msgstr "Riga Ordine d'Acquisto"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "Note"
+msgstr "Note"
+
+#. module: sale_order_requirement
+#: selection:full.order.requirement.line,state:0
+#: selection:order.requirement,state:0
+#: selection:order.requirement.line,state:0
+#: selection:temp.mrp.bom,state:0
+msgid "Draft"
+msgstr "Bozza"
+
+#. module: sale_order_requirement
+#: selection:temp.mrp.bom,type:0
+msgid "Sets / Phantom"
+msgstr "Sets / Phantom"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,desired_qty:0
+msgid "Desired Qty"
+msgstr "Q.tà Desiderata"
+
+#. module: sale_order_requirement
+#: help:temp.mrp.bom,position:0
+msgid "Reference to a position in an external plan."
+msgstr "Reference to a position in an external plan."
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:90
+#: field:full.order.requirement.line,buy:0
+#: field:order.requirement.line,buy:0
+#: field:temp.mrp.bom,buy:0
+#, python-format
+msgid "Buy"
+msgstr "Comprare"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_account_analytic_line
+msgid "Analytic Line"
+msgstr "Linea conto analitico"
+
+#. module: sale_order_requirement
+#: constraint:stock.move:0
+msgid "You try to assign a lot which is not from the same product"
+msgstr "Si sta cercando di assegnare un lotto che non viene dallo stesso prodotto"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,active:0
+#: field:temp.mrp.bom,mrp_bom_id:0
+#: field:temp.mrp.bom,mrp_bom_parent_id:0
+msgid "unknown"
+msgstr "unknown"
+
+#. module: sale_order_requirement
+#: field:full.order.requirement.line,user_id:0
+#: field:order.requirement,user_id:0
+#: field:order.requirement.line,user_id:0
+#: field:temp.mrp.bom,user_id:0
+#: field:temp.mrp.routing,user_id:0
+msgid "User"
+msgstr "Utente"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:139
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:163
+#, python-format
+msgid "Press \"Reload & Preview\" Button"
+msgstr "Press \"Reload & Preview\" Button"
+
+#. module: sale_order_requirement
+#: field:full.order.requirement.line,bom_parent_id:0
+msgid "BOM Parent ID"
+msgstr "BOM Parent ID"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_order_requirement
+msgid "order.requirement"
+msgstr "order.requirement"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,type:0
+msgid "BoM Type"
+msgstr "BoM Type"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:567
+#, python-format
+msgid "Not exist a Purchase Order for this line"
+msgstr "Non c'è un ordine d'acquisto per questa linea"
+
+#. module: sale_order_requirement
+#: field:order.requirement,date:0
+msgid "Data"
+msgstr "Data"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,original_cost:0
+msgid "Original Cost"
+msgstr "Costo Originale"
+
+#. module: sale_order_requirement
+#: constraint:mrp.bom:0
+msgid "Error ! You cannot create recursive BoM."
+msgstr "Errore! Impossibile creare BoM ricorsive."
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/wizard/order_requirement_line_add.py:73
+#: view:full.order.requirement.line:0
+#: field:full.order.requirement.line,order_requirement_id:0
+#: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement
+#: model:ir.actions.report.xml,name:sale_order_requirement.order_requirement_report
+#: model:ir.ui.menu,name:sale_order_requirement.menu_view_order_requirement
+#: view:order.requirement:0
+#: view:order.requirement.line:0
+#: field:sale.order,sale_order_requirement_ids:0
+#, python-format
+msgid "Order Requirement"
+msgstr "Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Product is out of stock"
+msgstr "Product is out of stock"
+
+#. module: sale_order_requirement
+#: sql_constraint:mrp.bom:0
+msgid "All product quantities must be greater than 0.\n"
+"You should install the mrp_subproduct module if you want to manage extra products on BoMs !"
+msgstr "Tutte le quantità devono essere maggiori di 0.\n"
+"Dovreste installare il modulo mrp_subproducts se volete gestire prodotti extra nelle distinte base!"
+
+#. module: sale_order_requirement
+#: help:order.requirement.line,sequence:0
+msgid "Gives the sequence order when displaying a list of sales order lines."
+msgstr "Gives the sequence order when displaying a list of sales order lines."
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+#: view:stock.picking:0
+msgid "Print All production Order"
+msgstr "Stampa tutti gli Ordini di Produzione"
 
 #. module: sale_order_requirement
 #: model:ir.model,name:sale_order_requirement.model_res_company
@@ -222,58 +831,58 @@ msgid "Routing Lines"
 msgstr "Righe Routing"
 
 #. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:386
-#: model:ir.model,name:sale_order_requirement.model_purchase_order
-#: field:order.requirement.line,purchase_order_id:0
-#: field:temp.mrp.bom,purchase_order_id:0
-msgid "Purchase Order"
-msgstr "Ordine Acquisto"
+#: field:full.order.requirement.line,bom_id:0
+msgid "BOM ID"
+msgstr "BOM ID"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,force_purchase_order_line_id:0
-msgid "Force Order Line"
-msgstr "Forza Ordine Acquisto"
-
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-#: field:temp.mrp.bom,mrp_routing_id:0
-#: field:temp.mrp.routing,mrp_routing_id:0
-msgid "Routing"
-msgstr "Routing"
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:587
+#, python-format
+msgid "Not exist a Manufacture Order for this line"
+msgstr "Non esiste non Ordine di Produzione per questa linea"
 
 #. module: sale_order_requirement
-#: model:ir.model,name:sale_order_requirement.model_mrp_bom
-#: model:ir.model,name:sale_order_requirement.model_temp_mrp_bom
-#: field:mrp.production,temp_bom_id:0
-msgid "Bill of Material"
-msgstr "Distinta Base"
+#: field:stock.move,production_order_ids:0
+msgid "Production Orders"
+msgstr "Ordini di Produzione"
 
 #. module: sale_order_requirement
-#: field:temp.mrp.routing,workcenter_id:0
-msgid "Workcenter"
-msgstr "Centro di Lavoro"
+#: field:order.requirement,note:0
+msgid "Order Note"
+msgstr "Nota Ordine"
 
 #. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/mrp_production.py:135
+#: code:addons/sale_order_requirement/models/mrp_production.py:154
+#: code:addons/sale_order_requirement/models/purchase_order.py:44
+#: code:addons/sale_order_requirement/models/sale_order.py:58
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:27
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:138
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:162
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:557
 #, python-format
 msgid "Error"
 msgstr "Errore"
 
 #. module: sale_order_requirement
-#: field:temp.mrp.routing,user_ids:0
-msgid "Users"
-msgstr "Utenti"
+#: field:temp.mrp.bom,temp_mrp_bom_action:0
+msgid "Action"
+msgstr "Azione"
 
 #. module: sale_order_requirement
-#: model:ir.model,name:sale_order_requirement.model_sale_order
-msgid "Sales Order"
-msgstr "Ordine di vendita"
+#: selection:mrp.bom,product_type:0
+msgid "Stockable Product"
+msgstr "Prodotto Stoccabile"
 
 #. module: sale_order_requirement
-#: view:order.requirement.line:0
-msgid "OK"
-msgstr "OK"
+#: field:full.order.requirement.line,qty:0
+#: field:order.requirement.line,qty:0
+msgid "Quantity"
+msgstr "Q.tà"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,sale_order_line_notes:0
+msgid "Order Line Notes"
+msgstr "Note della Riga"
 
 #. module: sale_order_requirement
 #: field:temp.mrp.bom,is_out_of_stock:0
@@ -281,73 +890,143 @@ msgid "Out of Stock"
 msgstr "Out of Stock"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,mrp_production_ids:0
-msgid "Production Orders"
-msgstr "Ordine di Produzione"
+#: view:order.requirement:0
+#: field:order.requirement,internal_note:0
+#: view:sale.order:0
+#: field:sale.order,internal_note:0
+msgid "Internal Note"
+msgstr "Nota Interna"
 
 #. module: sale_order_requirement
-#: field:temp.mrp.bom,partial_cost:0
-msgid "Partial Cost"
-msgstr "Costo Parziale"
+#: field:order.requirement.line,seq:0
+msgid "Line #"
+msgstr "Nr. linea"
 
 #. module: sale_order_requirement
-#: field:temp.mrp.routing,sequence:0
-msgid "Sequence"
-msgstr "Sequenza"
+#: field:order.requirement,purchase_orders_state:0
+#: field:order.requirement.line,purchase_orders_state:0
+msgid "Deliveries"
+msgstr "Materiale Arrivato"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,cost:0
-#: field:temp.mrp.bom,cost:0
-msgid "Cost"
-msgstr "Costo"
+#: model:ir.model,name:sale_order_requirement.model_order_requirement_line
+msgid "order.requirement.line"
+msgstr "order.requirement.line"
 
 #. module: sale_order_requirement
-#: field:temp.mrp.routing,user_id:0
-#: field:order.requirement,user_id:0
-#: field:order.requirement.line,user_id:0
-msgid "User"
-msgstr "Utente"
+#: view:order.requirement:0
+msgid "Done"
+msgstr "Completato"
 
 #. module: sale_order_requirement
-#: field:temp.mrp.bom,row_color:0
-msgid "Row color"
-msgstr "Colore Riga"
+#: constraint:account.analytic.line:0
+msgid "You can not create analytic line on view account."
+msgstr "Non si possono creare delle voci analitiche in un conto di tipo vista."
 
 #. module: sale_order_requirement
-#: view:order.requirement.line:0
-#: view:stock.move:0
-#: field:stock.move,temp_mrp_bom_ids:0
-msgid "Bom Structure"
-msgstr "Bom Structure"
-msgid "BoM Structure"
-msgstr "Struttura Distinta"
+#: view:order.requirement.line.add:0
+msgid "Cancel"
+msgstr "Cancel"
 
 #. module: sale_order_requirement
-#: field:temp.mrp.bom,original_qty:0
-msgid "Original Qty"
-msgstr "Q.tà Originale"
+#: field:purchase.order,sale_order_ids:0
+#: field:purchase.order.line,temp_mrp_bom_ids:0
+#: field:stock.move,temp_mrp_bom_list:0
+#: field:stock.picking,sale_order_ids:0
+msgid "Sale Orders"
+msgstr "Ordini di Vendita"
 
 #. module: sale_order_requirement
 #: field:order.requirement.line,purchase_order_ids:0
+#: field:sale.order,purchase_order_ids:0
 msgid "Purchase Orders"
 msgstr "Ordini Acquisto"
 
 #. module: sale_order_requirement
-#: field:order.requirement,month:0
-msgid "Month"
-msgstr "Mese"
+#: sql_constraint:purchase.order:0
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique per Company!"
+msgstr "Il Riferimento Ordine deve essere unico per azienda!"
 
 #. module: sale_order_requirement
-#: field:order.requirement,product_id:0
+#: help:temp.mrp.bom,product_uom:0
+msgid "UoM (Unit of Measure) is the unit of measurement for the inventory control"
+msgstr "UdM (Unità di Misura) è l'unità di misura per l'inventario"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "Order Requeriment"
+msgstr "Order Requeriment"
+
+#. module: sale_order_requirement
+#: view:purchase.order:0
+#: field:purchase.order,customer_account_invoice_ids:0
+msgid "Customer Invoice"
+msgstr "Fatture Clienti"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_stock_picking
+msgid "Picking List"
+msgstr "Lista Prelievo"
+
+#. module: sale_order_requirement
+#: field:full.order.requirement.line,product_id:0
 #: field:order.requirement.line,product_id:0
 msgid "Original Product"
 msgstr "Prodotto Originale"
 
 #. module: sale_order_requirement
-#: field:order.requirement,production_orders_state:0
-#: field:order.requirement.line,production_orders_state:0
-msgid "Prod. orders"
-msgstr "Ord. produzione"
+#: constraint:stock.move:0
+msgid "You must assign a production lot for this product"
+msgstr "Và assegnato un lotto di produzione per questo prodotto"
+
+#. module: sale_order_requirement
+#: view:purchase.order.line:0
+msgid "Sale Order Lines"
+msgstr "Ordine di Vendita Collegati"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_order_requirement_line_add_match
+msgid "Add sale Order to line"
+msgstr "Add sale Order to line"
+
+#. module: sale_order_requirement
+#: report:order.requirement.explosion:0
+msgid "SALE ORDER N° :"
+msgstr "SALE ORDER N° :"
+
+#. module: sale_order_requirement
+#: field:order.requirement,production_product_id:0
+msgid "Product Production"
+msgstr "Product Production"
+
+#. module: sale_order_requirement
+#: field:order.requirement,week_nbr:0
+msgid "Week Number"
+msgstr "Settimana n."
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/mrp_production.py:89
+#, python-format
+msgid " (H)"
+msgstr " (H)"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_order_requirement_line_add
+msgid "Split in Production lots"
+msgstr "Dividi in Lotti di Produzione"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "BoM Details"
+msgstr "Dettagli Distinta"
+
+#. module: sale_order_requirement
+#: view:full.order.requirement.line:0
+#: field:order.requirement,product_id:0
+#: field:temp.mrp.bom,product_id:0
+msgid "Product"
+msgstr "Prodotto"
 
 #. module: sale_order_requirement
 #: field:order.requirement,purchase_orders_approved:0
@@ -358,23 +1037,42 @@ msgid "Purch. orders approved"
 msgstr "Ord. acquisto approvati"
 
 #. module: sale_order_requirement
-#: field:order.requirement,purchase_orders_state:0
-#: field:order.requirement.line,purchase_orders_state:0
-#: field:stock.move,purchase_orders_state:0
-#: field:stock.picking,purchase_orders_state:0
-msgid "Incoming Deliveries"
-msgstr "Materiale Arrivato"
+#: field:temp.mrp.routing,user_ids:0
+msgid "Users"
+msgstr "Utenti"
 
 #. module: sale_order_requirement
-#: field:stock.move,production_order_ids:0
-msgid "Production Orders"
-msgstr "Ordini di Produzione"
+#: field:purchase.order.line,order_requirement_line_ids:0
+msgid "Order Requirement Lines"
+msgstr "Order Requirement Lines"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,stock_availability:0
-#: field:temp.mrp.bom,stock_availability:0
-msgid "Stock Availability"
-msgstr "Disponibilità Magazzino"
+#: code:addons/sale_order_requirement/models/stock_move.py:353
+#, python-format
+msgid "Manufacturing Orders"
+msgstr "Manufacturing Orders"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Add Sale Order Line"
+msgstr "Collega una riga dell'ordine cliente"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,product_uos:0
+msgid "Product UOS"
+msgstr "Product UOS"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,has_bom:0
+#: field:stock.move,has_bom:0
+msgid "Product has bom?"
+msgstr "Distinta"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:88
+#, python-format
+msgid "Produce"
+msgstr "Produrre"
 
 #. module: sale_order_requirement
 #: field:order.requirement.line,spare:0
@@ -383,363 +1081,49 @@ msgid "Spare"
 msgstr "Giacenza Minima"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,qty:0
-msgid "Quantity"
-msgstr "Q.tà"
+#: field:full.order.requirement.line,product_uom:0
+#: field:temp.mrp.bom,product_uom:0
+msgid "UOM"
+msgstr "UOM"
 
 #. module: sale_order_requirement
-#: view:order.requirement:0
-msgid "Return to Draft"
-msgstr "Ritorna a Bozza"
+#: field:temp.mrp.bom,bom_lines:0
+msgid "BoM Lines"
+msgstr "BoM Lines"
 
 #. module: sale_order_requirement
-#: selection:order.requirement,state:0
-#: selection:temp.mrp.bom,state:0
-#: selection:order.requirement.line,state:0
-msgid "Draft"
-msgstr "Bozza"
+#: field:temp.mrp.bom,position:0
+msgid "Internal Reference"
+msgstr "Internal Reference"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,buy:0
-#: field:temp.mrp.bom,buy:0
-msgid "Buy"
-msgstr "Acquista"
-
-#. module: sale_order_requirement
-#: field:purchase.order,sale_order_ids:0
-#: field:stock.picking,sale_order_ids:0
-#: field:purchase.order.line,temp_mrp_bom_ids:0
-msgid "Sale Orders"
-msgstr "Ordini di Vendita"
-
-#. module: sale_order_requirement
-#: help:temp.mrp.bom,product_uom:0
-msgid "UoM (Unit of Measure) is the unit of measurement for the inventory control"
-msgstr "UdM (Unità di Misura) è l'unità di misura per l'inventario"
-
-#. module: sale_order_requirement
-#: field:temp.mrp.bom,product_rounding:0
-msgid "Product Rounding"
-msgstr "Product Rounding"
-
-#. module: sale_order_requirement
-#: field:order.requirement,sale_order_id:0
-msgid "Order"
-msgstr "Ordine Cliente"
-
-#. module: sale_order_requirement
-#: field:temp.mrp.bom,product_qty:0
-msgid "Product Qty"
-msgstr "Q.tà Necessaria"
-
-#. module: sale_order_requirement
-#: field:order.requirement.line,is_manufactured:0
-#: field:temp.mrp.bom,is_manufactured:0
-msgid "Manufacture"
-msgstr "Produci"
-
-#. module: sale_order_requirement
-#: field:temp.mrp.bom,product_id:0
-msgid "Product"
-msgstr "Prodotto"
-
-#. module: sale_order_requirement
-#: field:order.requirement.line,supplier_id:0
-#: field:temp.mrp.bom,supplier_id:0
-msgid "Supplier"
-msgstr "Fornitore"
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-#: view:temp.mrp.bom:0
-msgid "Are you sure you want to do this?"
-msgstr "Sicuro di confermare?"
-
-#. module: sale_order_requirement
-#: selection:order.requirement,state:0
-#: selection:temp.mrp.bom,state:0
-msgid "Confirmed"
-msgstr "Confermato"
-
-#. module: sale_order_requirement
-#: selection:order.requirement,state:0
-#: selection:temp.mrp.bom,state:0
-#: selection:order.requirement.line,state:0
-msgid "Cancelled"
-msgstr "Annullato"
-
-#. module: sale_order_requirement
-#: field:mrp.bom,product_type:0
-msgid "Product Type"
-msgstr "Tipo Prodotto"
-
-#. module: sale_order_requirement
-#: selection:mrp.bom,product_type:0
-msgid "Stockable Product"
-msgstr "Prodotto Stoccabile"
-
-#. module: sale_order_requirement
-#: selection:mrp.bom,product_type:0
-msgid "Consumable"
-msgstr "Consumabile"
-
-#. module: sale_order_requirement
-#: selection:mrp.bom,product_type:0
-msgid "Service"
-msgstr "Servizio"
-
-#. module: sale_order_requirement
-#: field:res.company,auto_production:0
-msgid "Auto Production from Order Board"
-msgstr "Auto Produzione dalla Lavagna Ordini"
-
-#. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:325
-#, python-format
-msgid "Not exist a Purchase Order for this line"
-msgstr "Non c'è un ordine d'acquisto per questa linea"
-
-#. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:345
-#, python-format
-msgid "Not exist a Manufacture Order for this line"
-msgstr "Non esiste non Ordine di Produzione per questa linea"
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-msgid "Start to Work on BOM"
-msgstr "Inizia a Lavorare sul Prodotto"
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-msgid "Add Sale Order Line"
-msgstr "Collega una riga dell'ordine cliente"
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-msgid "Reload BOM"
-msgstr "Ricarica BOM"
-
-#. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/order_requirement_line.py:345
-#, python-format
-msgid "There are no suppliers defined for product {0}"
-msgstr "Non ci sono fornitori per il prodotto '{0}'"
-
-#. module: sale_order_requirement
-#: view:mrp.production:0
-msgid "Communication & History"
-msgstr "Comunicazione e Storico"
-
-#. module: sale_order_requirement
-#: view:mrp.production:0
-msgid "History Information"
-msgstr "Storico"
-
-#. module: sale_order_requirement
-#: view:mrp.production:0
-msgid "History"
-msgstr "Cronologia"
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-msgid "Toggle Buy"
-msgstr "Attiva / Disattiva l'acquisto"
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-msgid "Toggle Manufactured"
-msgstr "Attiva / Disattiva Produzione"
-
-#. modules: sale_order_requirement
-#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:350
-#: field:temp.mrp.bom,mrp_production_id:0
-#, python-format
-msgid "Manufacturing Order"
-msgstr "Ordine di Produzione"
-
-#. module: sale_order_requirement
-#: field:order.requirement,date_from:0
-msgid "Date from"
-msgstr "Dal"
-
-#. module: sale_order_requirement
-#: field:order.requirement,date_to:0
-msgid "Date to"
-msgstr "Al"
-
-#. modules: sale_order_requirement
-#: field:order.requirement,client_order_ref:0
-msgid "Customer Reference"
-msgstr "Numero Ordine Cliente"
-
-#. module: sale_order_requirement
-#: field:order.requirement,user_id:0
-#: field:temp.mrp.bom,user_id:0
-msgid "User"
-msgstr "Utente"
-
-#. module: sale_order_requirement
-#: view:order.requirement:0
-msgid "To Deploy"
-msgstr "Da Sviluppare"
-
-#. module: sale_order_requirement
-#: view:order.requirement:0
-msgid "Missing SO Line"
-msgstr "Senza Ordine"
-
-#. module: sale_order_requirement
-#: view:order.requirement:0
-#: selection:order.requirement.line,state:0
-#: selection:temp.mrp.bom,state:0
-msgid "Done"
-msgstr "Completato"
-
-#. module: sale_order_requirement
-#: view:order.requirement:0
-msgid "Order/Customer Ref"
-msgstr "Ordine/Riferimento Cliente"
-
-#. module: sale_order_requirement
-#: view:order.requirement:0
-#: field:order.requirement,internal_note:0
-msgid "Internal Note"
-msgstr "Nota Interna"
-
-#. module: sale_order_requirement
-#: view:order.requirement:0
-#: field:order.requirement,note:0
-msgid "Order Note"
-msgstr "Nota Ordine"
-
-#. module: sale_order_requirement
-#: field:sale.order,mrp_production_ids:0
-#: field:stock.move,production_order_state:0
-#: view:sale.order:0
-#: view:stock.move:0
-msgid "Production Order"
-msgstr "Ordini di Produzione"
-
-#. module: sale_order_requirement
-#: field:sale.order,internal_note:0
-#: view:sale.order:0
-msgid "Internal Note"
-msgstr "Note di Produzione"
-
-#. modules: sale_order_requirement
-#: view:product.product:0
-#: view:sale.order:0
-#: view:order.requirement.line:0
-#: view:stock.picking:0
-msgid "Open BOM"
-msgstr "Esplodi Distinta"
-
-#. modules: sale_order_requirement
-#: view:order.requirement.line:0
-#: view:stock.picking:0
-msgid "Print"
-msgstr "Stampa"
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-#: view:stock.picking:0
-msgid "Print All production Order"
-msgstr "Stampa tutti gli Ordini di Produzione"
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-#: view:stock.picking:0
-msgid "Print BOM"
-msgstr "Stampa Distinta Base esplosa"
-
-#. module: sale_order_requirement
-#: field:stock.move,temp_mrp_bom_ids:0
-msgid "Sale Orders"
-msgstr "Ordini di Vendita"
-
-#. module: sale_order_requirement
-#: field:stock.move,temp_mrp_bom_list:0
-msgid "Sale Orders"
-msgstr "Ordini di Vendita"
-
-#. module: sale_order_requirement
-#: field:mrp.production,sale_id:0
-msgid "Sale order"
-msgstr "Ordine Vendita"
-
-#. module: sale_order_requirement
-#: field:stock.move,product_bom_ids:0
-msgid "Product BOM"
-msgstr "Prodotto in Distinta"
-
-#. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/order_requirement.py:135
-#, python-format
-msgid "Please delete below"
-msgstr "Per farlo cancellare i documenti sotto elencati"
-
-#. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/order_requirement.py:95
-#, python-format
-msgid "Order"
-msgstr "Ordine Acquisto"
-
-#. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/order_requirement.py:95
-#, python-format
-msgid "Production"
-msgstr "Ordine di Produzione"
-
-#. module: sale_order_requirement
-#: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement_line
-#: field:mrp.production,order_requirement_line_id:0
-#: view:sale.order:0
-msgid "Order Requirement Line"
-msgstr "Riga Fabbisogno Ordine"
-
-#. module: sale_order_requirement
-#: view:purchase.order.line:0
-#: view:sale.order.line:0
-msgid "Sale Order Lines"
-msgstr "Ordine di Vendita Collegati"
-
-#. module: sale_order_requirement
-#: view:order.requirement.line:0
-#: field:order.requirement.line,sale_order_line_id:0
-msgid "Sale Order Line"
-msgstr "Riga Ordine di Vendita"
-
-#. modules: sale_order_requirement
-#: field:temp.mrp.bom,temp_mrp_bom_action:0
-msgid "Action"
-msgstr "Azione"
-
-#. modules: sale_order_requirement
-#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:66
-#: field:order.requirement.line,buy:0
-#: field:temp.mrp.bom,buy:0
-#, python-format
-msgid "Buy"
-msgstr "Comprare"
-
-#. modules: sale_order_requirement
-#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:64
-#, python-format
-msgid "Produce"
-msgstr "Produrre"
-
-#. modules: sale_order_requirement
-#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:68
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:92
 #, python-format
 msgid "Stock"
 msgstr "Da Magazzino"
 
 #. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/purchase_order.py:29
-#, python-format
-msgid "The selected supplier has a minimal quantity set to {qty} for product \"{product}\""
-msgstr "Il fornitore ha un minimo d'ordine di {qty} per il prodotto \"{product}\""
+#: field:order.requirement,customer_id:0
+#: report:order.requirement.explosion:0
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: sale_order_requirement
+#: sql_constraint:res.company:0
+msgid "The company name must be unique !"
+msgstr "Il nome azienda deve essere unico!"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,sale_order_line_description:0
+#: field:temp.mrp.bom,name:0
+#: field:temp.mrp.routing,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: sale_order_requirement
+#: model:res.groups,name:sale_order_requirement.open_order_requirement_new_tab
+msgid "Open Order Requirement on new Tab"
+msgstr "Open Order Requirement on new Tab"
 
 #. module: sale_order_requirement
 #: model:ir.actions.act_window,name:sale_order_requirement.action_add_sale_order_line
@@ -748,41 +1132,98 @@ msgid "Add Order Line"
 msgstr "Aggiungi Righe d'Ordine"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line.add,order_line:0
-msgid "Order Line"
-msgstr "Riga"
+#: help:order.requirement.line,purchase_orders_approved:0
+msgid "Purchase in Draft/Approved"
+msgstr "Purchase in Draft/Approved"
 
 #. module: sale_order_requirement
 #: view:order.requirement:0
-#: view:temp.mrp.bom:0
-msgid "View Manufacturing Order"
-msgstr "Visualizza Ordini Produzione"
-
-#. module: sale_order_requirement
-#: view:order.requirement:0
-#: view:temp.mrp.bom:0
 msgid "View Purchase Order"
 msgstr "Visualizza Ordini Acquisto"
 
 #. module: sale_order_requirement
-#: view:order.requirement:0
-#: view:temp.mrp.bom:0
-msgid "View Production Order"
-msgstr "Visualizza Ordini Produzione"
+#: view:order.requirement.line:0
+#: field:temp.mrp.bom,mrp_routing_id:0
+#: field:temp.mrp.routing,mrp_routing_id:0
+msgid "Routing"
+msgstr "Routing"
 
 #. module: sale_order_requirement
-#: view:purchase.order:0
-#: field:purchase.order,customer_account_invoice_ids:0
-msgid "Customer Invoice"
-msgstr "Fatture Clienti"
+#: field:temp.mrp.bom,order_requirement_line_id:0
+#: field:temp.mrp.routing,order_requirement_line_id:0
+msgid "Order requirement line"
+msgstr "Riga Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: view:full.order.requirement.line:0
+msgid "View Order Requirement"
+msgstr "Visualizza Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: field:stock.move,purchase_orders_state:0
+#: field:stock.picking,purchase_orders_state:0
+msgid "Incoming Deliveries"
+msgstr "Materiale Arrivato"
+
+#. module: sale_order_requirement
+#: field:order.requirement,sale_order_id:0
+#: field:order.requirement.line.add,order_id:0
+msgid "Order"
+msgstr "Ordine Cliente"
 
 #. module: sale_order_requirement
 #: view:order.requirement.line:0
-msgid "Reload & Preview"
-msgstr "Ricarica"
+msgid "Reload BOM"
+msgstr "Ricarica BOM"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,state:0
-#: field:temp.mrp.bom,state:0
-msgid "State"
-msgstr "Stato"
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:567
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:587
+#, python-format
+msgid "Error!"
+msgstr "Error!"
+
+#. module: sale_order_requirement
+#: field:order.requirement,production_orders_state:0
+#: field:order.requirement.line,production_orders_state:0
+msgid "Prod. orders"
+msgstr "Ord. produzione"
+
+#. module: sale_order_requirement
+#: view:mrp.production:0
+msgid "Scheduled Products"
+msgstr "Prodotti Programmati"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,cost:0
+#: field:temp.mrp.bom,cost:0
+msgid "Cost"
+msgstr "Costo"
+
+#. module: sale_order_requirement
+#: field:order.requirement,client_order_ref:0
+msgid "Customer Reference"
+msgstr "Numero Ordine Cliente"
+
+#. module: sale_order_requirement
+#: model:ir.actions.report.xml,name:sale_order_requirement.report_stock_move_group
+msgid "Products Labels"
+msgstr "Etichette Prodotti"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,product_type:0
+msgid "Pr.Type"
+msgstr "Pr.Type"
+
+#. module: sale_order_requirement
+#: field:full.order.requirement.line,row_color:0
+#: field:order.requirement.line,row_color:0
+#: field:temp.mrp.bom,row_color:0
+msgid "Row color"
+msgstr "Colore Riga"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/sale_order.py:59
+#, python-format
+msgid "You can't reopen Sale Order that already generated Requirement Order"
+msgstr "Non puoi riaprire un Ordine di Vendita con un Fabbisogno Ordine già creato"

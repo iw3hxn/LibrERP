@@ -20,12 +20,26 @@ class FullOrderRequirementLine(orm.Model):
             res[line['id']] = row_color
         return res
 
+    def action_view_order_requirement(self, cr, uid, ids, context):
+        order = self.browse(cr, uid, ids, context)[0]
+
+        mod_model = self.pool['ir.model.data']
+        act_model = self.pool['ir.actions.act_window']
+        action_id = mod_model.get_object_reference(cr, uid, 'sale_order_requirement', 'action_view_order_requirement')
+        action_res = action_id and action_id[1]
+        action = act_model.read(cr, uid, action_res, [], context)
+        action.update({
+            'domain': "[('id', 'in', %s)]" % [order.order_requirement_id.id],
+            'context': "{}"
+        })
+        return action
+
     _columns = {
         'level': fields.integer("Level"),
         'level_name': fields.char('Level Name'),
-        'product_id': fields.many2one('product.product', 'Original Product', readonly=True),
-        'order_requirement_id': fields.many2one('order.requirement', 'Order Reference'),
-        'supplier_id': fields.many2one('res.partner', 'Supplier', readonly=True,
+        'product_id': fields.many2one('product.product', string='Original Product', readonly=True),
+        'order_requirement_id': fields.many2one('order.requirement', string='Order Requirement'),
+        'supplier_id': fields.many2one('res.partner', string='Supplier', readonly=True,
                                        states={'draft': [('readonly', False)]}),
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoS'), readonly=True,
                             states={'draft': [('readonly', False)]}),
@@ -44,7 +58,6 @@ class FullOrderRequirementLine(orm.Model):
         'is_leaf': fields.boolean('Leaf', readonly=True),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True,
                                      store=False),
-
     }
 
     def init(self, cr):

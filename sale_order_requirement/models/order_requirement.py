@@ -43,6 +43,13 @@ class order_requirement(orm.Model):
 
     _order = 'state, date'
 
+    def name_get(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = []
+        for line in self.read(cr, uid, ids, [self._rec_name], context):
+            res.append((line['id'], line[self._rec_name][1]))
+        return res
+
     def _order_state(self, cr, uid, ids, name, args, context=None):
         # order_requirement_model = self.pool['order.requirement']
         # order_requirement_line_model = self.pool['order.requirement.line']

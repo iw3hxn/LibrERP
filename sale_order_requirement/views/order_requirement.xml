@@ -17,9 +17,11 @@
                     <field name="note" string="Order/Customer Ref" filter_domain="['|', ('sale_order_id','ilike',self),('client_order_ref','ilike',self)]"/>
                     <field name="customer_id"/>
                     <separator orientation="vertical"/>
-                    <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
-                    <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
-                    <separator orientation="vertical"/>
+                    <group>
+                        <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                        <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                    </group>
+                    <newline/>
                     <field name="user_id" />
                     <field name="week_nbr" />
                     <field name="month" />
@@ -58,24 +60,9 @@
                             <button name="action_view_manufacturing_order" string="View Manufacturing Orders"  type="object" icon="STOCK_FULLSCREEN"/>
                         </page>
                         <page string="Full Explosion Order">
-                            <field name="full_order_requirement_line_ids" nolabel="1">
-                                <tree colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
-                                    <field name="row_color" invisible="1"/>
-                                    <field name="is_leaf" invisible="1"/>
-                                    <field name="level" invisible="1"/>
-                                    <field name="level_name" />
-                                    <field name="id" invisible="1"/>
-                                    <field name="bom_parent_id" />
-                                    <field name="bom_id" />
-                                    <field name="order_requirement_id" invisible="1"/>
-                                    <field name="product_id" />
-                                    <field name="qty" />
-                                    <field name="product_uom" />
-                                    <field name="supplier_id" />
-                                    <field name="categ_id" />
-                                    <field name="state" />
-                                </tree>
-                            </field>
+                            <field name="full_order_requirement_line_ids"
+                                   context="{'hide_order_requirement': True}"
+                                   nolabel="1"/>
                         </page>
                     </notebook>
 

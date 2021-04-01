@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_full_order_requirement_line_search" model="ir.ui.view">
+            <field name="name">full.order.requirement.line.search</field>
+            <field name="model">full.order.requirement.line</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Full Order Requirement">
+                    <field name="order_requirement_id" />
+                    <field name="supplier_id"/>
+                    <field name="categ_id"/>
+                    <field name="product_id"/>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Order Requirement" name="by_order_requirement_id"  domain="[]" context="{'group_by': 'order_requirement_id'}" />
+                        <filter string="Supplier" name="by_customer_id" icon="terp-personal" domain="[]" context="{'group_by': 'supplier_id'}"/>
+                        <filter string="Product" name="by_product" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'product_id'}"/>
+                        <separator orientation="vertical"/>
+                        <filter string="Category" name="by_category" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'categ_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_full_order_requirement_line_form" model="ir.ui.view">
+            <field name="name">full.order.requirement.line.form</field>
+            <field name="model">full.order.requirement.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Order Requirement">
+                    <field name="order_requirement_id" invisible="context.get('hide_order_requirement',False)"/>
+                    <field name="row_color" invisible="1"/>
+                    <field name="is_leaf"/>
+                    <field name="level" invisible="1"/>
+                    <field name="level_name"/>
+                    <field name="bom_parent_id"/>
+                    <field name="bom_id"/>
+                    <field name="product_id"/>
+                    <field name="qty"/>
+                    <field name="product_uom"/>
+                    <field name="supplier_id"/>
+                    <field name="categ_id"/>
+                    <field name="state"/>
+                </form>
+           </field>
+        </record>
+
+        <record id="view_full_order_requirement_line_tree" model="ir.ui.view">
+            <field name="name">full.order.requirement.line.tree</field>
+            <field name="model">full.order.requirement.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Full Order Requirement Line"
+                      colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="order_requirement_id" invisible="context.get('hide_order_requirement',False)"/>
+                    <button name="action_view_order_requirement" string="View Order Requirement" type="object" icon="STOCK_FULLSCREEN" invisible="context.get('hide_order_requirement',False)"/>
+                    <field name="row_color" invisible="1"/>
+                    <field name="is_leaf"/>
+                    <field name="level" invisible="1"/>
+                    <field name="level_name"/>
+                    <field name="bom_parent_id"/>
+                    <field name="bom_id"/>
+                    <field name="product_id"/>
+                    <field name="qty"/>
+                    <field name="product_uom"/>
+                    <field name="supplier_id"/>
+                    <field name="categ_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_view_full_order_requirement_line" model="ir.actions.act_window">
+            <field name="name">Full Order Requirement Line</field>
+            <field name="res_model">full.order.requirement.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_full_order_requirement_line_form"/>
+            <field name="search_view_id" ref="view_full_order_requirement_line_search"/>
+            <field name="context">{'nodelete': '1', 'noduplicate': '1'}</field>
+        </record>
+
+        <menuitem name="Full Order Requirement Line" action="action_view_full_order_requirement_line" id="menu_view_full_order_requirement_line"
+                  parent="mrp.menu_mrp_manufacturing" sequence="4"/>
+
+    </data>
+</openerp>
