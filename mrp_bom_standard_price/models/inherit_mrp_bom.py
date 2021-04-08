@@ -36,11 +36,12 @@ class mrp_bom(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             cost_price = line.product_id.cost_price
+            uos_coeff = line.product_id.uos_coeff or 1
             if line.product_uom.category_id.id != line.product_id.uom_id.category_id.id:
-                uos_coeff = line.product_id.uos_coeff or 1
                 qty = line.product_qty * uos_coeff
             else:
-                qty = uom_obj._compute_qty(cr, uid, from_uom_id=line.product_uom.id, qty=line.product_qty, to_uom_id=line.product_id.uom_id.id)
+                product_qty = uom_obj._compute_qty(cr, uid, from_uom_id=line.product_uom.id, qty=line.product_qty, to_uom_id=line.product_id.uom_id.id)
+                qty = product_qty * uos_coeff
             res[line.id] = {
                 'cost_price': cost_price,
                 'bom_cost_price': cost_price * qty,
