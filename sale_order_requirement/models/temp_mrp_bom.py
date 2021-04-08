@@ -17,7 +17,7 @@ class TempMrpBom(orm.Model):
     stock_availability = {}
 
     def write(self, cr, uid, ids, vals, context=None):
-
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(TempMrpBom, self).write(cr, uid, ids, vals, context)
         if context.get('active_model') == 'order.requirement.line' and isinstance(ids, (int, long)) and vals.get('product_qty'):
             product_qty = vals['product_qty']
