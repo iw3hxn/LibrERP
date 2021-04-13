@@ -150,20 +150,20 @@ class product_product(orm.Model):
 
                 to_uom = sub_product.product_id.uom_po_id or sub_product.product_id.uom_id
 
+                uos_coeff = sub_product.product_id.uos_coeff or 1
                 if sub_product.product_uom.category_id.id != sub_product.product_id.uom_id.category_id.id:
-                    uos_coeff = sub_product.product_id.uos_coeff or 1
                     qty = sub_product.product_qty * uos_coeff
                 else:
-                    qty = uom_obj._compute_qty(cr, uid,
+                    product_qty = uom_obj._compute_qty(cr, uid,
                                                from_uom_id=sub_product.product_uom.id,
                                                qty=sub_product.product_qty,
                                                to_uom_id=to_uom.id)
-
+                    qty = product_qty * uos_coeff
 
                 if ENABLE_CACHE and debug_logger:
                     _logger.debug(
-                        u'[{product.default_code}] price += {std_price} * {qty}'.format(product=sub_product.product_id,
-                                                                                        std_price=std_price, qty=qty))
+                        u'[{product.default_code}] price += {std_price} * {qty} \t ({total_line})'.format(product=sub_product.product_id,
+                                                                                        std_price=std_price, qty=qty, total_line=std_price * qty))
 
                 # print(std_price, qty)
                 price += std_price * qty
