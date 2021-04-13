@@ -200,6 +200,12 @@ class ProductPricelist(orm.Model):
                         if qty_uom_id != seller_uom:
                             qty_in_seller_uom = product_uom_obj._compute_qty(cr, uid, qty_uom_id, qty, to_uom_id=seller_uom)
                         price_uom_id = seller_uom
+                        if not seller.pricelist_ids:
+                            _logger.error("On pricelist '{}' is set that price depend from product supplier but there are no line for supplier '{}' or product '{}'".format(
+                                rule.price_version_id.pricelist_id.name,
+                                seller.name.name_get()[0][1],
+                                product.name_get()[0][1]
+                            ))
                         for line in seller.pricelist_ids:
                             if line.min_quantity <= qty_in_seller_uom:
                                 price = line.price

@@ -121,11 +121,11 @@ class product_product(orm.Model):
             # cached_price = self.product_cost_cache.get(product_id, 0)
 
         bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
+        price = 0.
         if bom_id:
             sub_bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom_id)], context=context)
             sub_products = bom_obj.browse(cr, uid, sub_bom_ids, context)
 
-            price = 0.
             if ENABLE_CACHE and debug_logger:
                 _logger.debug(
                     u'[{product.default_code}] Start Explosion ========================'.format(product=product))
@@ -209,9 +209,11 @@ class product_product(orm.Model):
                                                                   context=context)
                     partner_id = partner_ids[0]
                 else:
-                    partner_id = False
+                    partner_id = product.prefered_supplier and product.prefered_supplier.id or False
                 if pricelist:
                     price, rule = self.pool['product.pricelist'].price_rule_get_multi(cr, uid, [pricelist.id], products_by_qty_by_partner=[(product, 1, partner_id)], context=context)[product.id][pricelist.id]
+                    if not price:
+                        _logger.error("Not find price for pricelist '{}' and product {}".format(pricelist.name, product.name_get()[0][1]))
                 else:
                     raise orm.except_orm(
                         _("Error"),
@@ -861,7 +863,11 @@ class product_product(orm.Model):
         res = super(product_product, self).write(cr, uid, ids, vals, context)
         changed_product = []
         if ENABLE_CACHE:
-            if 'standard_price' in vals or 'seller_ids' in vals:
+            if vals.get('standard_price') or \
+                    vals.get('seller_ids') or \
+                    vals.get('uom_id') or \
+                    vals.get('uom_po_id') or \
+                    vals.get('uos_coeff'):
                 bom_obj = self.pool['mrp.bom']
                 changed_product = bom_obj.GetWhereUsed(cr, uid, ids, context)[1].keys()
             for product_id in changed_product:
