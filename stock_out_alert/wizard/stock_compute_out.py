@@ -26,6 +26,7 @@ from openerp.osv import osv, fields
 import base64
 import logging
 
+from openerp.tools.translate import _
 _logger = logging.getLogger(__name__)
 
 
@@ -35,7 +36,7 @@ class StockComputeOut(osv.osv_memory):
 
     _columns = {
         'name': fields.text("Text"),
-        'name_json': fields.text("Json"),
+        'sale_order_id': fields.many2one('sale.order', 'Order'),
         'state': fields.selection(
             (('draft', 'draft'), ('done', 'done'))),
     }
@@ -57,6 +58,56 @@ class StockComputeOut(osv.osv_memory):
         res = stock_move_model._get_stock_out(cr, uid, prod_list, context)
         mail = stock_move_model._get_email_body(cr, uid, res, context)
 
-
         return self.write(cr, uid, ids, {'state': 'done', 'name': mail}, context=context)
 
+    def crate_order_requirement(self, cr, uid, ids, context=None):
+        stock_move_model = self.pool['stock.move']
+        prod_list = stock_move_model._check_op_stock_availability(cr, uid, context)
+        stock_out = stock_move_model._get_stock_out(cr, uid, prod_list, context)
+        wizard = self.browse(cr, uid, ids[0], context)
+        sale_order_ids = []
+        if wizard.sale_order_id:
+            sale_order_ids.append(wizard.sale_order_id.id)
+
+        if len(stock_out) == 0:
+            raise osv.except_osv(_("Error"), _("No product out of stock found."))
+        order_requirement_ids = []
+
+        for company_id in stock_out.keys():
+            for location_id in stock_out[company_id]['locations'].keys():
+                location_data = stock_out[company_id]['locations'][location_id]
+
+                # main_partner_id = self.pool['res.company'].read(cr, uid, company_id, ['partner_id'], load='_obj')['partner_id']
+                # sale_order_ids = self.pool['sale.order'].search(cr, uid, [('partner_id', '=', main_partner_id)], limit=1)
+                if not sale_order_ids:
+                    raise osv.except_osv(
+                        'Error',
+                        _('Missing Sale Order for main company'))
+
+                order_requirement_line = []
+                sequence = 0
+                for product_data in location_data['products']:
+                    ord_req_line_vals = {
+                        'sequence': sequence,
+                        'product_id': product_data['product'].id,
+                        'qty': product_data['qty']
+                    }
+                    sequence += 10
+                    order_requirement_line.append(ord_req_line_vals)
+
+                order_requirement_values = {
+                    'sale_order_id': sale_order_ids[0],
+                    'note': _("Created from Stock Out"),
+                    'order_requirement_line_ids': [(0, 0, vals) for vals in order_requirement_line]
+                }
+                order_requirement_ids.append(self.pool['order.requirement'].create(cr, uid, order_requirement_values, context))
+
+        mod_model = self.pool['ir.model.data']
+        act_model = self.pool['ir.actions.act_window']
+        action_id = mod_model.get_object_reference(cr, uid, 'sale_order_requirement', 'action_view_order_requirement')
+        action_res = action_id and action_id[1]
+        action = act_model.read(cr, uid, action_res, [], context)
+        action.update({
+            'domain': "[('id', 'in', %s)]" % order_requirement_ids,
+        })
+        return action

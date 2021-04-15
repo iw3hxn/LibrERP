@@ -8,15 +8,21 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form>
-                    <label string="This report allows you to check the stock availability based on the product stock rules. By default, a scheduler is launched automatically every night by OpenERP, and the result is send by email to all user in 'Warehouse Management / Stock Monitor' group." colspan="4"/>
-                    <group col="2" fill="0" states="done">
+<!--                    -->
+<!--                    <label string="This report allows you to check the stock availability based on the product stock rules. By default, a scheduler is launched automatically every night by OpenERP, and the result is send by email to all user in 'Warehouse Management / Stock Monitor' group." colspan="4"/>-->
+<!--                    -->
+                    <group col="2" states="done">
                         <separator colspan="2" string="Report done"/>
                         <field name="name" nolabel="1" />
                     </group>
                     <separator colspan="4"/>
+                    <group col="2">
+                        <field name="sale_order_id" domain="[('partner_id', '=', 1)]"/>
+                    </group>
                     <group col="2" colspan="4">
                         <button icon='gtk-cancel' special="cancel" string="Cancel" />
                         <button name="compute_out" string="Check Stock" colspan="1" type="object" icon="gtk-ok" attrs="{'readonly': [('state','=','done')]}" />
+                        <button name="crate_order_requirement" string="Create Order Requirement" colspan="1" type="object" icon="terp-mrp"/>
                         <field invisible="1" name="state"/>
                     </group>
                 </form>
@@ -33,8 +39,8 @@
 
         <menuitem action="action_compute_stock_availability"
             id="menu_compute_stock_availability"
-            parent="stock.next_id_61"
-            sequence="20"
-            groups="stock.group_stock_manager"/>
+            parent="stock.menu_stock_inventory_control"
+            sequence="100"
+            groups="stock_out_alert.group_warehouse_monitor"/>
     </data>
 </openerp>

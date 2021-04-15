@@ -31,7 +31,7 @@ Add a scheduler launched automatically every night by OpenERP,
 and the result is send by email to all user in
 'Warehouse Management / Stock Monitor' group.
 """,
-    "version": "0.1.1.1",
+    "version": "0.1.1.2",
     "author": "Enterprise Objects Consulting",
     "website": "http://www.eoconsulting.com.ar",
     "category": "Warehouse Management",
@@ -40,7 +40,8 @@ and the result is send by email to all user in
         "procurement",
         "purchase"],
     "data": [
-        "scheduler_data.xml",
+        "security/groups.xml",
+        "data/scheduler_data.xml",
         "wizard/stock_compute_out_view.xml"
     ],
     "images": ['images/stock_out_alert_report.png', 'images/stock_out_alert_wizard.jpeg', ],
