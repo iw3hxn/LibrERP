@@ -278,6 +278,9 @@ class sale_order(orm.Model):
 
         return result
 
+    def _hook_project_values_create(self, project_values, values, context):
+        return project_values
+
     def copy(self, cr, uid, id, default=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if default is None:
@@ -352,6 +355,8 @@ class sale_order(orm.Model):
             # i use this mode because if there are no project_id on shop use default value
             if shop.project_id:
                 project_values['parent_id'] = shop.project_id.id
+
+            project_values = self._hook_project_values_create(project_values, values, context)
             project_id = self.pool['project.project'].create(cr, uid, project_values, context=context.update({
                 'model': 'sale.order',
             }))
