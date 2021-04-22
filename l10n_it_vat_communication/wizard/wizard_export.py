@@ -138,13 +138,13 @@ class WizardVatCommunication(orm.TransientModel):
             if len(fields['xml_Nazione']) != 2:
                 raise orm.except_orm(
                     _('Error!'),
-                    _('Country Code \'{code}\' is wrong for partner {partner}').format(code=fields['xml_Nazione'], partner=fields.get('xml_Denominazione'))
+                    _(u'Country Code \'{code}\' is wrong for partner {partner}').format(code=fields['xml_Nazione'], partner=fields.get('xml_Denominazione'))
                 )
             sede.Nazione = fields['xml_Nazione']
         else:
             raise orm.except_orm(
                 _('Error!'),
-                _('Unknow country of %s %s %S' %
+                _(u'Unknown country of %s %s %s' %
                   (fields.get('xml_Denominazione'),
                    fields.get('xml_Nome'),
                    fields.get('xml_Cognome'))))
@@ -154,19 +154,19 @@ class WizardVatCommunication(orm.TransientModel):
         else:
             raise orm.except_orm(
                 _('Error!'),
-                _('Missed address %s %s %S' %
-                  (fields.get('xml_Denominazione'),
-                   fields.get('xml_Nome'),
-                   fields.get('xml_Cognome'))))
+                _(u'Missing address %s %s %s' %
+                  (fields.get('xml_Denominazione', ''),
+                   fields.get('xml_Nome', ''),
+                   fields.get('xml_Cognome', ''))))
         if fields.get('xml_Comune'):
             sede.Comune = self.str60Latin(fields['xml_Comune'])
         else:
             raise orm.except_orm(
                 _('Error!'),
-                _('Missed city %s %s %S' %
-                  (fields.get('xml_Denominazione'),
-                   fields.get('xml_Nome'),
-                   fields.get('xml_Cognome'))))
+                _(u'Missing city %s %s %s' %
+                  (fields.get('xml_Denominazione', ''),
+                   fields.get('xml_Nome', ''),
+                   fields.get('xml_Cognome', ''))))
         if fields.get('xml_CAP') and fields['xml_Nazione'] == 'IT':
             sede.CAP = fields['xml_CAP']
         elif selector == 'company':
