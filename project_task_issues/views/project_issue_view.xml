@@ -18,7 +18,7 @@
                 <xpath expr="//notebook/page[@string='General']" position="after">
                     <page string="Worklogs" attrs="{'invisible':[('state','in', ['draft'])]}">
                         <field name="work_ids" colspan="4" nolabel="1"
-                               context="{'default_user_id' : user_id, 'default_task_id' : task_id}"
+                               context="{'default_task_id' : task_id}"
                                attrs="{'readonly': [('state','in', ['draft', 'done'])]}">
                             <tree editable="top" string="Timesheets">
                                 <field name="date"/>

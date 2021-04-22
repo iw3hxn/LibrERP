@@ -133,8 +133,9 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree editable="top" string="Task Work">
+                    <field name="partner_id" groups="project.group_project_manager" readonly="1"/>
                     <field name="date"/>
-                    <field name="user_id"/>
+                    <field name="user_id" groups="project.group_project_manager"/>
                     <field name="name"/>
                     <field name="task_id" required="1"
                            domain="['|', '|', ('user_id','=', False), ('user_id','=',uid), ('other_users_ids','in',uid), ('state','in',['open','working'])]"/>
@@ -174,6 +175,8 @@
                         <field name="task_id"/>
                         <field name="user_id" groups="project.group_project_manager"/>
                         <filter domain="[('user_id','=',uid)]" help="My Tasks" icon="terp-personal"/>
+                        <separator orientation="vertical"/>
+                        <field name="partner_id"/>
                     </group>
                     <newline/>
                     <group expand="0" string="Group By..." >
@@ -183,7 +186,9 @@
                         <separator orientation="vertical"/>
                         <filter string="Task" icon="terp-folder-green" domain="[]" context="{'group_by':'task_id'}"/>
                         <separator orientation="vertical"/>
-                        <filter string="Users" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Users" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}" groups="project.group_project_manager"/>
+                        <separator orientation="vertical"/>
+                        <filter string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}" groups="project.group_project_manager"/>
                     </group>
                 </search>
              </field>
