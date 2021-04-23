@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2013-2014 Didotech srl (info@didotech.com)
+#    Copyright (C) 2013-2021 Didotech srl (info@didotech.com)
 #    All Rights Reserved
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -201,7 +201,7 @@ class ProductPricelist(orm.Model):
                             qty_in_seller_uom = product_uom_obj._compute_qty(cr, uid, qty_uom_id, qty, to_uom_id=seller_uom)
                         price_uom_id = seller_uom
                         if not seller.pricelist_ids:
-                            _logger.error("On pricelist '{}' is set that price depend from product supplier but there are no line for supplier '{}' or product '{}'".format(
+                            _logger.error(u"On pricelist '{}' is set that price depend from product supplier but there are no line for supplier '{}' or product '{}'".format(
                                 rule.price_version_id.pricelist_id.name,
                                 seller.name.name_get()[0][1],
                                 product.name_get()[0][1]
