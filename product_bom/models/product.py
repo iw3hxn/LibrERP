@@ -213,11 +213,11 @@ class product_product(orm.Model):
                 if pricelist:
                     price, rule = self.pool['product.pricelist'].price_rule_get_multi(cr, uid, [pricelist.id], products_by_qty_by_partner=[(product, 1, partner_id)], context=context)[product.id][pricelist.id]
                     if not price:
-                        _logger.error("Not find price for pricelist '{}' and product {}".format(pricelist.name, product.name_get()[0][1]))
+                        _logger.error(u"Not find price for pricelist '{}' and product {}".format(pricelist.name, product.name_get()[0][1]))
                 else:
                     raise orm.except_orm(
                         _("Error"),
-                        _("The supplier {supplier} have no pricelist associated").format(supplier=product.prefered_supplier.name))
+                        _(u"The supplier {supplier} have no pricelist associated").format(supplier=product.prefered_supplier.name))
 
                 price_subtotal = 0.0
                 if pricelist:
