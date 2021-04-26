@@ -25,7 +25,7 @@ except ImportError as err:
 # TODO: Use module for classification
 EU_COUNTRIES = ['AT', 'BE', 'BG', 'CY', 'HR', 'DK', 'EE',
                 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LV',
-                'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'GB',
+                'LT', 'LU', 'MT', 'NL', 'PL', 'PT',
                 'CZ', 'RO', 'SK', 'SI', 'ES', 'SE', 'HU']
 z = '0'
 for i, x in enumerate(ade.ADE_LEGALS['codice_carica']):
