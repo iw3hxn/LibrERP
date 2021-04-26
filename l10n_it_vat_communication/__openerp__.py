@@ -8,7 +8,7 @@
 
 {
     "name": "Comunicazione periodica IVA",
-    "version": "6.1.0.7.13",
+    "version": "6.1.0.8.13",
     'category': 'Generic Modules/Accounting',
     'license': 'AGPL-3',
     "depends": [
