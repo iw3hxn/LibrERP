@@ -38,13 +38,13 @@ class SaleOrderLine(orm.Model):
     }
 
     def _get_mrp_bom_value(self, cr, uid, ids, bom_line, price_unit, sequence, context=None):
-
+        uos_coeff = bom_line.product_id.uos_coeff or 1
         if bom_line.product_uom.category_id.id != bom_line.product_id.uom_id.category_id.id:
-            uos_coeff = bom_line.product_id.uos_coeff or 1
             qty = bom_line.product_qty * uos_coeff
         else:
-            qty = self.pool['product.uom']._compute_qty(cr, uid, from_uom_id=bom_line.product_uom.id, qty=bom_line.product_qty,
+            product_qty = self.pool['product.uom']._compute_qty(cr, uid, from_uom_id=bom_line.product_uom.id, qty=bom_line.product_qty,
                                        to_uom_id=bom_line.product_id.uom_id.id)
+            qty = product_qty * uos_coeff
 
         line_bom = {
             'parent_id': False,

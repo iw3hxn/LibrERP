@@ -49,16 +49,28 @@ class sale_order_line_mrp_bom(orm.Model):
     }
 
     def bom_product_id_change(self, cr, uid, ids, product_id, uom_id, product_qty, price_unit, context=None):
-
+        uom_obj = self.pool['product.uom']
         if product_id:
             product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
+            uom_id = uom_id or product.uom_id.id
+            uom = uom_obj.browse(cr, uid, uom_id, context)
+            uos_coeff = product.uos_coeff or 1
+
+            if uom.category_id.id != product.uom_id.category_id.id:
+                qty = product_qty * uos_coeff
+            else:
+                product_qty = uom_obj._compute_qty(cr, uid, from_uom_id=uom_id,
+                                                                    qty=product_qty,
+                                                                    to_uom_id=product.uom_id.id)
+                qty = product_qty * uos_coeff
+
             # partner_id = context.get('partner_id', False)
             # self.pool['sale.order.line'].product_id_change(cr, uid, ids, 1, product_id, qty=product_qty, uom=uom_id, partner_id=partner_id, context=context)
             price_unit = price_unit or product.cost_price
             return {'value': {
                 'price_unit': price_unit,
                 'product_uom': uom_id or product.uom_id.id,
-                'price_subtotal': price_unit * product_qty,
+                'price_subtotal': price_unit * qty,
             }}
         else:
             return {'value': {}}
