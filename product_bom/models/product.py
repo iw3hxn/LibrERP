@@ -174,6 +174,8 @@ class product_product(orm.Model):
             else:
                 bom = bom_obj.browse(cr, uid, bom_id, context)
 
+            if debug_logger:
+                _logger.debug(u"cost without Routing {}".format(price))
             if bom.routing_id and not context.get('exclude_routing', False):
                 for wline in bom.routing_id.workcenter_lines:
                     wc = wline.workcenter_id
@@ -183,7 +185,10 @@ class product_product(orm.Model):
                     cost = (wc.costs_cycle * cycle + wc.costs_hour * (
                                 wline.hour_nbr + (wc.time_start or 0.0) + (wc.time_stop or 0.0))) * (
                                        wc.time_efficiency or 1.0)
-                    price += cost * cost_efficiency
+                    routing_cost = cost * cost_efficiency
+                    if debug_logger:
+                        _logger.debug(u"Add WC {} cost {} * efficiency {} = {}".format(wline.name, cost, cost_efficiency, routing_cost))
+                    price += routing_cost
             price /= bom.product_qty
             price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
             if ENABLE_CACHE and debug_logger:
