@@ -44,7 +44,9 @@ class stock_picking(orm.Model):
         account_invoice_line_obj = self.pool['account.invoice.line']
 
         if picking.sale_id:
-            for invoice in picking.sale_id.invoice_ids:
+            invoice_ids = [inv.id for inv in picking.sale_id.invoice_ids if inv.state != 'draft']
+            # reload with browse
+            for invoice in account_invoice_obj.browse(cr, uid, invoice_ids, context):
                 if invoice.advance_order_id:
                     note = _('Invoice {name}').format(name=invoice.number)
                     # here i need to check fiscal_position
@@ -72,7 +74,8 @@ class stock_picking(orm.Model):
                             }
                             account_invoice_line_obj.copy(cr, uid, line.id, line_vals, context=context)
                         invoice.button_compute()
-                    invoice.write({'advance_order_id': False})
+                    account_invoice_obj.write(cr, uid, invoice.id, {'advance_order_id': False}, context=context)
+                    # invoice.write({'advance_order_id': False})
         return res
 
     def _get_group_keys(self, cr, uid, partner, picking, context=None):
