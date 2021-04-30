@@ -73,6 +73,11 @@ class ProjectIssue(orm.Model):
                 res['value']['user_id'] = uid
         return res
 
+    def case_open(self, cr, uid, ids, *args):
+        self.convert_issue_task(cr, uid, ids, *args)
+        res = super(ProjectIssue, self).case_open(cr, uid, ids, *args)
+        return res
+
     def case_close(self, cr, uid, ids, *args):
         """
         @param self: The object pointer
