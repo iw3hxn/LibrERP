@@ -171,20 +171,24 @@ class res_partner_address(orm.Model):
 
     def _set_vals_city_data(self, cr, uid, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        if 'city' in vals and 'province' not in vals and 'region' not in vals:
-            if vals['city']:
+        if 'city' in vals or 'province' in vals:
+            city_ids = False
+            if vals.get('city'):
                 city_obj = self.pool['res.city']
                 city_ids = city_obj.search(cr, uid, [('name', '=ilike', vals['city'].title())], context=context)
-                if city_ids:
-                    city = city_obj.browse(cr, uid, city_ids[0], context)
-                    if 'zip' not in vals:
-                        vals['zip'] = city.zip
-                    if city.province_id:
-                        vals['province'] = city.province_id.id
-                    if city.region:
-                        vals['region'] = city.region.id
-                        if city.region.country_id:
-                            vals['country_id'] = city.region.country_id.id
+            if city_ids:
+                city = city_obj.browse(cr, uid, city_ids[0], context)
+                if 'zip' not in vals:
+                    vals['zip'] = city.zip
+                if city.province_id:
+                    vals['province'] = city.province_id.id
+                if city.region:
+                   vals['region'] = city.region.id
+                if city.region.country_id:
+                   vals['country_id'] = city.region.country_id.id
+            elif 'province' in vals:
+                res = self.on_change_province(cr, uid, [], vals['province'], context)
+                vals.update(res.get('value'))
         return vals
 
     # Is correct move to l10n_it_account, there are an error because is call from crm_lead
