@@ -8,8 +8,9 @@
             <field name="type">tree</field>
             <field name="inherit_id" ref="crm.crm_case_inbound_phone_tree_view" />
             <field name="arch" type="xml">
-                <field name="opportunity_id" position="replace">
-                    <field name="opportunity_id" />
+
+                <field name="opportunity_id" position="attributes">
+                    <attribute name="invisible">0</attribute>
                 </field>
             </field>
         </record>

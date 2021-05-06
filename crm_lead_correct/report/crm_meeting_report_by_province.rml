@@ -94,7 +94,6 @@
             </tr>
             <tr>
               <td>
-
                 <blockTable colWidths="90.0,80.0,80.0,75.0,210.0" style="Table3">
                   <tr>
                     <td>
@@ -134,10 +133,11 @@
                       <para style="P9">[[ d.categ_id.name ]]</para>
                     </td>
                     <td>
-                      <para style="P9">[[ d.description ]]</para>
+                      <para style="P7">[[ d.name ]]</para>
                     </td>
                   </tr>
                 </blockTable>
+                <para style="P9">[[ d.description or '']]</para>
               </td>
             </tr>
           </blockTable>
