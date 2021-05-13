@@ -22,7 +22,7 @@
 ##############################################################################
 {
     'name': 'Project Task Issues',
-    'version': '3.3.6.10',
+    'version': '3.3.6.11',
     'category': 'Generic Modules/Projects & Services',
     'description': """Issues list associated to task. In the task form, you can see the issues related to that task
 		Create issues from tasks.""",
@@ -30,7 +30,8 @@
     'website': 'http://www.agilebg.com',
     'license': 'AGPL-3',
     "depends": [
-        'project_issue_sheet'
+        "project",
+        "project_issue_sheet"
     ],
     "data": [
         'security/ir.model.access.csv',

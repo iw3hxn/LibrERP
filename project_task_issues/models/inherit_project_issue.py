@@ -211,4 +211,12 @@ class ProjectIssue(orm.Model):
             store=True
         ),
     }
+
+    def read(self, cr, user, ids, fields=None, context=None, load='_classic_read'):
+        res = super(ProjectIssue, self).read(cr, user, ids, fields, context, load)
+        return res
+
+    def browse(self, cr, uid, select, context=None, list_class=None, fields_process=None):
+        res = super(ProjectIssue, self).browse(cr, uid, select, context, list_class, fields_process)
+        return res
 # end ProjectIssue

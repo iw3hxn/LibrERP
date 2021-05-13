@@ -20,6 +20,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from openerp import SUPERUSER_ID
 
 
 class ProjectTask(orm.Model):
@@ -38,9 +39,9 @@ class ProjectTask(orm.Model):
         res = {}
         ids = ids or []
 
-        for task in self.browse(cr, uid, ids, context):
-            task_ids = project_issue_obj.search(cr, uid, [('task_id', '=', task.id), ('state', 'not in', ['done', 'cancel'])], context=context)
-            res[task.id] = len(task_ids)
+        for task_id in ids:
+            task_ids = project_issue_obj.search(cr, SUPERUSER_ID, [('task_id', '=', task_id), ('state', 'not in', ['done', 'cancel'])], context=context)
+            res[task_id] = len(task_ids)
 
         return res
     
