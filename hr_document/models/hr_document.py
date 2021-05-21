@@ -52,7 +52,7 @@ class HrDocument(orm.Model):
 
         result = {}
         for document in self.browse(cr, uid, ids, context):
-            if document.date:
+            if document.valid_start_date:
                 result[document.id] = datetime.datetime.strptime(document.valid_start_date, '%Y-%m-%d').year
             else:
                 result[document.id] = False
