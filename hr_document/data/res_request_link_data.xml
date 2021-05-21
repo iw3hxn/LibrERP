@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Sequences for Inbound Letter -->
+
+        <record id="req_link_employee" model="res.request.link">
+            <field name="name">Employee</field>
+            <field name="object">hr.employee</field>
+        </record>
+        
+    </data>
+</openerp>

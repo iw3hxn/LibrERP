@@ -28,7 +28,7 @@
 ##############################################################################
 {
     "name": "Human Resources/Documents",
-    "version": "4.0.0.1",
+    "version": "4.0.0.2",
     "author": "DeneroTeam - Didotech",
     "category": "Generic Modules/Human Resources",
     "description": """A generic module to manage the employee documents with web gallery""",
@@ -42,8 +42,10 @@
         "views/hr_employee_view.xml",
         'wizard/hr_document_expiry_bymonth_view.xml',
         "wizard/hr_document_planned_bymonth_view.xml",
-        'security/ir.model.access.csv',
+        "wizard/hr_document_creation_view.xml",
+        "security/ir.model.access.csv",
         "report/hr_document_planned_report.xml",
+        "data/res_request_link_data.xml"
     ],
     'demo_xml': ['hr_document_demo.xml'],
     'installable': True,

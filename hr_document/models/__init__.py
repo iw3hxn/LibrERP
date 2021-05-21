@@ -26,6 +26,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
+from . import abstract_hr_document
 from . import hr_document
 from . import hr_document_type
 from . import inherit_hr_employee

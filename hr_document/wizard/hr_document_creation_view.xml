@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record id="view_document_creation_form" model="ir.ui.view">
+            <field name="name">hr.document.form</field>
+            <field name="model">hr.document.creation</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Document" col="2">
+                    <group col="4" colspan="4">
+                        <group colspan="4">
+                            <field name="name"/>
+                            <field name="document_type_id" widget="selection"
+                                   on_change="onchange_document_type_id(document_type_id)"/>
+                            <field name="valid_start_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                            <field name="valid_end_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                            <field name="planned_date"/>
+                            <field name="has_date_option" invisible="1"/>
+
+                        </group>
+                        <group string="Reference" colspan="2">
+                            <field name="ref_type"/>
+                            <field name="ref"/>
+                        </group>
+                        <group colspan="2" string="Note">
+                            <field name="comments" nolabel="1"/>
+                        </group>
+                        <field name="hr_employee_ids" widget="many2many_checkboxes" nolabel="1" colspan="4"/>
+                    </group>
+                    <group col="4" colspan="4">
+                        <button special="cancel"  string="Cancel" icon='gtk-cancel'/>
+                        <button name="create_document" string="Create Document" type="object"  icon="terp-document-new"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_document_creation" model="ir.actions.act_window">
+            <field name="name">Document Creation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.document.creation</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_hr_document_creation" id="menu_action_hr_document_creation" parent="hr.menu_hr_main"
+                  groups="base.group_hr_manager"/>
+
+    </data>
+</openerp>

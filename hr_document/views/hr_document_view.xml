@@ -15,10 +15,10 @@
             <field name="model">hr.document</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Document">
+                <form string="Document" col="4">
                     <notebook>
                         <page string="Details">
-                            <group>
+                            <group col="4">
                                 <field name="name"/>
                                 <field name="document_type_id" widget="selection"
                                        on_change="onchange_document_type_id(document_type_id)"/>
@@ -29,10 +29,10 @@
                                 <field name="employee_id"/>
                                 <field name="active"/>
                             </group>
-                            <!--                            <separator/>
-                                                       <group>
-                                                        <field name="web_gallery_doc_ids" />
-                                                       </group>-->
+                            <group string="Reference" col="4">
+                                <field name="ref_type" />
+                                <field name="ref" />
+                            </group>
                         </page>
                         <page string="Comments">
                             <field name="comments" nolabel="1"/>
@@ -87,6 +87,7 @@
                     <separator orientation="vertical"/>
                     <newline/>
                     <group expand="0" string="Group By...">
+                        <filter string="Document Name" context="{'group_by': 'name'}" icon="terp-document-new"/>
                         <filter string="Employee" context="{'group_by': 'employee_id'}" icon="terp-personal"/>
                         <filter string="Planned" context="{'group_by': 'planned_date'}" icon="terp-folder-orange"/>
                         <filter string="Document" context="{'group_by': 'document_type_id'}" icon="terp-document-new"/>
@@ -112,6 +113,7 @@
 
         <menuitem action="open_module_tree_document" id="menu_hr_document_tree" parent="hr.menu_hr_main"
                   groups="base.group_hr_manager"/>
+
         <menuitem action="open_module_tree_my_document" id="menu_my_hr_document_tree" parent="hr.menu_hr_main"/>
 
     </data>

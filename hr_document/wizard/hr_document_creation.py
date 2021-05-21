@@ -26,15 +26,41 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-
+import time
 from openerp.osv import orm, fields
 
 
-class HrDocument(orm.Model):
-    _description = "HR Employee Document"
-    _name = 'hr.document'
+class HrDocumentCreation(orm.TransientModel):
+    _name = 'hr.document.creation'
     _inherit = "hr.document.abstract"
 
     _columns = {
-        'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade', required=True),
+        'hr_employee_ids': fields.many2many('hr.employee', string="Employees", required=False),
     }
+
+    def create_document(self, cr, uid, ids, context=None):
+        context = context or self.context_get(cr, uid)
+        hr_document_model = self.pool['hr.document']
+        mod_model = self.pool['ir.model.data']
+        act_model = self.pool['ir.actions.act_window']
+
+        document_ids = []
+        res = self.read(cr, uid, ids, ['hr_employee_ids'], context=context)
+        res = res and res[0] or {}
+        copy_data = self.copy_data(cr, uid, ids[0], context=context)
+        del copy_data['hr_employee_ids']
+        for employee_id in res['hr_employee_ids']:
+            hr_document_value = copy_data.copy()
+            hr_document_value['employee_id'] = employee_id
+            doc_id = hr_document_model.create(cr, uid, hr_document_value, context)
+            document_ids.append(doc_id)
+
+        result = mod_model.get_object_reference(cr, uid, 'hr_document', 'open_module_tree_document')
+        id = result and result[1] or False
+        result = act_model.read(cr, uid, [id], context=context)[0]
+        result['domain'] = "[('id','in',[" + ','.join(map(str, document_ids)) + "])]"
+
+        return result
+
+
+
