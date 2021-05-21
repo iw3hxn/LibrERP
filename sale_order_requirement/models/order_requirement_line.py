@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
-import decimal_precision as dp
+import datetime
+
 import tools
-from openerp.osv import orm, fields
-from tools.translate import _
 from openerp.addons.sale_order_requirement.models.order_requirement import STATE_SELECTION
+from tools import DEFAULT_SERVER_DATE_FORMAT
+from tools.translate import _
 
-
+import decimal_precision as dp
+from openerp.osv import orm, fields
 from ..util import rounding
 
 routing_colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
@@ -422,10 +424,21 @@ class OrderRequirementLine(orm.Model):
         if isinstance(product, (int, long)):
             product = product_model.browse(cr, uid, product, context)
 
-        # bom_ids = product.bom_ids # NO, wrong, duplicates !
+        # bom_ids = product.bom_lines # NO, wrong, duplicates !
+        bom_ids = []
+        today = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        for product_bom in product.bom_lines:
+            if product_bom.date_start:
+                if today < product_bom.date_start:
+                    continue
+            if product_bom.date_stop:
+                if today > product_bom.date_stop:
+                    continue
+            bom_ids.append(product_bom)
 
-        bom_ids = mrp_bom_model.search_browse(cr, uid, [('product_id', '=', product.id),
-                                                      ('bom_id', '=', False)], context=context)
+        bom_ids = bom_ids and [bom_ids[0]]
+        # bom_ids = mrp_bom_model.search_browse(cr, uid, [('product_id', '=', product.id),
+        #                                             ('bom_id', '=', False)], context=context, limit=1)
 
         def _get_rec(bom_rec, father_id, level):
             global sequence
@@ -436,8 +449,15 @@ class OrderRequirementLine(orm.Model):
             bom_children = bom_rec.child_buy_and_produce_ids
             if not bom_children:
                 return
+            today = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
             for bom in bom_children:
                 if bom.product_id.type == 'product':
+                    if bom.date_start:
+                        if today < bom.date_start:
+                            continue
+                    if bom.date_stop:
+                        if today > bom.date_stop:
+                            continue
                     temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom, mult, father_id, level, context)
                     temp_vals['sequence'] = sequence
                     sequence += 1

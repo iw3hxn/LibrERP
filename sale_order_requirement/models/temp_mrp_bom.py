@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
+from openerp.addons.sale_order_requirement.models.order_requirement import STATE_SELECTION
+
 import decimal_precision as dp
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-from openerp.addons.sale_order_requirement.models.order_requirement import STATE_SELECTION
 from ..util import rounding
 
 default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
@@ -293,12 +297,17 @@ class TempMrpBom(orm.Model):
             newqty = mrp_production.product_qty + qty
 
             mrp_production_model.write(cr, uid, mrp_production_id,
-                                     {'product_qty': newqty}, context)
+                                       {'product_qty': newqty}, context)
         else:
             # Create new
+            delay = max(product.sale_delay, product.produce_delay)
+            dt = datetime.strptime(temp.sale_order_id.commitment_date, '%Y-%m-%d') - relativedelta(days=delay or 0.0)
+            dt_s = dt.strftime('%Y-%m-%d')
+
             mrp_production_values = mrp_production_model.product_id_change(cr, uid, [], product.id)['value']
 
             mrp_production_values.update({
+                'date_planned': dt_s,
                 'analytic_account_id': temp.sale_order_id.project_id and temp.sale_order_id.project_id.id or False,
                 'product_id': product.id,
                 'product_qty': temp.product_qty,

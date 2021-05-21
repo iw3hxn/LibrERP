@@ -52,7 +52,9 @@
                             <group col="1" colspan="4">
                                 <field name="order_requirement_line_ids" nolabel="1" context="{'order_id': id}"/>
                             </group>
-                            <button name="set_state_draft" string="Return to Draft" type="object" icon="gtk-ok" states="done,cancel" />
+                            <button name="set_state_draft" string="Return to Draft" type="object" icon="gtk-ok" states="done,cancel"
+                                confirm="Are you sure you want to do this?"
+                            />
                             <newline />
                             <field name="user_id" />
                             <field name="state" widget="statusbar" statusbar_colors='{"draft":"red","done":"black","cancel":"grey"}'/>
