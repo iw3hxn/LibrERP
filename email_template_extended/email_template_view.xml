@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="use_template" position="after">
-                        <field name="auto_delete" />
+                        <field name="auto_delete" groups="mail.group_template_manager"/>
                     </field>
                     <button name="save_as_template" position="replace">
                         <button icon="gtk-save" type="object" name="save_as_template"
