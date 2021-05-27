@@ -65,7 +65,7 @@ body.openerp {
     margin: 0;
     height: 100%;
     font-size: small;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', 'Open Sans', sans-serif;
 }
 
 .openerp,
@@ -76,7 +76,7 @@ body.openerp {
 .openerp button,
 .openerp .ui-widget {
 
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', 'Open Sans', sans-serif;
     font-size:90%;
     border: 0px;
 
@@ -172,7 +172,7 @@ body.openerp {
 .login {
     padding: 0;
     margin: 0;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', 'Open Sans', sans-serif;
     color: #eee;
     font-size: 12px;
     height: 100%;
@@ -201,7 +201,7 @@ body.openerp {
     cursor: pointer;
     padding: 6px 16px;
     /* font-size: 13px; */
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', 'Open Sans', sans-serif;
     font-weight: bold;
     color: white;
     margin: 0;
@@ -218,7 +218,7 @@ body.openerp {
 .login input, .login select {
     width: 252px;
     font-size: 14px;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', 'Open Sans', sans-serif;
     border: 1px solid #d6d7da;
     background: whitesmoke;
 /*
@@ -333,7 +333,7 @@ body.openerp {
 
 .login .openerp {
     font-weight: bold;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', 'Open Sans', sans-serif;
     font-size: 16px;
 }
 
@@ -2038,9 +2038,23 @@ label.error {
 }
 .openerp .oe-sidebar-attachments-link {
     display: block;
-    margin-right: 15px;
+    margin-right: 25px;
     overflow: hidden;
 }
+.openerp .oe-sidebar-attachments-view {
+    position: absolute;
+    right: 15px;
+    top: 1px;
+    overflow: hidden;
+    width: 15px;
+    height: 15px;
+    padding: 1px;
+
+}
+.openerp .oe-sidebar-attachment-delete:hover {
+    background-color: white;
+}
+
 .openerp .oe-sidebar-attachment-delete {
     position: absolute;
     right: 2px;

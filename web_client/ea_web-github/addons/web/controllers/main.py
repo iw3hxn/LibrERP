@@ -1403,20 +1403,22 @@ class Binary(openerpweb.Controller):
             image_data = self.placeholder(req)
         return req.make_response(image_data, [
             ('Content-Type', 'image/png'), ('Content-Length', len(image_data))])
+
     def placeholder(self, req):
         addons_path = openerpweb.addons_manifest['web']['addons_path']
         return open(os.path.join(addons_path, 'web', 'static', 'src', 'img', 'placeholder.png'), 'rb').read()
-    def content_disposition(self, filename, req):
+
+    def content_disposition(self, filename, req, ttype='attachment'):
         filename = filename.encode('utf8')
         escaped = urllib2.quote(filename)
         browser = req.httprequest.user_agent.browser
         version = int((req.httprequest.user_agent.version or '0').split('.')[0])
         if browser == 'msie' and version < 9:
-            return "attachment; filename=%s" % escaped
+            return "%s; filename=%s" % (ttype, escaped)
         elif browser == 'safari':
-            return "attachment; filename=%s" % filename
+            return "%s; filename=%s" % (ttype, filename)
         else:
-            return "attachment; filename*=UTF-8''%s" % escaped
+            return "%s; filename*=UTF-8''%s" % (ttype, escaped)
 
     @openerpweb.httprequest
     def saveas(self, req, model, field, id=None, filename_field=None, **kw):
@@ -1450,6 +1452,12 @@ class Binary(openerpweb.Controller):
             filename = '%s_%s' % (model.replace('.', '_'), id)
             if filename_field:
                 filename = res.get(filename_field, '') or filename
+
+            if kw.get('no_download'):
+                if filename.split('.')[-1]:
+                    return req.make_response(filecontent,
+                                             [('Content-Type', 'application/pdf'),
+                                              ('Content-Disposition', self.content_disposition(filename, req, 'inline'))])
             return req.make_response(filecontent,
                 [('Content-Type', 'application/octet-stream'),
                  ('Content-Disposition', self.content_disposition(filename, req))])
