@@ -861,7 +861,7 @@
             <t t-if="attachment.type == 'binary'" t-set="attachment.url" t-value="_s + '/web/binary/saveas?session_id='
                 + session.session_id + '&amp;model=ir.attachment&amp;id=' + attachment.id
                 + '&amp;field=datas&amp;filename_field=name&amp;t=' + (new Date().getTime())"/>
-            <a class="oe-sidebar-attachments-link" t-att-href="attachment.url" target="_blank">
+            <a class="oe-sidebar-attachments-link" t-att-href="attachment.url" target="_blank" t-att-title="attachment_title(attachment.name)">
                 <t t-esc="attachment.name"/>
             </a>
             <a href="#" class="oe-sidebar-attachment-delete" t-att-data-id="attachment.id" t-att-title="attachment_title(attachment.name)">
