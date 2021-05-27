@@ -1138,10 +1138,21 @@ class OrderRequirementLine(orm.Model):
                 else:
                     newqty = qty + po_line.product_qty
 
+                purchase_order_values = {
+                    'fiscal_position': po_line.order_id.fiscal_position and po_line.order_id.fiscal_position.id or False,
+                    'pricelist_id': po_line.order_id.pricelist_id.id
+                }
+                purchase_order_line_values_new = self._get_purchase_order_line_value(cr, uid, obj, product_id, uom_id,
+                                                                                     newqty,
+                                                                                     purchase_order_values,
+                                                                                     supplier_id,
+                                                                                     context)
+
                 purchase_order_line_values = {
                     'product_qty': newqty,
                     'order_requirement_ids': [(4, line.order_requirement_id.id)],
                     'order_requirement_line_ids': [(4, line.id)],
+                    'price_unit': purchase_order_line_values_new['price_unit']
                     # 'sale_order_ids': [(4, sale_order_id)],
                 }
 
