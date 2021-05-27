@@ -30,7 +30,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class stock_move(osv.osv):
+class StockMove(osv.osv):
     _inherit = "stock.move"
 
     def run_check_op_stock_availability(self, cr, uid, use_new_cursor=False, context={}):

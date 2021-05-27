@@ -60,7 +60,7 @@ class StockComputeOut(osv.osv_memory):
 
         return self.write(cr, uid, ids, {'state': 'done', 'name': mail}, context=context)
 
-    def crate_order_requirement(self, cr, uid, ids, context=None):
+    def create_order_requirement(self, cr, uid, ids, context=None):
         stock_move_model = self.pool['stock.move']
         prod_list = stock_move_model._check_op_stock_availability(cr, uid, context)
         stock_out = stock_move_model._get_stock_out(cr, uid, prod_list, context)

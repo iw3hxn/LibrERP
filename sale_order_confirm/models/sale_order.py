@@ -268,8 +268,13 @@ class sale_order(orm.Model):
         if not len(ids):
             return []
         res = []
-        for sale in self.read(cr, uid, ids, ['id', 'name', 'partner_id'], context=context):
+        read_fields = ['id', 'name', 'partner_id']
+        if context.get('show_client_order_ref'):
+            read_fields.append('client_order_ref')
+        for sale in self.read(cr, uid, ids, read_fields, context=context):
             name = u'[{sale_name}] {partner_name}'.format(sale_name=sale['name'], partner_name=sale['partner_id'][1])
+            if 'client_order_ref' in read_fields and sale['client_order_ref']:
+                name += u' - {}'.format(sale['client_order_ref'])
             res.append((sale['id'], name))
         # for sale in self.browse(cr, uid, ids, context=context):
         #     name = u'[{sale_name}] {partner_name}'.format(sale_name=sale.name, partner_name=sale.partner_id.name)

@@ -17,12 +17,12 @@
                     </group>
                     <separator colspan="4"/>
                     <group col="2">
-                        <field name="sale_order_id" domain="[('partner_id', '=', 1)]"/>
+                        <field name="sale_order_id" domain="[('partner_id', '=', 1)]" context="{'show_client_order_ref': 1}"/>
                     </group>
                     <group col="2" colspan="4">
                         <button icon='gtk-cancel' special="cancel" string="Cancel" />
                         <button name="compute_out" string="Check Stock" colspan="1" type="object" icon="gtk-ok" attrs="{'readonly': [('state','=','done')]}" />
-                        <button name="crate_order_requirement" string="Create Order Requirement" colspan="1" type="object" icon="terp-mrp"/>
+                        <button name="create_order_requirement" string="Create Order Requirement" colspan="1" type="object" icon="terp-mrp"/>
                         <field invisible="1" name="state"/>
                     </group>
                 </form>

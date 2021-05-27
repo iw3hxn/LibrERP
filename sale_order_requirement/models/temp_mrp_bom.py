@@ -301,7 +301,8 @@ class TempMrpBom(orm.Model):
         else:
             # Create new
             delay = max(product.sale_delay, product.produce_delay)
-            dt = datetime.strptime(temp.sale_order_id.commitment_date, '%Y-%m-%d') - relativedelta(days=delay or 0.0)
+            required_date = hasattr(temp.sale_order_id, 'minimum_planned_date') and temp.sale_order_id.minimum_planned_date or temp.sale_order_id.commitment_date
+            dt = datetime.strptime(required_date, '%Y-%m-%d') - relativedelta(days=delay or 0.0)
             dt_s = dt.strftime('%Y-%m-%d')
 
             mrp_production_values = mrp_production_model.product_id_change(cr, uid, [], product.id)['value']
