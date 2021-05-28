@@ -24,6 +24,7 @@
 
 from openerp.osv import orm, fields
 from tools.translate import _
+from openerp import SUPERUSER_ID
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -76,7 +77,7 @@ class sale_order(orm.Model):
 
     def action_cancel(self, cr, uid, ids, context=None):
         result = super(sale_order, self).action_cancel(cr, uid, ids, context)
-        for order in self.browse(cr, uid, ids, context=context):
+        for order in self.browse(cr, SUPERUSER_ID, ids, context=context):
             if order.project_project:
                 project_obj = self.pool['project.project']
                 task_obj = self.pool['project.task']
@@ -92,8 +93,8 @@ class sale_order(orm.Model):
                 if task_to_unlink_ids:
                     task_obj.unlink(cr, uid, task_to_unlink_ids, context=context)
 
-                analytic_account_line_ids = analytic_account_line_obj.search(cr, uid, [('account_id', '=', order.project_project.analytic_account_id.id)], context=context)
-                sale_order_ids = self.search(cr, uid, [('project_project', '=', order.project_project.id)], context=context)
+                analytic_account_line_ids = analytic_account_line_obj.search(cr, SUPERUSER_ID, [('account_id', '=', order.project_project.analytic_account_id.id)], context=context)
+                sale_order_ids = self.search(cr, SUPERUSER_ID, [('project_project', '=', order.project_project.id)], context=context)
                 if unlink_project and not analytic_account_line_ids and len(sale_order_ids) > 1:
                     project_obj.unlink(cr, uid, [order.project_project.id], context=context)
                 else:
