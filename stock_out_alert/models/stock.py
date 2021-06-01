@@ -92,14 +92,18 @@ class StockMove(osv.osv):
             uom = product.product_tmpl_id.uom_id
             uom_po = product.product_tmpl_id.uom_po_id
             product_min_qty = uom_obj._compute_qty(cr, uid, op.product_uom.id, op.product_min_qty, uom.id)
+            product_max_qty = uom_obj._compute_qty(cr, uid, op.product_uom.id, op.product_min_qty, uom.id)
             qty = product_min_qty - product.virtual_available
+            qty_buy = product_max_qty - product.virtual_available
             if qty > 0:
-                prod = {}
-                prod['uom'] = uom_po
-                prod['qty'] = uom_obj._compute_qty(cr, uid, uom.id, qty, uom_po.id)
-                prod['product'] = product
-                prod['location'] = op.location_id
-                prod['company'] = op.company_id
+                prod = {
+                    'uom': uom_po,
+                    'qty': uom_obj._compute_qty(cr, uid, uom.id, qty, uom_po.id),
+                    'qty_buy': uom_obj._compute_qty(cr, uid, uom.id, qty_buy, uom_po.id),
+                    'product': product,
+                    'location': op.location_id,
+                    'company': op.company_id
+                }
                 prod_list.append(prod)
         return prod_list
 
@@ -141,6 +145,7 @@ class StockMove(osv.osv):
             res_prod = {
                 'product': p['product'],
                 'qty': p['qty'],
+                'qty_buy': p['qty_buy'],
                 'uom': p['uom'],
                 'origin': p['origin'] if 'origin' in p and p['origin'] else '',
                 'purchase_order': '' if (p['product'].last_purchase_order_id.state == 'done' or not p['product'].last_purchase_order_id) else p['product'].last_purchase_order_id.name

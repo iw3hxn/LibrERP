@@ -90,7 +90,7 @@ class StockComputeOut(osv.osv_memory):
                     ord_req_line_vals = {
                         'sequence': sequence,
                         'product_id': product_data['product'].id,
-                        'qty': product_data['qty']
+                        'qty': product_data['qty_buy']
                     }
                     sequence += 10
                     order_requirement_line.append(ord_req_line_vals)
