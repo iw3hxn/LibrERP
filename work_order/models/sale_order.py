@@ -78,7 +78,7 @@ class sale_order(orm.Model):
     def action_cancel(self, cr, uid, ids, context=None):
         result = super(sale_order, self).action_cancel(cr, uid, ids, context)
         not_unlink_project_task = self.pool['ir.config_parameter'].get_param(cr, uid, 'work_order.not_unlink_project_task', default='', context=context)
-        if not_unlink_project_task == 'False':
+        if not_unlink_project_task == 'True':
             return result
         for order in self.browse(cr, SUPERUSER_ID, ids, context=context):
             if order.project_project:
