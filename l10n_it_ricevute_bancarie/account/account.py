@@ -209,8 +209,8 @@ class account_move_line(orm.Model):
         'iban': fields.related('partner_id', 'bank_ids', 'iban', type='char', string='IBAN', store=False),
         'abi': fields.related('partner_id', 'bank_riba_id', 'abi', type='char', string='ABI', store=False),
         'cab': fields.related('partner_id', 'bank_riba_id', 'cab', type='char', string='CAB', store=False),
-        'cig': fields.function(_get_line_values, string="Cig", type='char', size=64, method=True, multi="line"),
-        'cup': fields.function(_get_line_values, string="Cup", type='char', size=64, method=True, multi="line"),
+        'cig': fields.function(_get_line_values, string="Cig", type='char', size=15, method=True, multi="line"),
+        'cup': fields.function(_get_line_values, string="Cup", type='char', size=15, method=True, multi="line"),
         'stored_invoice_id': fields.function(_get_invoice, method=True, string="Invoice", type="many2one", relation="account.invoice",
                                              store={
                                                  'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['move_id'], 10),

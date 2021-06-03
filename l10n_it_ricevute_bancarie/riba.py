@@ -441,8 +441,8 @@ class riba_distinta_line(osv.osv):
         'payment_ids': fields.function(_compute_lines, relation='account.move.line', type="many2many", string='Payments'),
         'type': fields.related('distinta_id', 'type', type='char', size=32, string='Type', readonly=True),
         'tobeaccredited': fields.boolean('To be accredited'),
-        'cig': fields.function(_get_line_values, string="Cig", type='char', size=64, method=True, multi="line"),
-        'cup': fields.function(_get_line_values, string="Cup", type='char', size=64, method=True, multi="line"),
+        'cig': fields.function(_get_line_values, string="Cig", type='char', size=15, method=True, multi="line"),
+        'cup': fields.function(_get_line_values, string="Cup", type='char', size=15, method=True, multi="line"),
         'abi': fields.related('partner_id', 'bank_riba_id', 'abi', type='char', string='ABI', store=False),
         'cab': fields.related('partner_id', 'bank_riba_id', 'cab', type='char', string='CAB', store=False),
     }

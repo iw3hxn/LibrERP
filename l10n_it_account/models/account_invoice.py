@@ -494,8 +494,8 @@ class account_invoice(orm.Model):
              }
                                             ,),
         'direct_invoice': fields.function(_is_direct_invoice, string='Direct Invoice', type='boolean', method=True),
-        'cig': fields.char('CIG', size=64, help="Codice identificativo di gara"),
-        'cup': fields.char('CUP', size=64, help="Codice unico di Progetto")
+        'cig': fields.char('CIG', size=15, help="Codice identificativo di gara"),
+        'cup': fields.char('CUP', size=15, help="Codice unico di Progetto")
     }
 
     def copy(self, cr, uid, ids, default=None, context=None):

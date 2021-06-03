@@ -30,8 +30,8 @@ class stock_picking(orm.Model):
         'ddt_date': fields.date('DDT date', states={'done': [('readonly', True)]}),
         'ddt_in_reference': fields.char('In DDT', size=32),
         'ddt_in_date': fields.date('In DDT Date'),
-        'cig': fields.char('CIG', size=64, help="Codice identificativo di gara"),
-        'cup': fields.char('CUP', size=64, help="Codice unico di Progetto")
+        'cig': fields.char('CIG', size=15, help="Codice identificativo di gara"),
+        'cup': fields.char('CUP', size=15, help="Codice unico di Progetto")
     }
 
     def name_get(self, cr, uid, ids, context=None):

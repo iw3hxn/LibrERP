@@ -25,8 +25,8 @@ from openerp.osv import orm, fields
 class sale_order(orm.Model):
     _inherit = "sale.order"
     _columns = {
-        'cig': fields.char('CIG', size=64, help="Codice identificativo di gara"),
-        'cup': fields.char('CUP', size=64, help="Codice unico di Progetto")
+        'cig': fields.char('CIG', size=15, help="Codice identificativo di gara"),
+        'cup': fields.char('CUP', size=15, help="Codice unico di Progetto")
     }
     
     #-----------------------------------------------------------------------------
