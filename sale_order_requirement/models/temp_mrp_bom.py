@@ -609,12 +609,14 @@ class TempMrpBom(orm.Model):
 
     def unlink(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        if not isinstance(ids, (list, tuple)):
-            ids = [ids]
-        can_unlink_ids = self.search(cr, uid, [('id', 'in', ids), ('state', '=', 'draft')], context=context)
-        if len(ids) != len(can_unlink_ids):
-            raise orm.except_orm(
-                _("Bome Line"),
-                _("is not on 'draft' state"))
+        group_obj = self.pool['res.groups']
+        if not group_obj.user_in_group(cr, uid, uid, 'sale_order_requirement.open_order_requirement_by_line', context=context):
+            if not isinstance(ids, (list, tuple)):
+                ids = [ids]
+            can_unlink_ids = self.search(cr, uid, [('id', 'in', ids), ('state', '=', 'draft')], context=context)
+            if len(ids) != len(can_unlink_ids):
+                raise orm.except_orm(
+                    _("Bom Line"),
+                    _("is not on 'draft' state"))
         res = super(TempMrpBom, self).unlink(cr, uid, ids, context)
         return res
