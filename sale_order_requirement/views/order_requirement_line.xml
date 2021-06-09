@@ -95,16 +95,16 @@
                                         <field name="is_manufactured" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_leaf','=',True)]}"/>
                                         <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="terp-dolar"
                                                 attrs="{'invisible': ['|', '|', ('level','=',0),('is_manufactured','=',True), ('state', '!=', 'draft')]}"/>
-                                        <field name="buy" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_manufactured','=',True)]}"/>
+                                        <field name="buy" invisible="1" attrs="{'readonly': ['|', '|', ('level','=',0), ('is_manufactured','=',True), ('state', '!=', 'draft')]}"/>
                                         <field name="supplier_id" on_change="onchange_supplier_id(supplier_id, product_id, context)"
                                                attrs="{'required': [('is_manufactured', '=', False)],
-                                                    'readonly': ['|',('is_manufactured', '=', True),
+                                                    'readonly': ['|','|', '|', ('is_manufactured', '=', True),
                                                                      ('product_type','!=','product'),
                                                                      ('level','=',0),
                                                                      ('state', '!=', 'draft')]}"/>
                                         <field name="purchase_order_line_id" domain="[('product_id', '=', product_id), ('partner_id', '=', supplier_id)]"
                                                on_change="onchange_purchase_order_line_id(purchase_order_line_id, context)"
-                                               attrs="{'readonly': ['|', ('supplier_id','=',False), ('buy', '=', False)]}"
+                                               attrs="{'readonly': ['|', '|', ('supplier_id','=',False), ('buy', '=', False), ('state', '!=', 'draft')]}"
                                                context="{'purchase_order_full_name': True}" />
                                         <field name="purchase_order_id" invisible="1"/>
                                         <field name="supplier_ids" invisible="1"/>
