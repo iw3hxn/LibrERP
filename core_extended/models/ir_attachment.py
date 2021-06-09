@@ -22,9 +22,12 @@
 #
 ##############################################################################
 
+import json
 import logging
 import zipfile
 from cStringIO import StringIO
+
+from requests import Session, Request
 
 from openerp.osv import orm
 
@@ -34,7 +37,7 @@ _logger.setLevel(logging.DEBUG)
 
 class ir_attachment(orm.Model):
     _inherit = 'ir.attachment'
-    
+
     def get_as_zip(self, cr, uid, ids, log=False, encode=True, compress=True):
         in_memory_zip = StringIO()
 
@@ -44,9 +47,9 @@ class ir_attachment(orm.Model):
             zf = zipfile.ZipFile(in_memory_zip, "w", zipfile.ZIP_DEFLATED, False)
         else:
             zf = zipfile.ZipFile(in_memory_zip, "w", zipfile.ZIP_STORED, False)
-        
+
         zf.debug = 3
-        
+
         for attachment_id in ids:
             attachment = self.read(cr, uid, attachment_id, context=context)
             if attachment['name'] and attachment['datas']:
@@ -57,20 +60,50 @@ class ir_attachment(orm.Model):
         # Unix permissions are not inferred as 0000
         for zfile in zf.filelist:
             zfile.create_system = 0
-        
+
         if not zf.infolist():
             zf.writestr('empty', 'empty')
-        
+
         if log:
             for info in zf.infolist():
-                _logger.info(u"{0}, {1}, {2}, {3}".format(info.filename, info.date_time, info.file_size, info.compress_size))
+                _logger.info(
+                    u"{0}, {1}, {2}, {3}".format(info.filename, info.date_time, info.file_size, info.compress_size))
 
         zf.close()
-        
+
         in_memory_zip.seek(0)
         out = in_memory_zip.getvalue()
-        
+
         if encode:
             return out.encode("base64")
         else:
             return out
+
+    def open_file(self, cr, uid, ids, context):
+        if len(ids) > 1:
+            return False
+        # base_url = 'http://127.0.0.1:8069/web/binary/saveas'
+        payload = {
+            'token': u'1623250275576',
+            'session_id': 'cf9a6989d49c48479c345343928c16d7',
+            'data': json.dumps({
+                "model": "ir.attachment",
+                "id": ids[0],
+                "field": "datas",
+                "filename_field": "datas_fname",
+                "context": context
+            })
+        }
+
+        base_url = self.pool.get('ir.config_parameter').get_param(cr, uid, 'web.base.url',
+                                                                  default='http://localhost:8069', context=context) + '/web/binary/saveas_ajax'
+
+        s = Session()
+        p = Request('POST', base_url, params=payload).prepare()
+        url = p.url
+        return_vals = {
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'current',
+        }
+        return return_vals

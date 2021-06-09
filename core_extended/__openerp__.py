@@ -71,12 +71,14 @@
     """,
     "depends": [
         'base',
-        'account'
+        'account',
+        'document'
     ],
     "data": [
         'security/security.xml',
         'views/ir_model_view.xml',
-        'views/cron_view.xml'
+        'views/cron_view.xml',
+        'views/ir_attachment.xml'
     ],
 
     "active": False,
