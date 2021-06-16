@@ -7,14 +7,11 @@
             <field name="name">view_document_file_tree</field>
             <field name="model">ir.attachment</field>
             <field name="inherit_id" ref="document.view_document_file_tree"/>
-            <field name="type">form</field>
+            <field name="type">tree</field>
             <field name="arch" type="xml">
-                <field name="name" position="before">
-                    <field name="datas" filename="datas_fname"/>
+                <field name="type" position="after">
+                    <field name="datas" filename="datas_fname" string="Preview"/>
                     <field name="datas_fname" invisible="1"/>
-                </field>
-                <field name="name" position="attributes">
-                    <attribute name="invisible">1</attribute>
                 </field>
             </field>
         </record>

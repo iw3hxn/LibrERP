@@ -358,7 +358,7 @@ openerp.web.format_cell = function (row_data, column, options) {
         if (column.filename) {
             download_url += '&filename_field=' + column.filename;
             if (row_data[column.filename]) {
-                text = _.str.sprintf(_t("Preview \"%s\""), openerp.web.format_value(
+                text = _.str.sprintf(_t("Preview"), openerp.web.format_value(
                         row_data[column.filename].value, {type: 'char'}));
             }
         }
