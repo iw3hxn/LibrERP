@@ -38,7 +38,9 @@ class HrDocumentAbstract(orm.AbstractModel):
 
     def _get_document_years(self, cr, uid, fields, context=None):
         result = []
-        first_document_ids = self.search(cr, uid, [('valid_start_date', '!=', False)], order='date asc', limit=1, context=context)
+        first_document_ids = False
+        if self._auto:
+            first_document_ids = self.search(cr, uid, [('valid_start_date', '!=', False)], order='date asc', limit=1, context=context)
         if first_document_ids:
             first_document = self.browse(cr, uid, first_document_ids[0], context)
             first_year = datetime.datetime.strptime(first_document.valid_start_date, '%Y-%m-%d').year
