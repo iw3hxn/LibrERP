@@ -3,8 +3,6 @@
 #    
 #    Copyright (C) 2011 Agile Business Group sagl (<http://www.agilebg.com>)
 #    Copyright (C) 2011 Domsense srl (<http://www.domsense.com>)
-#    Copyright (C) 2014 Matmoz d.o.o. (<http://www.matmoz.si>)
-#    Copyright (C) 2020 Didotech srl (<http://www.didotech.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -20,27 +18,36 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    'name': 'Project Task Issues',
-    'version': '3.3.6.12',
-    'category': 'Generic Modules/Projects & Services',
-    'description': """Issues list associated to task. In the task form, you can see the issues related to that task
-		Create issues from tasks.""",
-    'author': 'Agile Business Group, Didotech SRL',
-    'website': 'http://www.agilebg.com',
-    'license': 'AGPL-3',
-    "depends": [
-        "project",
-        "project_issue_sheet"
-    ],
-    "data": [
-        'security/ir.model.access.csv',
-        'views/project_issue_menu.xml',
-        'views/project_task_view.xml',
-        'views/project_project_view.xml',
-        'views/project_issue_view.xml',
-        'views/project_issue_status_view.xml'
-    ],
-    "active": False,
-    "installable": True
-}
+
+from openerp.osv import orm, fields
+from openerp import SUPERUSER_ID
+
+
+class ProjectProject(orm.Model):
+    _inherit = "project.project"
+
+    def _open_ticket(self, cr, uid, ids, field_name, arg, context=None):
+        if not len(ids):
+            return []
+        '''
+        Show if have or not a bom
+        '''
+        context = context or self.pool['res.users'].context_get(cr, uid)
+
+        project_issue_obj = self.pool['project.issue']
+
+        res = {}
+        ids = ids or []
+
+        for project_id in ids:
+            task_ids = project_issue_obj.search(cr, SUPERUSER_ID, [('project_id', '=', project_id), ('state', 'not in', ['done', 'cancel'])], context=context, count=True)
+            res[project_id] = task_ids
+
+        return res
+    
+    _columns = {
+        'issue_ids': fields.one2many('project.issue', 'project_id', 'Issues', readonly=True),
+        'open_issue': fields.function(_open_ticket, method=True, type="integer", string="Open Ticket"),
+    }
+
+

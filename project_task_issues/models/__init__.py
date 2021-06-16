@@ -15,8 +15,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import inherit_project_task
 from . import inherit_project_issue
-from . import project_issue_status
+from . import inherit_project_project
+from . import inherit_project_task
 from . import inherit_project_task_work
+from . import project_issue_status
 
