@@ -92,7 +92,8 @@ class StockMove(osv.osv):
             uom = product.product_tmpl_id.uom_id
             uom_po = product.product_tmpl_id.uom_po_id
             product_min_qty = uom_obj._compute_qty(cr, uid, op.product_uom.id, op.product_min_qty, uom.id)
-            product_max_qty = uom_obj._compute_qty(cr, uid, op.product_uom.id, op.product_min_qty, uom.id)
+            product_max_qty = uom_obj._compute_qty(cr, uid, op.product_uom.id, op.product_max_qty, uom.id)
+            product_max_qty = max(product_min_qty, product_max_qty)
             qty = product_min_qty - product.virtual_available
             qty_buy = product_max_qty - product.virtual_available
             if qty > 0:
@@ -180,7 +181,7 @@ class StockMove(osv.osv):
                             product_data['product'].qty_available, product_data['product'].product_tmpl_id.uom_id.name),
                             'virtual_available': "%s %s" % (product_data['product'].virtual_available,
                                                             product_data['product'].product_tmpl_id.uom_id.name),
-                            'needed': "%s %s" % (product_data['qty'], product_data['uom'].name),
+                            'needed': "%s %s" % (product_data['qty_buy'], product_data['uom'].name),
                             'purchase_order': product_data['purchase_order']
                         }
                         body += "  %(name)-38s%(qty_available)15s\t%(virtual_available)15s\t%(needed)15s\t%(purchase_order)10s\n" % product_reg
