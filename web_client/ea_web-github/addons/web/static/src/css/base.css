@@ -1076,7 +1076,9 @@ label.error {
 /*!*}*!*/
 
 .openerp .oe-listview tbody tr:hover {
-    background-color: #eae9f0;
+    //background-color: #eae9f0;
+    background-color: lightgoldenrodyellow;
+    background-image: none;
 }
 .openerp .oe-listview thead table tr,
 .openerp .oe-listview thead table tr:hover {

@@ -1436,6 +1436,9 @@ class Binary(openerpweb.Controller):
         :param str filename_field: field holding the file's name, if any
         :returns: :class:`werkzeug.wrappers.Response`
         """
+        import mimetypes
+        import os
+        
         Model = req.session.model(model)
         context = req.session.eval_context(req.context)
         fields = [field]
@@ -1454,10 +1457,10 @@ class Binary(openerpweb.Controller):
                 filename = res.get(filename_field, '') or filename
 
             if kw.get('no_download'):
-                if filename.split('.')[-1]:
-                    return req.make_response(filecontent,
-                                             [('Content-Type', 'application/pdf'),
-                                              ('Content-Disposition', self.content_disposition(filename, req, 'inline'))])
+                fname, fextension = os.path.splitext(filename)
+                return req.make_response(filecontent,
+                                         [('Content-Type', mimetypes.types_map[fextension]),
+                                          ('Content-Disposition', self.content_disposition(fname, req, 'inline'))])
             return req.make_response(filecontent,
                 [('Content-Type', 'application/octet-stream'),
                  ('Content-Disposition', self.content_disposition(filename, req))])
@@ -1475,7 +1478,6 @@ class Binary(openerpweb.Controller):
         Model = req.session.model(model)
         context = req.session.eval_context(context)
         fields = [field]
-        content_type = 'application/octet-stream'
         if filename_field:
             fields.append(filename_field)
         if id:

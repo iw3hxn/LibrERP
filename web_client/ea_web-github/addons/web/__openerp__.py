@@ -55,7 +55,7 @@
         "static/src/js/view_editor.js",
         "static/lib/jquery.placeholder/jquery.placeholder.js",
         "static/lib/jquery.textext/jquery.textext.js",
-        # "static/lib/fancyapps/jquery-1.4.3.min.js"
+        "static/lib/fancyapps/jquery.fancybox-1.3.4.js"
     ],
     'css' : [
         "static/lib/jquery.superfish/css/superfish.css",
@@ -66,8 +66,8 @@
         "static/src/css/base.css",
         "static/src/css/data_export.css",
         "static/src/css/data_import.css",
-        "static/lib/jquery.textext/jquery.textext.css",
-        # "static/lib/fancyapps/style.css"
+        "static/lib/jquery.textext/jquery.textext.css",      
+        "static/lib/fancyapps/jquery.fancybox-1.3.4.css"
     ],
     'qweb' : [
         "static/src/xml/*.xml",
