@@ -14,11 +14,11 @@
             <field name="arch" type="xml">
                 <tree string="Scheduled Alerts">
                     <field name="id" invisible="1"/>
-                    <field name="alert_config_id" />
+                    <field name="alert_config_id" invisible="context.get('hide_alert_config_id', False)"/>
                     <field name="is_child" invisible="1"/>
                     <field name="link" invisible="1"/>
                     <field name="name"/>
-                    <field name="user_id"/>
+                    <field name="user_id" invisible="context.get('hide_user_id', False)"/>
                     <field name="type"/>
                     <field name="state"/>
 		            <button name="send_link" string="Object" type="object" icon="gtk-ok" />
@@ -83,7 +83,7 @@
                     <field name="state"/>
                     <newline/>
                     <group expand="0" string="Group By...">
-                        <filter string="Document" icon="terp-document-new" domain="[]" context="{'group_by': 'alert_config_id'}" />
+                        <filter name="group_by_alert_config_id" string="Document" icon="terp-document-new" domain="[]" context="{'group_by': 'alert_config_id', 'hide_alert_config_id': 1}" />
                         <filter string="User" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
                         <filter string="Execution" icon="terp-go-month"
                                 domain="[]" context="{'group_by':'state'}" />
@@ -121,7 +121,7 @@
             <field name="view_mode">tree,form</field>
             <field name="context">{'default_user_id': uid}</field>
             <field name="domain">[('user_id','=',uid),('type','=','activity'),('state', '=','open')]</field>
-            <field name="context">{'nodelete': '1', 'nocreate': '1', 'hide_state': '1'}</field>
+            <field name="context">{'group_by': 'alert_config_id', 'hide_alert_config_id': '1', 'nodelete': '1', 'nocreate': '1', 'hide_user_id': '1'}</field>
             <field name="view_id" ref="ir_alert_view_tree"/>
         </record>
 
@@ -132,7 +132,7 @@
             <field name="view_mode">tree,form</field>
             <field name="context">{'default_user_id': uid}</field>
             <field name="domain">[('user_id','=',uid),('type','=','warning'),('state', '=','open')]</field>
-            <field name="context">{'nodelete': '1', 'nocreate': '1', 'hide_state': '1'}</field>
+            <field name="context">{'group_by': 'alert_config_id', 'hide_alert_config_id': '1', 'nodelete': '1', 'nocreate': '1', 'hide_user_id': '1'}</field>
             <field name="view_id" ref="ir_alert_view_tree"/>
         </record>
         

@@ -35,7 +35,7 @@ class ir_alert(orm.Model):
     _name = "ir.alert"
     _order = 'name'
     _columns = {
-        'name': fields.char('Name', size=256, required=True),
+        'name': fields.char('To Do', size=256, required=True),
         'user_id': fields.many2one('res.users', 'User', required=True, readonly="True"),
         'user_ids': fields.many2many('res.users', 'inv_user_rel', 'invite_id', 'user_id', 'Users'),
         'model_id': fields.many2one('ir.model', 'Object', required=True, help="Select the object on which the action will work (read, write, create)."),
@@ -57,7 +57,7 @@ class ir_alert(orm.Model):
         'mail_addresses': fields.char('Mail Addresses', size=256),
         'subject': fields.char('Subject', size=256),
         'email_message': fields.text('Email Message'),
-        'alert_config_id': fields.many2one('ir.alert.config', 'Message Config index', required=True),
+        'alert_config_id': fields.many2one('ir.alert.config', 'Alert Name', required=True),
     }
     _defaults = {
         'state': 'open',
@@ -194,7 +194,7 @@ class ir_alert(orm.Model):
                 # existing message?
                 for target_id in target_model_ids:
                     existing_message = self.search(cr, uid, [('model_id', '=', config_alert_data['model_id'][0]),
-                                                             ('ids', '=', target_id)], context=context)
+                                                             ('ids', '=', target_id), ('state', '=', 'open')], context=context)
                     if not existing_message:  # not exists: create message
                         message_dict = {}
                         # read object
