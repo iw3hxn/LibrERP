@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+           =============================================================
+           Menu Alert della barra dei menu
+           =============================================================
+        -->
+        <menuitem icon="terp-account" id="control_dashboard.menu_alert" name="Alert" sequence="0"/>
+
+        <menuitem name="Dash Board" id="menu_open_board_alert" parent="control_dashboard.menu_alert" action="open_board_alert" />
+        <menuitem id="menu_action_alert_board_activity" parent="control_dashboard.menu_alert" action="action_alert_board_activity" />
+        <menuitem id="menu_action_alert_board_warning" parent="control_dashboard.menu_alert" action="action_alert_board_warning" />
+
+        <menuitem id="next_id_13" name="Scheduler Alert" parent="base.menu_config" sequence="13"/>
+        <menuitem action="ir_alert_act" id="menu_ir_alert_act" parent="next_id_13" sequence="1"/>
+	    <menuitem name="Alert Config" id="menu_alert_config"  parent="next_id_13" action="ir_alert_config_act"/>
+        <menuitem name="Family Alert" id="menu_family_alert" parent="next_id_13" action="fake_ir_alert_act"/>
+
+
+    </data>
+</openerp>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    <!--
+    =============================================================
+    Alert Jobs
+    =============================================================
+    -->
+        <record id="ir_alert_view_tree" model="ir.ui.view">
+            <field name="name">ir.alert.tree</field>
+            <field name="model">ir.alert</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Scheduled Alerts">
+                    <field name="id" invisible="1"/>
+                    <field name="alert_config_id" />
+                    <field name="is_child" invisible="1"/>
+                    <field name="link" invisible="1"/>
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <field name="type"/>
+                    <field name="state"/>
+		            <button name="send_link" string="Object" type="object" icon="gtk-ok" />
+                </tree>
+            </field>
+        </record>
+	
+        <record id="ir_alert_view" model="ir.ui.view">
+            <field name="name">ir.alert.form</field>
+            <field name="model">ir.alert</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Scheduled Alerts">
+                    <field name="name"/>
+                    <field name="user_id" />
+                    <field name="alert_config_id" invisible="1"/>
+                    <field name="is_child"  invisible="1"/>
+                    <notebook colspan="4">
+                    <page string="Information">
+                        <field name="type"/>
+                        <field name="link" invisible="1"/>
+			            <button string="Send Link" colspan="2" type="object" name="send_link" attrs="{'invisible':[('link','in',[False, ''])]}" icon="gtk-ok"/>
+                        <separator string="Notes" colspan="4"/>
+                        <field colspan="4" name="note" nolabel="1"/>
+                        <separator string="Email" colspan="4"/>
+                        <field name="mail_addresses"/>
+                        <field name="subject"/>
+                        <field name="email_message" colspan="4"/>
+                    	<button string="Send Mail" colspan="2" attrs="{'invisible':[('mail_addresses','in',[False, ''])]}" type="object" name="button_send_mail" context="{'mail_addresses':mail_addresses, 'subject':subject, 'email_message':email_message}"/>
+                    </page>
+                    <!-- <page string="Technical Data" groups="base.group_extended"> -->
+                    <page string="Technical Data">
+                        <separator string="Action to Trigger" colspan="4"/>
+                        <field name="model_id" groups="base.group_extended"/>
+                        <field name="create_date"/>
+                        <field name="complete_date"/>
+                        <group col="2" colspan="6">
+                            <separator string="Users" colspan="4"/>
+                            <field name="user_ids" select="1" colspan="4" nolabel="1"  height="180"/>
+                        </group> 
+                    </page>
+                    </notebook>
+                    <!-- <group colspan="5" col="5" groups="base.group_extended"> -->
+                    <group colspan="5" col="5">
+                        <separator colspan="5" string="States"/>
+                        <field name="state" widget="statusbar" statusbar_visible="open,pending,done" statusbar_colors='{"open":"blue","done":"red","cancel":"grey"}'/>
+                    </group>            
+                </form>
+            </field>
+        </record>
+
+        <record id="ir_alert_view_search" model="ir.ui.view">
+            <field name="name">ir.alert.search</field>
+            <field name="model">ir.alert</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Scheduled Alerts">
+                    <field name="name"/>
+                    <field name="alert_config_id" />
+                    <field name="user_id" widget="selection"/>
+                    <field name="type"/>
+                    <field name="state"/>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Document" icon="terp-document-new" domain="[]" context="{'group_by': 'alert_config_id'}" />
+                        <filter string="User" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Execution" icon="terp-go-month"
+                                domain="[]" context="{'group_by':'state'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ir_alert_view_calendar">
+            <field name="name">ir.alert.view.calendar</field>
+            <field name="model">ir.alert</field>
+            <field name="type">calendar</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Scheduled Alerts" date_start="nextcall" color="user_id">
+                    <field name="name"/>
+                    <field name="user_id"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="ir_alert_act" model="ir.actions.act_window">
+            <field name="name">Alerts</field>
+            <field name="res_model">ir.alert</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="context">{'active_test': False}</field>
+            <field name="view_id" ref="ir_alert_view_tree"/>
+        </record>
+
+        <record id="action_alert_board_activity" model="ir.actions.act_window">
+            <field name="name">My Alerts Activity</field>
+            <field name="res_model">ir.alert</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_user_id': uid}</field>
+            <field name="domain">[('user_id','=',uid),('type','=','activity'),('state', '=','open')]</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'hide_state': '1'}</field>
+            <field name="view_id" ref="ir_alert_view_tree"/>
+        </record>
+
+        <record id="action_alert_board_warning" model="ir.actions.act_window">
+            <field name="name">My Alerts Warning</field>
+            <field name="res_model">ir.alert</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_user_id': uid}</field>
+            <field name="domain">[('user_id','=',uid),('type','=','warning'),('state', '=','open')]</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'hide_state': '1'}</field>
+            <field name="view_id" ref="ir_alert_view_tree"/>
+        </record>
+        
+        <!-- <menuitem icon="terp-account" id="menu_alert" name="Alert" sequence="0"
+            web_icon="images/tools.png"
+            web_icon_hover="images/tools-hover.png"/> -->
+
+    </data>
+</openerp>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+        =============================================================
+        Actions board
+        =============================================================
+        -->
+
+
+        <record id="board_alert_form" model="ir.ui.view">
+            <field name="name">board.alert.form</field>
+            <field name="model">board.board</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Alert Board">
+                    <board style="2-1">
+                        <column>
+                            <action name="%(action_alert_board_activity)d" string="My Activities to do"/>
+
+                            <action name="%(action_alert_board_warning)d" string="My Warnings to do"/>
+                        </column>
+                        <column>
+
+                        </column>
+                    </board>
+                </form>
+            </field>
+        </record>
+
+        <record id="open_board_alert" model="ir.actions.act_window">
+            <field name="name">Alerts Dashboard</field>
+            <field name="res_model">board.board</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="usage">menu</field>
+            <field name="view_id" ref="board_alert_form"/>
+        </record>
+
+
+        <!-- set the default homepage of admin -->
+        <record id="base.user_admin" model="res.users">
+            <field name="action_id" ref="open_board_alert"/>
+        </record>
+
+        <!-- and of every new users -->
+        <function
+                eval="('default',False,'action_id', [('res.users', False)], open_board_alert, True, False, False, False, True)"
+                id="ir_default_home" model="ir.values" name="set"/>
+
+    </data>
+</openerp>

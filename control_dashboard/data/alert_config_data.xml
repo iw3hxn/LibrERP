@@ -3,7 +3,8 @@
     <data noupdate="1">
         <!--
         Presets Alerts
-        -->
+
+
         <record id="group_approve_purchase_orders" model="ir.alert.config">
             <field name="name">Numero ordini di acquisto da approvare</field>
             <field name="model_id" ref="control_dashboard.model_ir_alert" />
@@ -68,6 +69,8 @@
             <field name="subject">Sollecito di pagamento fattura</field>
             <field name="email_message">Alla Cortese att.ne del responsabile degli acquisti di {object.partner_id.name}.\n La Fattura {object.number} del {object.date_invoice},\n Risulta non ancora pagata. Si prega di provvedere al più presto.</field>
         </record>
+
+        -->
 
     </data>
 </openerp>

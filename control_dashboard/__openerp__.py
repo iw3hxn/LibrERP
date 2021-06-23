@@ -31,7 +31,7 @@
 
 {
     "name": "Virtual Desk for Alert",
-    "version": "1.3.7",
+    "version": "2.0.1.3.7",
     "depends": ["base", "mail", "base_calendar", "email_template"],
     'complexity': "easy",
     'description': """
@@ -46,19 +46,22 @@ It supports for Appointment:
 
 If you need to manage your meetings, you should install the CRM module.
     """,
-    "author": "Didotech inc.",
+    "author": "Didotech SRL",
     'category': 'Tools',
     'website': 'http://www.didotech.com',
-    "init_xml": [
-    ],
     'images': [],
-    "demo_xml": [],
-    "update_xml": [
-        "ir_alert_view.xml",
-        "ir_alert_workflow.xml",
-        "board_alert_view.xml",
-        "data/alert_config_data.xml",
+    "data": [
         "security/ir.model.access.csv",
+        "views/ir_alert_config_view.xml",
+        "views/ir_alert_view.xml",
+
+        "views/fake_ir_alert_view.xml",
+        "views/board_alert_view.xml",
+        "views/menu.xml",
+        "ir_alert_workflow.xml",
+        "data/cron_data.xml",
+        "data/alert_config_data.xml",
+
     ],
     "test": [],
     "installable": True,

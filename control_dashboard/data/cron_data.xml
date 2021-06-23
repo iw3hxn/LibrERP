@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+
+    <!--
+    =============================================================
+    cron for Alert
+    =============================================================
+    -->
+
+        <record id="ir_cron_manage_alerts_action" model="ir.cron">
+            <field name="name">Manage Alerts</field>
+            <field name="interval_number">2</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'ir.alert'" name="model"/>
+            <field eval="'manage_alerts'" name="function"/>
+            <field eval="'()'" name="args"/>
+        </record>
+
+<!--    &lt;!&ndash;-->
+<!--    =============================================================-->
+<!--    Appuntamenti-->
+<!--    =============================================================-->
+<!--    &ndash;&gt;-->
+<!--    -->
+<!--        &lt;!&ndash; Calenadar's menu &ndash;&gt;-->
+<!--        <menuitem id="next_id_14" name="Appointment"-->
+<!--            parent="base.menu_config" sequence="14"/>-->
+<!--            &lt;!&ndash; parent="base.menu_config" sequence="14" groups="base.group_sale_manager,base.group_extended" /> &ndash;&gt;-->
+<!--	    -->
+<!--        &lt;!&ndash; Event menu  &ndash;&gt;-->
+
+<!--        <menuitem id="menu_appointments"-->
+<!--                parent="next_id_14"-->
+<!--                name="Appointment"-->
+
+<!--                sequence="1" action="base_calendar.action_view_event" />-->
+<!--	        &lt;!&ndash; groups="base.group_extended,base.group_sale_manager" &ndash;&gt;-->
+<!--                -->
+<!--        &lt;!&ndash; Invitation menu &ndash;&gt;-->
+
+<!--         <menuitem id="menu_appointment_attendee_invitations"-->
+<!--            parent="next_id_14"-->
+
+<!--            sequence="2" action="base_calendar.action_view_attendee_form" />-->
+<!--            &lt;!&ndash; groups="base.group_extended,base.group_sale_manager" &ndash;&gt;-->
+<!--            -->
+<!--        &lt;!&ndash;        Menu for Alarms&ndash;&gt;-->
+
+<!--         <menuitem id="menu_appointment_crm_meeting_avail_alarm"-->
+
+<!--            sequence="3" action="base_calendar.action_res_alarm_view"-->
+<!--            parent="next_id_14" />-->
+<!--	    &lt;!&ndash; groups="base.group_extended,base.group_sale_manager" &ndash;&gt;-->
+
+    </data>
+</openerp>

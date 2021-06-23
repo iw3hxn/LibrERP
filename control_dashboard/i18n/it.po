@@ -312,7 +312,7 @@ msgstr "Messaggio di Gruppo?"
 #. module: control_dashboard
 #: field:ir.alert,alert_config_id:0
 msgid "Message Config index"
-msgstr "indice Configurazione Messaggio."
+msgstr "Configurazione Messaggio"
 
 #. module: control_dashboard
 #: view:ir.alert:0
