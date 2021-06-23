@@ -73,7 +73,7 @@ class ir_alert(orm.Model):
     def action_cancel(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'cancel'})
 
-    def send_link(self, cr, uid, ids, context=None):
+    def prewiew_link(self, cr, uid, ids, context=None):
         ir_model_model = self.pool['ir.model']
 
         if isinstance(ids, list):
@@ -92,7 +92,6 @@ class ir_alert(orm.Model):
                 'Error',
                 'Missing Model {}'.format(ref_obj))
         name = ir_model_model.read(cr, uid, ref_obj_ids, ['name'], context=context)[0]['name']
-        self.write(cr, 1, ids, {'state': 'done'}, context)
         return {
             'name': name,
             'type': 'ir.actions.act_window',
@@ -102,6 +101,11 @@ class ir_alert(orm.Model):
             'target': 'current',
             'res_id': ref_id,
         }
+
+    def send_link(self, cr, uid, ids, context=None):
+        res = self.prewiew_link(cr, uid, ids, context)
+        self.write(cr, 1, ids, {'state': 'done'}, context)
+        return res
 
     def button_send_mail(self, cr, uid, ids, context=None):
         obj_user = self.pool['res.users']

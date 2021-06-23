@@ -21,7 +21,8 @@
                     <field name="user_id" invisible="context.get('hide_user_id', False)"/>
                     <field name="type"/>
                     <field name="state"/>
-		            <button name="send_link" string="Object" type="object" icon="gtk-ok" />
+                    <button name="prewiew_link" string="Preview" type="object" icon="gtk-zoom-in" />
+		            <button name="send_link" string="Open Object" type="object" icon="gtk-ok" />
                 </tree>
             </field>
         </record>
