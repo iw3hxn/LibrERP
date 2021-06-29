@@ -31,8 +31,13 @@
 
 {
     "name": "Virtual Desk for Alert",
-    "version": "2.0.1.3.7",
-    "depends": ["base", "mail", "base_calendar", "email_template"],
+    "version": "3.0.1.3.7",
+    "depends": [
+        "base",
+        "mail",
+        "base_calendar",
+        "email_template"
+    ],
     'complexity': "easy",
     'description': """
 This is a full-featured calendar system.

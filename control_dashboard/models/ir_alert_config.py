@@ -88,6 +88,7 @@ class ir_alert_config(orm.Model):
 
     _order = 'name'
     _columns = {
+        'active': fields.boolean('Active'),
         'name': fields.char('Name', size=60, required=True),
         'model_id': fields.many2one('ir.model', 'Object', required=True),
         'type': fields.selection([('warning', 'Warning'), ('activity', 'Activity')], 'Type Alert', required=True),
@@ -107,6 +108,7 @@ class ir_alert_config(orm.Model):
         'add_user_creator': fields.boolean("add address user document's creator?"),
     }
     _defaults = {
+        'active': True,
         'type': 'activity',
         'offset': 0,
         'is_parent': False,
@@ -214,3 +216,7 @@ class ir_alert_config(orm.Model):
                     del vals['action_id']
 
         return super(ir_alert_config, self).write(cr, uid, ids, vals, context=context)
+
+    def unlink(self, cr, uid, ids, context=None):
+        res = self.write(cr, uid, ids, {'active': False})
+        return res
