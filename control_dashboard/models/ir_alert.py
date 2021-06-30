@@ -26,7 +26,7 @@ from datetime import timedelta
 import pytz
 from tools.translate import _
 
-from openerp.osv import orm, fields
+from openerp.osv import orm, fields, expression
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
@@ -151,7 +151,7 @@ class ir_alert(orm.Model):
         for config_alert_data in alert_config_model.read(cr, uid, obj_alert_ids, context=context):
             obj_model_data = ir_model_model.read(cr, uid, config_alert_data['model_id'][0], context=context)
             if config_alert_data['date_comparison_field_id'] or config_alert_data['state_comparison']:
-                condition = []
+                search_domain = config_alert_data['domain']
                 if config_alert_data['date_comparison_field_id']:
                     obj_fields_data = ir_model_fields_model.read(cr, uid, config_alert_data['date_comparison_field_id'][0],
                                                       context=context)
@@ -171,30 +171,33 @@ class ir_alert(orm.Model):
                     datetime_offset = datetime_offset.astimezone(local_timezone)
                     date_offset = datetime_offset.date()
                     name_field_date = obj_fields_data['name']
-                    name_field_date = str(name_field_date)
                     if obj_fields_data['ttype'] == 'date':
                         date_offset_str = date_offset.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                        condition += [(name_field_date, '<=', date_offset_str)]
+                        search_domain.append((name_field_date, '<=', date_offset_str))
                     else:
                         start_period = datetime_offset.replace(hour=0, minute=0, second=0, microsecond=0)
                         start_period_str = start_period.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                         end_period = datetime_offset.replace(hour=23, minute=59, second=59, microsecond=0)
                         end_period_str = end_period.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                        condition += [(name_field_date, '<=', end_period_str)]
+                        search_domain.append((name_field_date, '<=', end_period_str))
                         # condition += [(name_field_date, '>=', start_period_str), (name_field_date, '<=', end_period_str)]
 
                 if config_alert_data['state_comparison']:
                     state_comparison = str(config_alert_data['state_comparison'])
-                    if config_alert_data['flag_not_state']:
-                        condition += [('state', '!=', state_comparison)]
-                    else:
-                        condition += [('state', '=', state_comparison)]
+                    search_domain.append(('state', '!=' if config_alert_data['flag_not_state'] else '=', state_comparison))
 
+                # [('date_action', '<=', '2021-07-01'), ('state', '!=', 'done')]
                 target_model = self.pool[obj_model_data['model']]
-                target_model_ids = target_model.search(cr, uid, condition, context=context)
+                target_model_ids = target_model.search(cr, uid, search_domain, context=context)
                 # ids_existing_record = obj_alert.search(cr, uid, [('alert_config_id', '=', config_alert_data['id']), ('state', '=', 'open')], context=context)
 
                 # existing message?
+                user_field_id = False
+                if config_alert_data['user_field_id']:
+                    obj_fields_data = ir_model_fields_model.read(cr, uid, config_alert_data['user_field_id'][0],
+                                                                 context=context)
+                    user_field_id = obj_fields_data['name']
+
                 for target_id in target_model_ids:
                     existing_message = self.search(cr, uid, [('model_id', '=', config_alert_data['model_id'][0]),
                                                              ('ids', '=', target_id), ('state', '=', 'open')], context=context)
@@ -206,14 +209,16 @@ class ir_alert(orm.Model):
                         message_dict['name'] = config_alert_data['message'].format(object=row)
 
                         # user_ids
-                        if row.__hasattr__('create_uid'):
+                        if user_field_id:
+                            message_dict['user_id'] = row[user_field_id].id
+                        elif row.__hasattr__('create_uid'):
                             message_dict['user_id'] = row.create_uid.id
                         elif row.__hasattr__('user_id'):
                             message_dict['user_id'] = row.user_id.id
                         else:
                             message_dict['user_id'] = uid
                         # user_ids
-                        message_dict['user_ids'] = [[6, 0, [row.user_id.id]]]
+                        message_dict['user_ids'] = [[6, 0, list(set([message_dict['user_id'], row.user_id.id]))]]
                         # model
                         message_dict['model_id'] = config_alert_data['model_id'][0]
                         # id alert message

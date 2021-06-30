@@ -23,7 +23,13 @@
 
 from tools.translate import _
 
-from openerp.osv import orm, fields
+from openerp.osv import orm, fields, expression
+import time
+from operator import itemgetter
+from functools import partial
+import tools
+from tools.safe_eval import safe_eval as eval
+from tools.misc import unquote as unquote
 
 
 class ir_alert_config(orm.Model):
@@ -86,6 +92,22 @@ class ir_alert_config(orm.Model):
             res_final['value'] = {'state_comparison': state_data['value']}
         return res_final
 
+    def _eval_context(self, cr, uid):
+        """Returns a dictionary to use as evaluation context for
+           ir.rule domains."""
+        return {'user': self.pool.get('res.users').browse(cr, 1, uid),
+                'time':time}
+
+    def _domain_force_get(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        eval_context = self._eval_context(cr, uid)
+        for rule in self.browse(cr, uid, ids, context):
+            if rule.domain_force:
+                res[rule.id] = expression.normalize(eval(rule.domain_force, eval_context))
+            else:
+                res[rule.id] = []
+        return res
+
     _order = 'name'
     _columns = {
         'active': fields.boolean('Active'),
@@ -100,12 +122,16 @@ class ir_alert_config(orm.Model):
         'state_id': fields.many2one('ir.alert.states', 'State'),
         'state_comparison': fields.char('State Comparison', size=60),
         'date_comparison_field_id': fields.many2one('ir.model.fields', 'Comparison Date field',
-                                                    domain="['&',('ttype', 'in', ('date','datetime')),('model_id', '=', model_id)]"),
+            domain="['&',('ttype', 'in', ('date','datetime')),('model_id', '=', model_id)]"),
         'message': fields.char('Message', size=256, required=True),
         'flag_email': fields.boolean('Send Message in email?'),
         'subject': fields.char('Subject', size=256),
         'email_message': fields.text('Message of the Mail'),
         'add_user_creator': fields.boolean("add address user document's creator?"),
+        'user_field_id': fields.many2one('ir.model.fields', 'User field',
+            domain="[('ttype', '=', 'many2one'), ('model_id', '=', model_id), ('relation', '=', 'res.users')]"),
+        'domain_force': fields.text('Domain'),
+        'domain': fields.function(_domain_force_get, string='Domain', type='text'),
     }
     _defaults = {
         'active': True,
