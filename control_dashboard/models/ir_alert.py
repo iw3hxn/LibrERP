@@ -145,7 +145,7 @@ class ir_alert(orm.Model):
         host_data = obj_config_parameter.read(cr, uid, host_ids[0], context=context)
 
         # object's data
-        obj_alert_ids = alert_config_model.search(cr, uid, [])
+        obj_alert_ids = alert_config_model.search(cr, uid, [], context=context)
 
         # generate message
         for config_alert_data in alert_config_model.read(cr, uid, obj_alert_ids, context=context):
@@ -315,6 +315,12 @@ class ir_alert(orm.Model):
                                 'state': 'done'
                             }
                             self.write(cr, uid, parent_message_ids[0], message_dict, context=context)
+
+            to_remove_ids = self.search(cr, uid, [('model_id', '=', config_alert_data['model_id'][0]),
+                                                  ('ids', 'not in', target_model_ids), ('state', '=', 'open')],
+                                        context=context)
+            self.write(cr, 1, to_remove_ids, {'state': 'done'}, context)
+
         return True
 
     # control model's message (change state) and relative change state messages

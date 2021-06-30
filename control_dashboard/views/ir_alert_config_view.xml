@@ -47,7 +47,7 @@
                     <field name="user_field_id" attrs="{'readonly':[('is_parent','=',True)], 'required':[('is_parent','=',False)]}" />
                     <field name="offset" attrs="{'readonly':[('is_parent','=',True)], 'required':[('is_parent','=',False)]}"/>
                     <field name="flag_not_state" attrs="{'readonly':[('is_parent','=',True)]}"/>
-                    <field name="state_id" on_change="state_change(state_id, context)" domain="[('model_id', '=', model_id)]" attrs="{'readonly': ['|',('model_id','=', False),('is_parent','=',True)], 'required':[('is_parent','=',False)]}"/>
+                    <field name="state_id" on_change="state_change(state_id, context)" domain="[('model_id', '=', model_id)]" attrs="{'readonly': ['|',('model_id','=', False),('is_parent','=',True)]}"/>
 	                <field name="state_comparison" invisible="1"/>
                     <separator string="Manage Dashboard Message" colspan="4"/>
                     <field name="message"/>
