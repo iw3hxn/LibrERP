@@ -53,3 +53,21 @@ class mrp_bom(orm.Model):
                                                      string="BoM Hierarchy", type='many2many'),
         'product_type': fields.related('product_id', 'type', type='selection', string='Product Type', selection=[('product', 'Stockable Product'), ('consu', 'Consumable'), ('service', 'Service')]),
     }
+
+    def view_open_product(self, cr, uid, ids, context):
+        mrp_boms = self.browse(cr, uid, ids, context)
+        res = self.pool['ir.model.data'].get_object_reference(cr, uid, 'product', 'product_normal_form_view')
+
+        vals = {
+            'type': 'ir.actions.act_window',
+            'name': _('Product'),
+            'view_type': 'form',
+            'view_mode': 'page',
+            'view_id': res and res[1] or False,
+            'res_model': 'product.product',
+            'nodestroy': True,
+            'target': 'inline',
+            'res_id': mrp_boms and mrp_boms[0].product_id.id
+        }
+
+        return vals

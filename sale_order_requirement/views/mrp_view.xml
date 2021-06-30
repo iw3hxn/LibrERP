@@ -2,6 +2,22 @@
 <openerp>
     <data>
 
+        <record id="action_view_open_product" model="ir.actions.server">
+            <field name="name">Open Product</field>
+            <field name="model_id" ref="mrp.model_mrp_bom"/>
+            <field name="state">code</field>
+            <field name="code">action = object.view_open_product()</field>
+        </record>
+
+        <record id="ir_mrp_bom_select" model="ir.values">
+            <field name="object" eval="True" />
+            <field name="key">action</field>
+            <field name="key2">tree_but_open</field>
+            <field name="model">mrp.bom</field>
+            <field name="name">Open Connected Product</field>
+            <field name="value" eval="'ir.actions.server,%d'%action_view_open_product" />
+        </record>
+
         <record id="mrp_bom_tree_view_inherit" model="ir.ui.view">
             <field name="name">mrp.bom.product_type.inherit</field>
             <field name="inherit_id" ref="mrp.mrp_bom_tree_view" />
@@ -11,6 +27,10 @@
                 <field name="name" position="replace">
                     <field name="product_type"/>
                 </field>
+<!--                <field name="product_id" position="after">-->
+<!--                    <button name="view_open_product" string="Open Product" type="object"-->
+<!--                                icon="gtk-fullscreen" attrs="{'tree_invisible': False, 'string': 'DC'}"/>-->
+<!--                </field>-->
             </field>
         </record>
 
