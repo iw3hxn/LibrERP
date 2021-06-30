@@ -217,6 +217,10 @@ class ir_alert(orm.Model):
                             message_dict['user_id'] = row.user_id.id
                         else:
                             message_dict['user_id'] = uid
+
+                        if not message_dict.get('user_id'):
+                            continue
+
                         # user_ids
                         message_dict['user_ids'] = [[6, 0, list(set([message_dict['user_id'], row.user_id.id]))]]
                         # model
