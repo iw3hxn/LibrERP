@@ -67,7 +67,6 @@ class ir_alert(orm.Model):
 
     def unlink(self, cr, uid, ids, context=None):
         res = super(ir_alert, self).unlink(cr, uid, ids, context=context)
-        self.write(cr, uid, ids, {'state': 'cancel'})
         return res
    
     def action_cancel(self, cr, uid, ids, context=None):
