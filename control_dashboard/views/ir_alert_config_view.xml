@@ -15,10 +15,11 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Config Models Alert">
+                    <field name="digest" />
                     <field name="name"/>
                     <field name="type"/>
                     <field name="model_id"/>
-                    <field name="is_parent"/>
+                    <field name="is_parent" invisible="1"/>
                     <field name="date_comparison_field_id"/>
                     <field name="offset"/>
                     <field name="flag_not_state"/>
@@ -38,8 +39,9 @@
                     <field name="type"/>
                     <field name="model_id" on_change="model_id_change(model_id, context)"/>
                     <field name="action_id" invisible="1"/>
+                    <field name="digest" />
                     <newline/>
-	            <field name="is_parent" on_change="onchange_model_id(is_parent)"/>
+	            <field name="is_parent" on_change="onchange_model_id(is_parent)" invisible="1"/>
                     <field name="parent_id" attrs="{'readonly':[('is_parent','=',True)]}" domain="[('is_parent','=',True)]"/>
                     <newline/>
                     <field name="domain_force" />

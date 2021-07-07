@@ -77,11 +77,12 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Scheduled Alerts">
+                    <filter name="state_open" string="New" domain="[('state','=','open')]" help="Activity ToDo" icon="terp-check"/>
+                    <filter name="state_done" string="Done" domain="[('state', '=', 'done')]" help="Activity Done" icon="terp-dialog-close"/>
                     <field name="name"/>
                     <field name="alert_config_id" />
                     <field name="user_id" widget="selection"/>
                     <field name="type"/>
-                    <field name="state"/>
                     <newline/>
                     <group expand="0" string="Group By...">
                         <filter name="group_by_alert_config_id" string="Document" icon="terp-document-new" domain="[]" context="{'group_by': 'alert_config_id', 'hide_alert_config_id': 1}" />
@@ -111,7 +112,7 @@
             <field name="res_model">ir.alert</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,calendar</field>
-            <field name="context">{'active_test': False}</field>
+            <field name="context">{'active_test': False, 'search_default_state_open': True}</field>
             <field name="view_id" ref="ir_alert_view_tree"/>
         </record>
 

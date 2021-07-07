@@ -62,7 +62,7 @@ class ir_alert(orm.Model):
         'mail_addresses': fields.char('Mail Addresses', size=256),
         'subject': fields.char('Subject', size=256),
         'email_message': fields.text('Email Message'),
-        'alert_config_id': fields.many2one('ir.alert.config', 'Alert Name', required=True),
+        'alert_config_id': fields.many2one('ir.alert.config', 'Alert Name', required=True, auto_join=True),
     }
     _defaults = {
         'state': 'open',
@@ -391,7 +391,7 @@ class ir_alert(orm.Model):
         mail_message_obj = self.pool['mail.message']
 
         email_preparation = {}
-        for user_group in self.read_group(cr, uid, [('state', '=', 'open')], ['user_id', 'name', 'alert_config_id'], ['user_id'], context=context, orderby='user_id'):
+        for user_group in self.read_group(cr, uid, [('state', '=', 'open'), ('alert_config_id.digest', '=', True)], ['user_id', 'name', 'alert_config_id'], ['user_id'], context=context, orderby='user_id'):
             user_id = user_group['user_id'][0]
             _logger.info("Prepare email to {}".format(user_group['user_id'][1]))
             new_search_domain = user_group['__domain']

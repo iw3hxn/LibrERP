@@ -132,6 +132,7 @@ class ir_alert_config(orm.Model):
             domain="[('ttype', '=', 'many2one'), ('model_id', '=', model_id), ('relation', '=', 'res.users')]"),
         'domain_force': fields.text('Domain'),
         'domain': fields.function(_domain_force_get, string='Domain', type='text'),
+        'digest': fields.boolean(string="Digest", help="This Alarm is included on a Digest Email")
     }
     _defaults = {
         'active': True,
@@ -139,6 +140,7 @@ class ir_alert_config(orm.Model):
         'offset': 0,
         'is_parent': False,
         'flag_email': False,
+        'digest': True
     }
 
     def _get_message(self, cr, uid, message, model_id, context):
@@ -155,12 +157,12 @@ class ir_alert_config(orm.Model):
             position_fin = message.find('}')
 
             first_control = message[position_ini + 1: position_ini + 7]
-            if first_control not in ('object'):
+            if first_control == 'object':
                 string_in_error = message[position_ini - 1: position_fin + 1]
                 raise orm.except_orm(_('Error'),
                                      _('Value not valid for ' + string_in_error + ". Valid value is 'object', for parent message (number record) or 'object.<name field>' for object field, in alert message."))
 
-            if first_control == 'object':
+            else:
                 second_control = message[position_ini + 7: position_ini + 8]
                 if second_control not in ('}', '.'):
                     string_in_error = message[position_ini - 1: position_fin + 1]
