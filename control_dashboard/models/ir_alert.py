@@ -22,12 +22,17 @@
 from datetime import datetime
 # from datetime import date
 from datetime import timedelta
+import logging
 
 import pytz
 from tools.translate import _
+from openerp.addons.core_extended.ordereddict import OrderedDict
 
 from openerp.osv import orm, fields, expression
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
 
 
 class ir_alert(orm.Model):
@@ -129,12 +134,18 @@ class ir_alert(orm.Model):
         return True
 
     # create and management of message (cron's routine)
+
     def manage_alerts(self, cr, uid, context=None):
+        self.generate_alerts(cr, uid, context)
+        self.generate_email(cr, uid, context)
+        return True
+
+    def generate_alerts(self, cr, uid, context=None):
         # control change model' state
         self.control_state_message(cr, uid, context)
 
-        alert_config_model = self.pool['ir.alert.config']
         ir_alert_model = self.pool['ir.alert']
+        alert_config_model = self.pool['ir.alert.config']
         ir_model_model = self.pool['ir.model']
         ir_model_fields_model = self.pool['ir.model.fields']
         res_users_model = self.pool['res.users']
@@ -374,6 +385,51 @@ class ir_alert(orm.Model):
                         obj_alert.write(cr, uid, obj_alert_data['id'], update_dict, context=context)
 
         return True
+
+    def generate_email(self, cr, uid, context=None):
+        res_users_model = self.pool['res.users']
+        mail_message_obj = self.pool['mail.message']
+
+        email_preparation = {}
+        for user_group in self.read_group(cr, uid, [('state', '=', 'open')], ['user_id', 'name', 'alert_config_id'], ['user_id'], context=context, orderby='user_id'):
+            user_id = user_group['user_id'][0]
+            _logger.info("Prepare email to {}".format(user_group['user_id'][1]))
+            new_search_domain = user_group['__domain']
+            email_preparation[user_id] = {}
+            for todo_action in self.read_group(cr, uid, new_search_domain, ['user_id', 'name', 'alert_config_id'], ['alert_config_id'], context=context,
+                            orderby='alert_config_id'):
+                new_search_domain = todo_action['__domain']
+                email_preparation[user_id][todo_action['alert_config_id'][1]] = [x['name'] for x in self.read_group(cr, uid, new_search_domain, ['name'], ['name'], context=context, orderby='name')]
+
+        res_user_ids = email_preparation.keys()
+        for user in res_users_model.browse(cr, uid, res_user_ids, context):
+            email_body = self._get_email_body(cr, uid, email_preparation[user.id], context)
+            email_from = user.company_id.email
+            email_to = [user.user_email]
+            mail_message_obj.schedule_with_attach(cr, uid,
+                                                  email_from,
+                                                  email_to,
+                                                  "ERP Reminder - " + str(len(email_preparation[user.id])) + " " + _(
+                                                      "activity To Do"),
+                                                  email_body,
+                                                  attachments=None,
+                                                  subtype='plain',
+                                                  reply_to=email_from,
+                                                  auto_delete=False,
+                                                  context=context)
+
+        return
+
+    def _get_email_body(self, cr, uid, email, context):
+        body = [u"=== " + _("TO DO Activity reminder") + " ===", u"", u""]
+        for title in email:
+            body.append(u" -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ")
+            body.append(u" * {}: {}".format(len(email[title]), title.upper()))
+            body.append(u" -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ")
+            body += email[title]
+            body.append(u"")
+            body.append(u"")
+        return "\n".join(body)
         
     def name_get(self, cr, uid, ids, context=None):
         if not ids:

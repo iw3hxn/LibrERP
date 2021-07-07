@@ -31,7 +31,7 @@
 
 {
     "name": "Virtual Desk for Alert",
-    "version": "3.0.1.3.8",
+    "version": "3.0.2.3.8",
     "depends": [
         "base",
         "mail",
