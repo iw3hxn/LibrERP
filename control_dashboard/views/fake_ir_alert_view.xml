@@ -42,11 +42,7 @@
                             <separator string="Email" colspan="4"/>
                             <field name="mail_addresses"/>
                             <field name="subject"/>
-                            <field name="email_message" colspan="4"/>
-                            <button string="Send Mail" colspan="2"
-                                    attrs="{'invisible':[('mail_addresses','in',[False, ''])]}" type="object"
-                                    name="button_send_mail"
-                                    context="{'mail_addresses':mail_addresses, 'subject':subject, 'email_message':email_message}"/>
+
                         </page>
                     </notebook>
                     <!-- <group colspan="5" col="5" groups="base.group_extended"> -->

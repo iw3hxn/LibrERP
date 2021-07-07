@@ -19,16 +19,15 @@
 #
 ##############################################################################
 
+import logging
 from datetime import datetime
 # from datetime import date
 from datetime import timedelta
-import logging
 
 import pytz
 from tools.translate import _
-from openerp.addons.core_extended.ordereddict import OrderedDict
 
-from openerp.osv import orm, fields, expression
+from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 _logger = logging.getLogger(__name__)
@@ -150,6 +149,7 @@ class ir_alert(orm.Model):
         ir_model_fields_model = self.pool['ir.model.fields']
         res_users_model = self.pool['res.users']
         obj_config_parameter = self.pool['ir.config_parameter']
+        mail_message_obj = self.pool['mail.message']
 
         # my server and port
         host_ids = obj_config_parameter.search(cr, uid, [('key', '=', 'web.base.url')])
@@ -259,31 +259,23 @@ class ir_alert(orm.Model):
                         # manage e-mails
                         if config_alert_data['flag_email']:
                             # compose e-mail message
-                            message_dict['email_message'] = config_alert_data['email_message'].format(object=row)
+                            email_body = config_alert_data['message'].format(object=row)
+                            email_header = config_alert_data['name']
                             # search e_mail address of partner_id
-                            emails = ''
-                            for email_address in row.partner_id.address:
-                                if email_address.email not in ([], False, ''):
-                                    emails = email_address.email
-                                    break
+                            user = res_users_model.browse(cr, uid, message_dict['user_id'], context)
+                            email_from = user.company_id.email
+                            email_to = [user.user_email]
+                            mail_message_obj.schedule_with_attach(cr, uid,
+                                                                  email_from,
+                                                                  email_to,
+                                                                  email_header,
+                                                                  email_body,
+                                                                  attachments=None,
+                                                                  subtype='plain',
+                                                                  reply_to=email_from,
+                                                                  auto_delete=False,
+                                                                  context=context)
 
-                            # adding user creator document ?
-                            if config_alert_data['add_user_creator']:
-                                user_id = 0
-                                if row.__hasattr__('create_uid'):
-                                    user_id = row.create_uid.id
-                                elif row.__hasattr__('user_id'):
-                                    user_id = row.user_id.id
-                                if user_id not in (0, [], False, ''):
-                                    user_create_data = res_users_model.read(cr, uid, user_id, context=context)
-                                    if user_create_data['user_email']:
-                                        if emails in ([], False, ''):
-                                            emails = user_create_data['user_email']
-                                        else:
-                                            emails = '%s, %s' % (emails, user_create_data['user_email'])
-                            message_dict['mail_addresses'] = emails
-                            # compose e-mail subject
-                            message_dict['subject'] = config_alert_data['subject'].format(row)
                         self.create(cr, uid, message_dict, context)
             else:
                 # parents message

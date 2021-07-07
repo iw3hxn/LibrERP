@@ -157,7 +157,7 @@ class ir_alert_config(orm.Model):
             position_fin = message.find('}')
 
             first_control = message[position_ini + 1: position_ini + 7]
-            if first_control == 'object':
+            if first_control != 'object':
                 string_in_error = message[position_ini - 1: position_fin + 1]
                 raise orm.except_orm(_('Error'),
                                      _('Value not valid for ' + string_in_error + ". Valid value is 'object', for parent message (number record) or 'object.<name field>' for object field, in alert message."))
