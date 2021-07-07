@@ -403,6 +403,8 @@ class ir_alert(orm.Model):
 
         res_user_ids = email_preparation.keys()
         for user in res_users_model.browse(cr, uid, res_user_ids, context):
+            if not user.active:
+                continue
             email_body = self._get_email_body(cr, uid, email_preparation[user.id], context)
             email_from = user.company_id.email
             email_to = [user.user_email]
