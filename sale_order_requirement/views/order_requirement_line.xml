@@ -281,6 +281,7 @@
                     <field name="seq" />
                     <field name="sequence" invisible="1"/>
                     <field name="row_color" invisible="1"/>
+                    <field name="delivery_date" />
                     <field name="user_id" />
                     <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in" attrs="{'invisible': [('has_bom','=',False)]}" />
                     <field name="has_bom" invisible="1"/>

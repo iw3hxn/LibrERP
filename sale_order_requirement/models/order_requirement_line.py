@@ -4,6 +4,7 @@
 import datetime
 
 import tools
+from dateutil.relativedelta import relativedelta
 from openerp.addons.sale_order_requirement.models.order_requirement import STATE_SELECTION
 from tools import DEFAULT_SERVER_DATE_FORMAT
 from tools.translate import _
@@ -628,6 +629,17 @@ class OrderRequirementLine(orm.Model):
             res[line.id] = line.purchase_order_ids and line.purchase_order_ids[0].id or False
         return res
 
+    def _get_delivery_date(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            if line.sale_order_id.minimum_planned_date:
+                date_confirm = datetime.datetime.strptime(line.sale_order_id.minimum_planned_date, DEFAULT_SERVER_DATE_FORMAT) - relativedelta(days=line.sale_order_line_id.delay or 0.0)
+            else:
+                date_confirm = datetime.datetime.strptime(line.sale_order_id.commitment_date, DEFAULT_SERVER_DATE_FORMAT) + relativedelta(days=line.sale_order_line_id.delay or 0.0)
+            res[line.id] = date_confirm.strftime(DEFAULT_SERVER_DATE_FORMAT)
+        return res
+
     def _order_state(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
@@ -711,6 +723,7 @@ class OrderRequirementLine(orm.Model):
         'sale_order_line_notes': fields.related('sale_order_line_id', 'notes', string='Order Line Notes', type='text', readonly=True),
         'sale_order_id': fields.related('order_requirement_id', 'sale_order_id', string='Sale Order',
                                         relation='sale.order', type='many2one', readonly=True),
+        'delivery_date': fields.function(_get_delivery_date, method=True, type='date', string="Delivery Date"),
         'sequence': fields.integer('Sequence',
                                    help="Gives the sequence order when displaying a list of sales order lines."),
         'state': fields.selection(STATE_SELECTION, 'State', required=True, readonly=True),

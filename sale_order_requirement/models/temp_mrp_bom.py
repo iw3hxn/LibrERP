@@ -8,6 +8,7 @@ from openerp.addons.sale_order_requirement.models.order_requirement import STATE
 
 import decimal_precision as dp
 from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
 from ..util import rounding
 
@@ -301,9 +302,9 @@ class TempMrpBom(orm.Model):
         else:
             # Create new
             delay = max(product.sale_delay, product.produce_delay)
-            required_date = hasattr(temp.sale_order_id, 'minimum_planned_date') and temp.sale_order_id.minimum_planned_date or temp.sale_order_id.commitment_date
-            dt = datetime.strptime(required_date, '%Y-%m-%d') - relativedelta(days=delay or 0.0)
-            dt_s = dt.strftime('%Y-%m-%d')
+            # required_date = hasattr(temp.sale_order_id, 'minimum_planned_date') and temp.sale_order_id.minimum_planned_date or temp.sale_order_id.commitment_date
+            dt = datetime.strptime(temp.order_requirement_line_id.delivery_date, DEFAULT_SERVER_DATE_FORMAT) - relativedelta(days=delay or 0.0)
+            dt_s = dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
             mrp_production_values = mrp_production_model.product_id_change(cr, uid, [], product.id)['value']
 
