@@ -148,6 +148,7 @@ class fiscal_year_closing(osv.osv):
         # Extra operations
         #
         'check_invalid_period_moves': fields.boolean('Check invalid period or date moves', help="Checks that there are no moves, on the fiscal year that is being closed, with dates or periods outside that fiscal year."),
+        'force_recreation_period_moves': fields.boolean("Force Move on period"),
         'check_draft_moves': fields.boolean('Check draft moves', help="Checks that there are no draft moves on the fiscal year that is being closed. Non-confirmed moves won't be taken in account on the closing operations."),
         'check_unbalanced_moves': fields.boolean('Check unbalanced moves', help="Checks that there are no unbalanced moves on the fiscal year that is being closed."),
 

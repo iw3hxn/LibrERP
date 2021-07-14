@@ -29,7 +29,7 @@
 
 {
     "name": "Fiscal Year Closing",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "author": "OpenERP Italian Community, Pexego",
     "website": "http://www.openerp-italia.org",
     "category": "Generic Modules/Accounting",

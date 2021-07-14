@@ -49,6 +49,10 @@ class wizard_run(osv.osv_memory):
         # Read the object
         fyc = pool.get('account_fiscal_year_closing.fyc').browse(cr, uid, active_id, context=context)
         # Check for invalid period moves if needed
+        if fyc.force_recreation_period_moves:
+            self._force_recreation_period_moves(cr, uid, fyc, context)
+            fyc.write({'force_recreation_period_moves': False})
+            return {'type': 'ir.actions.act_window_close'}
         if fyc.check_invalid_period_moves:
             self._check_invalid_period_moves(cr, uid, fyc, context)
         # Check for draft moves if needed
@@ -96,6 +100,23 @@ class wizard_run(osv.osv_memory):
             wf_service.trg_validate(uid, 'account_fiscal_year_closing.fyc', fyc.id, 'run', cr)
 
         return {'type': 'ir.actions.act_window_close'}
+
+    def _force_recreation_period_moves(self, cr, uid, fyc, context):
+        pool = self.pool
+        # Consider all the periods of the fiscal year.
+        period_ids = [period.id for period in fyc.closing_fiscalyear_id.period_ids]
+        account_move_model = self.pool['account.move']
+        account_period_model = self.pool['account.period']
+        # Find moves on the closing fiscal year with dates of previous years
+        account_move_ids = account_move_model.search(cr, uid, [
+            ('period_id', 'in', period_ids),
+        ], context=context)
+        for account_move in account_move_model.browse(cr, uid, account_move_ids, context):
+            date = account_move.date
+            correct_period_ids = account_period_model.find(cr, uid, dt=date, context=context)
+            correct_period_id = correct_period_ids and correct_period_ids[0]
+            if account_move.period_id.id != correct_period_id:
+                account_move.write({'period_id': correct_period_id})
 
     ############################################################################
     # CHECK OPERATIONS

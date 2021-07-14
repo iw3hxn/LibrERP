@@ -81,6 +81,7 @@ Authors: Borja López Soilán (Pexego) - borja@kami.es
                                     <separator string="Checks"/>
                                     <group colspan="4">
                                         <field name="check_invalid_period_moves" attrs="{'readonly':[('state','in',('done','cancel'))]}"/>
+                                        <field name="force_recreation_period_moves" attrs="{'readonly':[('state','in',('done','cancel'))], 'invisible':[('check_invalid_period_moves', '!=', True)]}"/>
                                         <field name="check_draft_moves" attrs="{'readonly':[('state','in',('done','cancel'))]}"/>
                                         <field name="check_unbalanced_moves" attrs="{'readonly':[('state','in',('done','cancel'))]}"/>
                                     </group>
