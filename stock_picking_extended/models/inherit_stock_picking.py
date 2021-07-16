@@ -181,17 +181,22 @@ class stock_picking(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for picking in self.browse(cr, uid, ids, context=context):
-            if picking.minimum_planned_date:
-                start_date = datetime.strptime(picking.minimum_planned_date, DEFAULT_SERVER_DATE_FORMAT)
+            if picking.sale_id:
+                sale = picking.sale_id
+                date_confirm = sale.minimum_planned_date or sale.commitment_date
+
+                start_date = datetime.strptime(date_confirm, DEFAULT_SERVER_DATE_FORMAT)
                 start_date = date(start_date.year, start_date.month, start_date.day)
 
                 # month in italian start_date.strftime('%B').capitalize()
                 res[picking.id] = {
-                    'week_nbr': start_date.isocalendar()[1]
+                    'week_nbr': start_date.isocalendar()[1],
+                    'minimum_planned_date': start_date
                 }
             else:
                 res[picking.id] = {
-                    'week_nbr': False
+                    'week_nbr': False,
+                    'minimum_planned_date': False
                 }
 
         return res
@@ -446,14 +451,13 @@ class stock_picking(orm.Model):
                                     store={
                                         'stock.picking': (
                                         lambda self, cr, uid, ids, c=None: ids, ['sale_id', 'max_date', 'state'], 5000),
-                                        'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 6000),
+                                        'sale.order': (_get_picking_sale, ['minimum_planned_date', 'requested_date', 'state', 'date_confirm', 'date_order'], 6000),
                                     }),
-        'minimum_planned_date': fields.related(
-            'sale_id', 'minimum_planned_date', type='date', string='Expected Date',
-            store={
-                'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['sale_id', 'max_date'], 500),
-                'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 600),
-            }),
+        'minimum_planned_date': fields.function(_get_day, multi='day_of_week', type='date', string='Expected Date',
+                                    store={
+                                        'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['sale_id', 'max_date'], 500),
+                                        'sale.order': (_get_picking_sale, ['minimum_planned_date', 'requested_date', 'state', 'date_confirm', 'date_order'], 600),
+                                    }),
         'internal_note': fields.text('Internal Note'),
         'invoiced_state': fields.function(_get_invoiced_state, string="Invoice State", type='char'),
         'location_id': fields.related('move_lines', 'location_id', type='many2one', relation='stock.location',
