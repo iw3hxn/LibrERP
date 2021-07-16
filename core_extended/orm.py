@@ -57,12 +57,15 @@ def name_get(self, cr, user, ids, context=None):
     #         raise orm.except_orm(_('Warning'), _('Save main element first'))
     #
     # TODO Antonio sol.2, version, don't popup but avoid SQL error, comment the read below and de-comment the rest
-    # for r in self.read(cr, user, ids, [self._rec_name], context, load='_classic_write'):
+
+    real_ids = []
     for i in ids:
         if i and isinstance(i, str) and 'one2many' in i:
             result.append((i, ''))
-            continue
-        r = self.read(cr, user, i, [self._rec_name], context, load='_classic_write')
+        else:
+            real_ids.append(i)
+
+    for r in self.read(cr, user, real_ids, [self._rec_name], context, load='_classic_write'):
         if self._rec_name not in self._columns and not r.get(self._rec_name, False):
             _logger.error(u"Column '{column}' or function name_get() are not defined for table '{table}'".format(column=self._rec_name, table=self._name))
         if r:
