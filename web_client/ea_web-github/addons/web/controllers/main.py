@@ -1458,9 +1458,11 @@ class Binary(openerpweb.Controller):
 
             if kw.get('no_download'):
                 fname, fextension = os.path.splitext(filename)
+                fextension = fextension.lower()
+                full_fname = '%s_%s' % (fname, fextension)
                 return req.make_response(filecontent,
                                          [('Content-Type', mimetypes.types_map[fextension]),
-                                          ('Content-Disposition', self.content_disposition(fname, req, 'inline'))])
+                                          ('Content-Disposition', self.content_disposition(full_fname, req, 'inline'))])
             return req.make_response(filecontent,
                 [('Content-Type', 'application/octet-stream'),
                  ('Content-Disposition', self.content_disposition(filename, req))])
