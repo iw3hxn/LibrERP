@@ -135,8 +135,11 @@ class ir_alert(orm.Model):
     # create and management of message (cron's routine)
 
     def manage_alerts(self, cr, uid, context=None):
+        _logger.info("Start Cron: manage_alerts")
         self.generate_alerts(cr, uid, context)
+        _logger.info("Start: generate_alerts")
         self.generate_email(cr, uid, context)
+        _logger.info("Start: generate_email")
         return True
 
     def generate_alerts(self, cr, uid, context=None):
