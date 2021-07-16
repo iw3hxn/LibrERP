@@ -179,25 +179,34 @@ class stock_picking(orm.Model):
 
     def _get_day(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
+        stock_move_model = self.pool['stock.move']
         res = {}
         for picking in self.browse(cr, uid, ids, context=context):
-            if picking.sale_id:
-                sale = picking.sale_id
-                date_confirm = sale.minimum_planned_date or sale.commitment_date
+            res[picking.id] = {
+                'week_nbr': False,
+                'minimum_planned_date': False,
+                'board_date': False
+            }
+            if 'week_nbr' in name or 'minimum_planned_date' in name:
+                if picking.sale_id:
+                    sale = picking.sale_id
+                    date_confirm = sale.minimum_planned_date or sale.commitment_date
 
-                start_date = datetime.strptime(date_confirm, DEFAULT_SERVER_DATE_FORMAT)
-                start_date = date(start_date.year, start_date.month, start_date.day)
+                    start_date = datetime.strptime(date_confirm, DEFAULT_SERVER_DATE_FORMAT)
+                    start_date = date(start_date.year, start_date.month, start_date.day)
 
-                # month in italian start_date.strftime('%B').capitalize()
-                res[picking.id] = {
-                    'week_nbr': start_date.isocalendar()[1],
-                    'minimum_planned_date': start_date
-                }
-            else:
-                res[picking.id] = {
-                    'week_nbr': False,
-                    'minimum_planned_date': False
-                }
+                    # month in italian start_date.strftime('%B').capitalize()
+                    res[picking.id].update({
+                        'week_nbr': start_date.isocalendar()[1],
+                        'minimum_planned_date': start_date
+                    })
+            if 'board_date' in name:
+                stock_move_ids = stock_move_model.search(cr, uid, [('picking_id', '=', picking.id)], limit=1, order='date_expected asc')
+                if stock_move_ids:
+                    board_date = stock_move_model.read(cr, uid, stock_move_ids[0], ['date_expected'], context=context)['date_expected']
+                    res[picking.id].update({
+                        'board_date': board_date
+                    })
 
         return res
 
@@ -434,7 +443,7 @@ class stock_picking(orm.Model):
                                 string='Sale User', readonly=True, store={
                                     'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id'], 6000),
                                 }),
-        'board_date': fields.related('sale_id', 'date_confirm', type='date', string='Order Board Delivery date'),
+        'order_date_confirm': fields.related('sale_id', 'date_confirm', type='date', string='Order Date Confirm'),
         'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)',
                                        readonly=True,
                                        store={
@@ -453,9 +462,10 @@ class stock_picking(orm.Model):
                                         lambda self, cr, uid, ids, c=None: ids, ['sale_id', 'max_date', 'state'], 5000),
                                         'sale.order': (_get_picking_sale, ['minimum_planned_date', 'requested_date', 'state', 'date_confirm', 'date_order'], 6000),
                                     }),
+        'board_date': fields.function(_get_day, multi='day_of_week', type='date', string='Order Board Delivery date'),
         'minimum_planned_date': fields.function(_get_day, multi='day_of_week', type='date', string='Expected Date',
                                     store={
-                                        'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['sale_id', 'max_date'], 500),
+                                        'stock.picking': (lambda self, cr, uid, ids, c=None: ids, ['sale_id', 'max_date', 'state'], 500),
                                         'sale.order': (_get_picking_sale, ['minimum_planned_date', 'requested_date', 'state', 'date_confirm', 'date_order'], 600),
                                     }),
         'internal_note': fields.text('Internal Note'),
