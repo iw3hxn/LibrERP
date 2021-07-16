@@ -198,7 +198,7 @@ class stock_picking(orm.Model):
                     # month in italian start_date.strftime('%B').capitalize()
                     res[picking.id].update({
                         'week_nbr': start_date.isocalendar()[1],
-                        'minimum_planned_date': start_date
+                        'minimum_planned_date': date_confirm
                     })
             if 'board_date' in name:
                 stock_move_ids = stock_move_model.search(cr, uid, [('picking_id', '=', picking.id)], limit=1, order='date_expected asc')
