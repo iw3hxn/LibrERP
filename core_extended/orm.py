@@ -65,6 +65,7 @@ def name_get(self, cr, user, ids, context=None):
         else:
             real_ids.append(i)
 
+    # TODO caution, same error can appear after this change, search other cause (eg _get_preview_line)
     for r in self.read(cr, user, real_ids, [self._rec_name], context, load='_classic_write'):
         if self._rec_name not in self._columns and not r.get(self._rec_name, False):
             _logger.error(u"Column '{column}' or function name_get() are not defined for table '{table}'".format(column=self._rec_name, table=self._name))

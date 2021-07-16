@@ -58,6 +58,7 @@ class account_invoice(orm.Model):
         currency_name = invoice.currency_id.name
         amount_total_line = line[1]
         t_pterm = {
+            'id': invoice.id,
             'date': self._format_time(line[0]),
             'amount': amount_total_line,
             'currency_name': currency_name}
