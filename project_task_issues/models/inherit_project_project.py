@@ -50,4 +50,13 @@ class ProjectProject(orm.Model):
         'open_issue': fields.function(_open_ticket, method=True, type="integer", string="Open Ticket"),
     }
 
+    def copy(self, cr, uid, ids, default=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        default = default or {}
+        default.update({
+            'issue_ids': False,
+        })
+        res_id = super(ProjectProject, self).copy(cr, uid, ids, default, context)
+        return res_id
+
 
