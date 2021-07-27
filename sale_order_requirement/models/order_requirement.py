@@ -285,14 +285,22 @@ class order_requirement(orm.Model):
         }
 
     def action_view_manufacturing_order(self, cr, uid, ids, context=None):
-        order = self.browse(cr, uid, ids, context)[0]
-        production_ids = []
-        for line in order.order_requirement_line_ids:
-            for bom_line in line.temp_mrp_bom_ids:
-                if bom_line.mrp_production_id.id:
-                    production_ids.append(bom_line.mrp_production_id.id)
+        if isinstance(ids, (long, int)):
+            ids = [ids]
 
-        production_ids = list(set(production_ids))
+        order_requirement_line_ids = self.pool['order.requirement.line'].search(cr, uid,
+                                                                                [('order_requirement_id', 'in', ids)],
+                                                                                context=context)
+        # order = self.browse(cr, uid, ids, context)[0]
+        # production_ids = []
+        # for line in order.order_requirement_line_ids:
+        #     for bom_line in line.temp_mrp_bom_ids:
+        #         if bom_line.mrp_production_id.id:
+        #             production_ids.append(bom_line.mrp_production_id.id)
+        # production_ids = list(set(production_ids))
+
+        production_ids = self.pool['mrp.production'].search(cr, uid, [('order_requirement_line_id', 'in', order_requirement_line_ids)], context=context)
+
         mod_model = self.pool['ir.model.data']
         act_model = self.pool['ir.actions.act_window']
         action_id = mod_model.get_object_reference(cr, uid, 'mrp', 'mrp_production_action')
