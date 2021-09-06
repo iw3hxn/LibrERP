@@ -123,11 +123,13 @@ class StockInventory(orm.Model):
                                                      order='product_id.name, prodlot_id.prefix, prodlot_id.name'),
         'total_count': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                        multi='sums', string="Total Count", store={
-                'stock.inventory.line': (_get_inventory, ['product_qty'], 60),
+                'stock.inventory.line': (_get_inventory, ['product_qty', 'inventory_id'], 60),
+                'stock.inventory': (lambda self, cr, uid, ids, c={}: ids, ['name', 'date', 'inventory_line_id'], 30),
             }, ),
         'total_qty_calc': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                        multi='sums', string="Total Calculated", store={
-                'stock.inventory.line': (_get_inventory, ['product_qty_calc'], 40),
+                'stock.inventory.line': (_get_inventory, ['product_qty_calc', 'inventory_id'], 40),
+                'stock.inventory': (lambda self, cr, uid, ids, c={}: ids, ['name', 'date', 'inventory_line_id'], 30),
             }, ),
         'user_id': fields.many2one('res.users', 'User'),
     }

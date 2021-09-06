@@ -114,8 +114,8 @@
                                        name="product_id"
                                        on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)"
                                        domain="[('type','&lt;&gt;','service')]"/>
-                                <field name="product_qty"/>
-                                <field name="product_qty_calc"/>
+                                <field name="product_qty" sum="Product"/>
+                                <field name="product_qty_calc" sum="Product"/>
                                 <field name="product_uom"/>
                                 <field name="prod_lot_id" groups="base.group_extended"/>
                                 <button name="%(stock.action_view_stock_inventory_line_split)d"
@@ -153,7 +153,7 @@
             <field name="inherit_id" ref="stock.view_inventory_line_form"/>
             <field name="arch" type="xml">
                 <field name="product_qty" position="after">
-                    <field name="product_qty_calc"/>
+                    <field name="product_qty_calc" sum="Product"/>
                 </field>
             </field>
         </record>
