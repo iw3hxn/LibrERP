@@ -91,11 +91,14 @@ class sale_order(orm.Model):
         if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
             for order in orders:
                 partner_vals = {}
-                if not order.partner_id.section_id:
+                partner_id = order.partner_id
+                if not partner_id:
+                    continue
+                if not partner_id.section_id and vals.get('section_id'):
                     partner_vals['section_id'] = vals.get('section_id')
-                if not order.partner_id.property_delivery_carrier:
+                if not partner_id.property_delivery_carrier and vals.get('carrier_id'):
                     partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
-                if not order.partner_id.property_payment_term:
+                if not partner_id.property_payment_term and vals.get('payment_term'):
                     partner_vals['property_payment_term'] = vals.get('payment_term')
                 if partner_vals:
                     self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
