@@ -47,3 +47,9 @@ class account_payment_term(orm.Model):
             'value': {}
         }
         return result
+
+    def unlink(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if self.pool['res.partner'].search(cr, uid, [('property_payment_term', 'in', ids)]):
+            raise orm.except_orm('Errore!', "Ci sono Partner con un pagamento collegato")
+        return super(account_payment_term, self).unlink(cr, uid, ids, context)
