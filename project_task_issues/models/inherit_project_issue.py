@@ -170,9 +170,8 @@ class ProjectIssue(orm.Model):
 
         result = dict()
 
-        for record_id in ids:
-            current_issue = self.pool['project.issue'].browse(cr, uid, ids, context=context)[0]
-            result[record_id] = current_issue.write_date or current_issue.create_date
+        for current_issue in self.browse(cr, uid, ids, context=context):
+            result[current_issue.id] = current_issue.write_date or current_issue.create_date
         # end for
 
         return result
@@ -212,11 +211,11 @@ class ProjectIssue(orm.Model):
         ),
     }
 
-    def read(self, cr, user, ids, fields=None, context=None, load='_classic_read'):
-        res = super(ProjectIssue, self).read(cr, user, ids, fields, context, load)
-        return res
-
-    def browse(self, cr, uid, select, context=None, list_class=None, fields_process=None):
-        res = super(ProjectIssue, self).browse(cr, uid, select, context, list_class, fields_process)
-        return res
+    # def read(self, cr, user, ids, fields=None, context=None, load='_classic_read'):
+    #     res = super(ProjectIssue, self).read(cr, user, ids, fields, context, load)
+    #     return res
+    #
+    # def browse(self, cr, uid, select, context=None, list_class=None, fields_process=None):
+    #     res = super(ProjectIssue, self).browse(cr, uid, select, context, list_class, fields_process)
+    #     return res
 # end ProjectIssue
