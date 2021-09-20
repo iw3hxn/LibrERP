@@ -334,6 +334,7 @@ class SaleOrderConfirm(orm.TransientModel):
         wf_service.trg_validate(uid, 'sale.order', sale_order_id, 'order_confirm', cr)
         # need to write after validation
         sale_order_obj.write(cr, uid, sale_order_id, {
-                'date_confirm': sale_order_confirm_data['order_date'],
-            }, context)
+            'date_order': sale_order_confirm_data['order_date'],
+            'date_confirm': sale_order_confirm_data['order_date'],
+        }, context)
         return res
