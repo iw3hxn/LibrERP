@@ -443,9 +443,9 @@ class CrmLead(orm.Model):
                 if partner_vals:
                     address_ids = address_obj.search(cr, uid, [
                         ('partner_id', '=', lead.partner_id.id), ('type', '=', 'default')], context=context)
-                    if address_ids:
-                        address_obj.write(cr, uid, address_ids[0], partner_vals, context)
-                    else:
+                    if not address_ids:
+                    #     address_obj.write(cr, uid, address_ids[0], partner_vals, context)
+                    # else:
                         partner_vals['type'] = 'default'
                         partner_vals['partner_id'] = lead.partner_id.id
                         address_obj.create(cr, uid, partner_vals, context)
