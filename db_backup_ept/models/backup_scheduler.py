@@ -213,9 +213,10 @@ class db_backup_ept(orm.Model):
                     _logger.info(u'Deleting backup {} ...'.format(condemned.path))
                     try:
                         os.unlink(condemned.path)
-                    except:
-                        pass
-                    condemned.unlink()
+                        condemned.unlink()
+                    except Exception as e:
+                        _logger.info("Error on unlink {e}".format(e=e))
+
         return True
 
     def _set_pg_psw_env_var(self):
