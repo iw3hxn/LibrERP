@@ -398,10 +398,12 @@ class sale_order(orm.Model):
                     title = _('Technical Validation')
                     msg = _(u"It's not possible to confirm, for shop {shop} only user '{user}' can do it".format(shop=order.shop_id.name, user=order.shop_id.user_tech_validation_id.name))
                     raise orm.except_orm(_(title), _(msg))
-                    return False
 
             else:
                 return True
+
+    def _hook_check_manager_validation(self, order, context):
+        return True
 
     def check_manager_validation(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -413,9 +415,8 @@ class sale_order(orm.Model):
                     title = _('Manager Validation')
                     msg = _(u"It's not possible to confirm, for shop {shop} only user '{user}' can do it".format(shop=order.shop_id.name, user=order.shop_id.user_manager_validation_id.name))
                     raise orm.except_orm(_(title), _(msg))
-                    return False
             else:
-                return True
+                return self._hook_check_manager_validation(order, context)
 
     def check_supervisor_validation(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
