@@ -402,7 +402,7 @@ class sale_order(orm.Model):
             else:
                 return True
 
-    def _hook_check_manager_validation(self, order, context):
+    def _hook_check_manager_validation(self, cr, uid, order, context):
         return True
 
     def check_manager_validation(self, cr, uid, ids, context=None):
@@ -416,7 +416,7 @@ class sale_order(orm.Model):
                     msg = _(u"It's not possible to confirm, for shop {shop} only user '{user}' can do it".format(shop=order.shop_id.name, user=order.shop_id.user_manager_validation_id.name))
                     raise orm.except_orm(_(title), _(msg))
             else:
-                return self._hook_check_manager_validation(order, context)
+                return self._hook_check_manager_validation(cr, uid, order, context)
 
     def check_supervisor_validation(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
