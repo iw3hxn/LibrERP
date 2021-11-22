@@ -47,7 +47,7 @@
                     res_model="print.product.label"
                     view_mode="form"
                     view_type="form"
-                    target="inline"
+                    target="new"
                     multi="False"
                     context="{'default_product_ids': active_ids}"
                     key2="client_print_multi"/>
@@ -58,7 +58,7 @@
                     res_model="print.product.label"
                     view_mode="form"
                     view_type="form"
-                    target="inline"
+                    target="new"
                     multi="False"
                     context="{'default_product_ids': active_ids}"
                     key2="client_print_multi"/>
