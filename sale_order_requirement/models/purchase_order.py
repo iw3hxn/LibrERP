@@ -27,6 +27,15 @@ class PurchaseOrder(orm.Model):
         'customer_account_invoice_ids': fields.function(_get_customer_account_invoice_ids, string="Customer Invoice", type='one2many', method=True, relation='account.invoice'),
     }
 
+    def copy(self, cr, uid, id, default=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        default = default or {}
+        default.update({
+            'sale_order_ids': []
+        })
+        res = super(PurchaseOrder, self).copy(cr, uid, id, default, context)
+        return res
+
     def wkf_confirm_order(self, cr, uid, ids, context=None):
         product_supplierinfo_model = self.pool['product.supplierinfo']
         product_uom = self.pool['product.uom']
