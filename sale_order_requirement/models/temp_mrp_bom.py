@@ -221,9 +221,9 @@ class TempMrpBom(orm.Model):
         'sale_order_id': fields.related('order_requirement_line_id', 'order_requirement_id', 'sale_order_id', auto_join=True,
                                         string='Sale Order', relation='sale.order', type='many2one', readonly=True),
         # mrp_bom_id and mrp_bom_parent_id point to the original mrp bom
-        'mrp_bom_id': fields.many2one('mrp.bom', String="MRP BOM"),
-        'mrp_bom_parent_id': fields.many2one('mrp.bom', String="Parent MRP BOM"),
-        'bom_position': fields.function(_compute_position, type='char', String='Internal Reference'),
+        'mrp_bom_id': fields.many2one('mrp.bom', string="MRP BOM"),
+        'mrp_bom_parent_id': fields.many2one('mrp.bom', string="Parent MRP BOM"),
+        'bom_position': fields.function(_compute_position, type='char', string='Internal Reference'),
         # 'bom_position': fields.related('mrp_bom_id', 'position', String='Internal Reference', type='char'),
         # mrp_routing_id is a relation with ORIGINAL routing (but we make a copy)
         'mrp_routing_id': fields.many2one('mrp.routing', string='Routing', auto_join=True, readonly=True),
