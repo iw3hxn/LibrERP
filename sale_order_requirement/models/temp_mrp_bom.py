@@ -71,6 +71,12 @@ class TempMrpBom(orm.Model):
             self.stock_availability[line.id] = res[line.id]
         return res
 
+    def _compute_position(self, cr, uid, ids, name, args, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = line.mrp_bom_id and line.mrp_bom_id.position
+        return res
+
     def _is_out_of_stock(self, cr, uid, ids, name, args, context=None):
         # Return True if stock is less than spare
         res = {}
@@ -215,8 +221,10 @@ class TempMrpBom(orm.Model):
         'sale_order_id': fields.related('order_requirement_line_id', 'order_requirement_id', 'sale_order_id', auto_join=True,
                                         string='Sale Order', relation='sale.order', type='many2one', readonly=True),
         # mrp_bom_id and mrp_bom_parent_id point to the original mrp bom
-        'mrp_bom_id': fields.many2one('mrp.bom'),
-        'mrp_bom_parent_id': fields.many2one('mrp.bom'),
+        'mrp_bom_id': fields.many2one('mrp.bom', String="MRP BOM"),
+        'mrp_bom_parent_id': fields.many2one('mrp.bom', String="Parent MRP BOM"),
+        'bom_position': fields.function(_compute_position, type='char', String='Internal Reference'),
+        # 'bom_position': fields.related('mrp_bom_id', 'position', String='Internal Reference', type='char'),
         # mrp_routing_id is a relation with ORIGINAL routing (but we make a copy)
         'mrp_routing_id': fields.many2one('mrp.routing', string='Routing', auto_join=True, readonly=True),
         'temp_mrp_routing_lines': fields.one2many('temp.mrp.routing', 'temp_mrp_bom_id', 'Routing Lines'),

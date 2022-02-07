@@ -60,10 +60,11 @@
                                                'readonly':['|',('state','!=','draft'),('is_manufactured','=',False)]}">
                                     <tree string="BoM Structure" editable="bottom"
                                         colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                        <field name="id" invisible="1"/>
+                                        <field name="bom_position" readonly="1"/>
                                         <field name="user_id" attrs="{'readonly': ['|', ('is_manufactured','=',False), ('level', '=', 0)]}"/>
                                         <field name="row_color" invisible="1"/>
                                         <field name="is_leaf"/>
-                                        <field name="id" invisible="1"/>
                                         <field name="bom_id" invisible="1"/>
                                         <field name="level" invisible="1"/>
                                         <field name="product_type" invisible="1"/>
@@ -181,6 +182,8 @@
                                 <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" readonly="1" widget="one2many_list" context="{'default_user_id': user_id}">
                                     <tree string="BoM Structure" editable="top"
                                         colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                        <field name="id" invisible="1"/>
+                                        <field name="bom_position" readonly="1"/>
                                         <field name="user_id" />
                                         <field name="row_color" invisible="1"/>
                                         <field name="is_leaf"/>
