@@ -4523,33 +4523,38 @@ GanttTask.prototype.getDescStr = function()
     for (var i = 0; i < this.Chart.paramShowTask.length; i++) {
         var prop = this.Chart.paramShowTask[i], propValue = this.TaskInfo[prop];
         switch (prop) {
-            case "Name":
-                if (str != "")str += delim;
-                str += propValue;
-                break;
-            case "EST":
-                if (str != "")str += delim;
-                str += propValue.getDate() + "." + (propValue.getMonth() + 1) + "." + propValue.getFullYear();
-                break;
-            case "S-F":
-                if (str != "")str += delim;
-                propValue = this.TaskInfo["EST"];
-                str += propValue.getDate() + "." + (propValue.getMonth() + 1) + "." + propValue.getFullYear() + " - ";
-                propValue = this.getFinishDate();
-                str += propValue.getDate() + "." + (propValue.getMonth() + 1) + "." + propValue.getFullYear();
-                break;
-            case "Duration":
-                if (str != "")str += delim;
-                str += propValue + "h";
-                break;
-            case "PercentCompleted":
-                if (str != "")str += delim;
-                str += propValue + "%";
-                break;
-            default:
-                break;
-        }
+        case "Name":
+            if (str != "")str += delim;
+            str += propValue;
+            break;
+        case "EST":
+            if (str != "")str += delim;
+            str += propValue.getDate() + "." + (propValue.getMonth() + 1) + "." + propValue.getFullYear();
+            break;
+        case "S-F":
+            if (str != "")str += delim;
+            propValue = this.TaskInfo["EST"];
+            str += propValue.getDate() + "." + (propValue.getMonth() + 1) + "." + propValue.getFullYear() + " - ";
+            propValue = this.getFinishDate();
+            str += propValue.getDate() + "." + (propValue.getMonth() + 1) + "." + propValue.getFullYear();
+            break;
+        case "Duration":
+            if (str != "")str += delim;
+            str += propValue + "h";
+            break;
+        case "PercentCompleted":
+            if (str != "")str += delim;
+            str += propValue + "%";
+            break;
+        case "Assignee":
+            if (str != "")str += delim;
+	    str += this.TaskInfo["AssignedTo"];
+	    break;    
+        default:
+            break;
+	}
     }
+
     return str;
 };
 /**

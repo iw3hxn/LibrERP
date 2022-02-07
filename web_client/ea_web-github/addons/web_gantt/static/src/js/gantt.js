@@ -166,8 +166,9 @@ openerp.web_gantt.GanttView = openerp.web.View.extend({
                     task_stop = task_start.clone().addMilliseconds(tmp * 60 * 60 * 1000);
                 }
                 var duration = (task_stop.getTime() - task_start.getTime()) / (1000 * 60 * 60);
+		duration = Math.round(((duration / 24) * 8)*100) /100;
                 var id = _.uniqueId("gantt_task_");
-                var task_info = new GanttTaskInfo(id, task_name, task_start, ((duration / 24) * 8) || 1, percent, assigned_to);
+                var task_info = new GanttTaskInfo(id, task_name, task_start, duration || 1, percent, assigned_to);
                 task_info.internal_task = task;
                 task_ids[id] = task_info;
                 return {task_info: task_info, task_start: task_start, task_stop: task_stop};
@@ -177,7 +178,14 @@ openerp.web_gantt.GanttView = openerp.web.View.extend({
         _.each(_.compact(_.map(groups, function(e) {return generate_task_info(e, 0);})), function(project) {
             gantt.addProject(project);
         });
+	gantt.heightTaskItem = 10;
         gantt.setEditable(true);
+	gantt.maxWidthPanelNames = 200;
+	gantt.isShowConMenu = true;
+	gantt.isShowDescTask = true;
+	gantt.isShowDescProject = true;
+	gantt.paramShowTask = ["Name", "Duration", "Assignee"];
+	gantt.paramShowProject = ["Name"];
         gantt.setImagePath("/web_gantt/static/lib/dhtmlxGantt/codebase/imgs/");
         gantt.attachEvent("onTaskEndDrag", function(task) {
             self.on_task_changed(task);
@@ -185,8 +193,7 @@ openerp.web_gantt.GanttView = openerp.web.View.extend({
         gantt.attachEvent("onTaskEndResize", function(task) {
             self.on_task_changed(task);
         });
-        gantt.create(this.chart_id);
-        
+        gantt.create(this.chart_id);        
         // bind event to display task when we click the item in the tree
         $(".taskNameItem", self.$element).click(function(event) {
             var task_info = task_ids[event.target.id];
