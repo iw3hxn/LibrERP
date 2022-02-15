@@ -286,9 +286,10 @@
                     <field name="row_color" invisible="1"/>
                     <field name="delivery_date" />
                     <field name="user_id" />
-                    <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in" attrs="{'invisible': [('has_bom','=',False)]}" />
                     <field name="has_bom" invisible="1"/>
+                    <button name="action_view_bom_product_id" string="Open BOM" type="object" icon="gtk-zoom-in" attrs="{'invisible': [('has_bom','=',False)]}" />
                     <field name="product_id"/>
+                    <button name="action_view_bom_new_product_id" string="Open BOM" type="object" icon="gtk-zoom-in" attrs="{'invisible': [('has_bom','=',False)]}" />
                     <field name="new_product_id"/>
                     <field name="qty" sum="qty"/>
                     <field name="stock_availability"/>

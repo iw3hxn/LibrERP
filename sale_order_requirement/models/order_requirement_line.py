@@ -1311,8 +1311,27 @@ class OrderRequirementLine(orm.Model):
             action_vals['target'] = 'current'
         return action_vals
 
-    def action_view_bom(self, cr, uid, ids, context=None):
+    def action_view_bom_product_id(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         line = self.browse(cr, uid, ids, context)[0]
+        product_id = line.product_id.id
+        context['product_id'] = product_id
+        return self.action_view_bom(cr, uid, ids, context)
+
+    def action_view_bom_new_product_id(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        line = self.browse(cr, uid, ids, context)[0]
+        product_id = line.new_product_id.id
+        context['product_id'] = product_id
+        return self.action_view_bom(cr, uid, ids, context)
+
+    def action_view_bom(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if 'product_id' in context:
+            product_id = context['product_id']
+        else:
+            line = self.browse(cr, uid, ids, context)[0]
+            product_id = line.product_id.id
 
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'mrp', 'mrp_bom_tree_view')
         view_id = view and view[1] or False
@@ -1324,7 +1343,7 @@ class OrderRequirementLine(orm.Model):
             'view_type': 'tree',
             'view_mode': 'tree',
             'view_id': [view_id],
-            'domain': [('product_id', '=', line.product_id.id),
+            'domain': [('product_id', '=', product_id),
                        ('bom_id', '=', False)],
             # 'target': 'new',
             'res_id': False
