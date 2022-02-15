@@ -74,7 +74,7 @@ class TempMrpBom(orm.Model):
     def _compute_position(self, cr, uid, ids, name, args, context=None):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = line.mrp_bom_id and line.mrp_bom_id.position
+            res[line.id] = line.mrp_bom_id and line.mrp_bom_id.position or ''
         return res
 
     def _is_out_of_stock(self, cr, uid, ids, name, args, context=None):
