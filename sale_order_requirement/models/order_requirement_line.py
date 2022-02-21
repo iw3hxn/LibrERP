@@ -190,7 +190,7 @@ class OrderRequirementLine(orm.Model):
         temp_mrp_bom_model = self.pool['temp.mrp.bom']
 
         # Set temp values by original BOM
-        line_id = ids[0]
+        line_id = ids and ids[0] or False
         is_leaf = not bool(bom.child_buy_and_produce_ids)
         product = bom.product_id
         is_manufactured = not is_leaf
@@ -203,8 +203,8 @@ class OrderRequirementLine(orm.Model):
         row_color = temp_mrp_bom_model.get_color_bylevel(level)
         level_name = '- {} {} >'.format(str(level), ' -----' * level)
 
-        suppliers = line.get_suppliers(product, context=context)
-        warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
+        suppliers = line_id and line.get_suppliers(product, context=context)
+        warehouse_id = line_id and line.sale_order_id.shop_id.warehouse_id.id
 
         stock_spare = self.generic_stock_availability(cr, uid, [], product.id, warehouse_id, context=context)
         routing_id = self.get_routing_id(cr, uid, product.id, context)
@@ -242,8 +242,8 @@ class OrderRequirementLine(orm.Model):
             'level_name': level_name,
             'stock_availability': stock_spare['stock_availability'],
             'spare': stock_spare['spare'],
-            'supplier_id': suppliers['supplier_id'],
-            'supplier_ids': suppliers['supplier_ids'],
+            'supplier_id': suppliers and suppliers['supplier_id'],
+            'supplier_ids': suppliers and suppliers['supplier_ids'],
             'mrp_routing_id': routing_id
         }
 
@@ -445,7 +445,7 @@ class OrderRequirementLine(orm.Model):
             global sequence
 
             father = temp_mrp_bom_model.browse(cr, uid, father_id, context)
-            mult = qty_mult * father.original_qty
+            mult = qty_mult * father.original_qty if father_id else qty_mult
 
             bom_children = bom_rec.child_buy_and_produce_ids
             if not bom_children:
@@ -462,10 +462,12 @@ class OrderRequirementLine(orm.Model):
                     temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom, mult, father_id, level, context)
                     temp_vals['sequence'] = sequence
                     sequence += 1
-                    temp_id = temp_mrp_bom_model.create(cr, uid, temp_vals, context)
-                    temp_vals['id'] = temp_id
+                    temp_id = False
+                    if not context.get('dummy'):
+                        temp_id = temp_mrp_bom_model.create(cr, uid, temp_vals, context)
+                        temp_vals['id'] = temp_id
                     temp_mrp_bom_vals.append(temp_vals)
-                    if temp_vals['mrp_routing_id']:
+                    if temp_id and temp_vals['mrp_routing_id']:
                         temp_routing_vals = self.get_routing_lines(cr, uid, ids, bom, temp_id, routing_colors[self.col], context)
                         temp_mrp_routing_vals.extend(temp_routing_vals)
                         self.col = (self.col+1) % len(routing_colors)
@@ -509,11 +511,14 @@ class OrderRequirementLine(orm.Model):
                                                              father_temp_id, start_level, context)
                 temp_vals['sequence'] = sequence
                 sequence += 1
-                temp_id = temp_mrp_bom_model.create(cr, uid, temp_vals, context)
-                temp_vals['id'] = temp_id
+                temp_id = False
+                if not context.get('dummy'):
+                    temp_id = temp_mrp_bom_model.create(cr, uid, temp_vals, context)
+                    temp_vals['id'] = temp_id
                 temp_mrp_bom_vals.append(temp_vals)
                 # Calculate routing for Father Bom(s)
-                temp_mrp_routing_vals.extend(self.get_routing_lines(cr, uid, ids, bom_father, temp_id, 'black', context))
+                if temp_id:
+                    temp_mrp_routing_vals.extend(self.get_routing_lines(cr, uid, ids, bom_father, temp_id, 'black', context))
                 if create_children:
                     _get_rec(bom_father, temp_id, start_level + 1)
             else:
@@ -527,7 +532,7 @@ class OrderRequirementLine(orm.Model):
             raise orm.except_orm(_(u'Error !'),
                                  _(u'Not created, product error: {0}'.format(product.name)))
 
-        self._update_cost(cr, uid, ids[0], context)
+        ids and self._update_cost(cr, uid, ids[0], context)
         # TODO vals not updated after _update_cost
         return temp_mrp_bom_vals, temp_mrp_routing_vals
 
