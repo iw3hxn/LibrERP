@@ -27,7 +27,7 @@
 from openerp.osv import fields, osv
 
 import time
-import mx.DateTime
+from datetime import datetime
 
 
 class account_aged_partner_balance(osv.TransientModel):
@@ -471,13 +471,13 @@ class account_aged_trial_balance(osv.TransientModel):
         for r_var in res:
             if form['0']['stop'] >= r_var['date_due']:
                 r_var['days_due_121togr'] = r_var['residual']
-            elif form['1']['start'] <= r_var['date_due'] and form['1']['stop'] >= r_var['date_due']:
+            elif form['1']['start'] <= r_var['date_due'] <= form['1']['stop']:
                 r_var['days_due_91to120'] = r_var['residual']
-            elif form['2']['start'] <= r_var['date_due'] and form['2']['stop'] >= r_var['date_due']:
+            elif form['2']['start'] <= r_var['date_due'] <= form['2']['stop']:
                 r_var['days_due_61to90'] = r_var['residual']
-            elif form['3']['start'] <= r_var['date_due'] and form['3']['stop'] >= r_var['date_due']:
+            elif form['3']['start'] <= r_var['date_due'] <= form['3']['stop']:
                 r_var['days_due_31to60'] = r_var['residual']
-            elif form['4']['start'] <= r_var['date_due'] and form['4']['stop'] >= r_var['date_due']:
+            elif form['4']['start'] <= r_var['date_due'] <= form['4']['stop']:
                 r_var['days_due_01to30'] = r_var['residual']
             else:
                 r_var['not_due'] = r_var['residual']
@@ -510,9 +510,9 @@ class account_aged_trial_balance(osv.TransientModel):
                 continue
             for inv_brw in inv_obj.browse(cr, uid, inv_ids):
                 residual = inv_brw.residual
-                date_due = mx.DateTime.strptime(
+                date_due = datetime.strptime(
                     inv_brw.date_due or inv_brw.date_invoice, '%Y-%m-%d')
-                today = mx.DateTime.strptime(wzd_brw.date_from, '%Y-%m-%d')
+                today = datetime.strptime(wzd_brw.date_from, '%Y-%m-%d')
                 due_days = (today - date_due).day
 
                 if not residual:
@@ -575,9 +575,9 @@ class account_aged_trial_balance(osv.TransientModel):
         else:
             return []
         move_lines_ret = acc_move_line.search(cr, uid, args, context=context)
-        today = mx.DateTime.strptime(wzd_brw.date_from, '%Y-%m-%d')
+        today = datetime.strptime(wzd_brw.date_from, '%Y-%m-%d')
         for line in acc_move_line.browse(cr, uid, move_lines_ret, context=context):
-            date_due = mx.DateTime.strptime(line.date, '%Y-%m-%d')
+            date_due = datetime.strptime(line.date, '%Y-%m-%d')
             due_days = (today - date_due).day
             residual = line.credit or line.debit or False
             res.append({
