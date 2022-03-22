@@ -24,7 +24,7 @@
 
 {
     "name": "Core extended",
-    "version": "2.2.19.3",
+    "version": "2.2.19.4",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Base",
@@ -78,7 +78,8 @@
         'security/security.xml',
         'views/ir_model_view.xml',
         'views/cron_view.xml',
-        'views/ir_attachment.xml'
+        'views/ir_attachment.xml',
+        'views/ir_filter_view.xml'
     ],
 
     "active": False,

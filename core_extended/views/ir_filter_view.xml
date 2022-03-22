@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="ir_filters_view_rules" model="ir.ui.view">
+            <field name="name">ir_filters_view_rules</field>
+            <field name="model">ir.filters</field>
+            <field name="inherit_id" ref="base.ir_filters_view_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <button name="global_filter"  string="Global Filter" type="object"
+                        icon="gtk-remove" attrs="{'invisible': [('user_id', '=', False)]}"
+                    />
+                    <button name="own_filter"  string="Own Filter" type="object"
+                        icon="gtk-add" attrs="{'invisible': [('user_id', '!=', False)]}"
+                    />
+                </field>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>
