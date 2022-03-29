@@ -31,7 +31,10 @@ class PurchaseOrder(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         default = default or {}
         default.update({
-            'sale_order_ids': []
+            'sale_order_ids': [],
+            'date_approve': False,
+            'validator': False,
+            'user_id': uid
         })
         res = super(PurchaseOrder, self).copy(cr, uid, id, default, context)
         return res
