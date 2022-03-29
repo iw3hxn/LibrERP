@@ -83,10 +83,10 @@ class OrderRequirementLine(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context):
             res[line.id] = 'black'
-            if line.stock_availability < line.spare:
-                res[line.id] = 'red'
-            elif line.state == 'done':
+            if line.state == 'done':
                 res[line.id] = 'green'
+            elif line.stock_availability < line.spare:
+                res[line.id] = 'red'
             elif line.temp_mrp_bom_ids:
                 res[line.id] = 'cadetblue'
         return res

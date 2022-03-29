@@ -36,6 +36,7 @@ class StockComputeOut(osv.osv_memory):
 
     _columns = {
         'name': fields.text("Text"),
+        'line_ids': fields.one2many('stock.compute.out.line', 'wizard_id', 'Line', readonly=False),
         'sale_order_id': fields.many2one('sale.order', 'Order'),
         'state': fields.selection(
             (('draft', 'draft'), ('done', 'done'))),
@@ -56,51 +57,75 @@ class StockComputeOut(osv.osv_memory):
         stock_move_model = self.pool['stock.move']
         prod_list = stock_move_model._check_op_stock_availability(cr, uid, context)
         res = stock_move_model._get_stock_out(cr, uid, prod_list, context)
+
+        line_values = []
+        for company_id in res:
+            for location_id in res[company_id]['locations']:
+                location_data = res[company_id]['locations'][location_id]
+                for product_data in location_data['products']:
+                    vals = {
+                        'product_id': product_data['product'].id,
+                        'qty': product_data['qty'],
+                        'qty_buy': product_data['qty_buy'],
+                        'purchase_order': product_data['purchase_order'],
+                        'buy': False,
+                    }
+                    line_values.append(vals)
+
         mail = stock_move_model._get_email_body(cr, uid, res, context)
 
-        return self.write(cr, uid, ids, {'state': 'done', 'name': mail}, context=context)
+        return self.write(cr, uid, ids, {
+            'state': 'done',
+            'name': mail,
+            'line_ids': [(0, 0, vals) for vals in line_values]
+        }, context=context)
 
     def create_order_requirement(self, cr, uid, ids, context=None):
         stock_move_model = self.pool['stock.move']
-        prod_list = stock_move_model._check_op_stock_availability(cr, uid, context)
-        stock_out = stock_move_model._get_stock_out(cr, uid, prod_list, context)
+        # prod_list = stock_move_model._check_op_stock_availability(cr, uid, context)
+        # stock_out = stock_move_model._get_stock_out(cr, uid, prod_list, context)
         wizard = self.browse(cr, uid, ids[0], context)
         sale_order_ids = []
         if wizard.sale_order_id:
             sale_order_ids.append(wizard.sale_order_id.id)
 
-        if len(stock_out) == 0:
-            raise osv.except_osv(_("Error"), _("No product out of stock found."))
+        if not sale_order_ids:
+            raise osv.except_osv(
+                'Error',
+                _('Missing Sale Order for main company'))
+
         order_requirement_ids = []
+        order_requirement_line = []
+        sequence = 0
+        for line in wizard.line_ids:
+            if not line.buy:
+                continue
+            ord_req_line_vals = {
+                'sequence': sequence,
+                'product_id': line.product_id.id,
+                'qty': line.qty_buy,
+                'buy': True,
+                'user_id': uid
+            }
+            sequence += 10
+            order_requirement_line.append(ord_req_line_vals)
 
-        for company_id in stock_out.keys():
-            for location_id in stock_out[company_id]['locations'].keys():
-                location_data = stock_out[company_id]['locations'][location_id]
+        if len(order_requirement_line) == 0:
+            raise osv.except_osv(_("Error"), _("No product out of stock found."))
 
-                # main_partner_id = self.pool['res.company'].read(cr, uid, company_id, ['partner_id'], load='_obj')['partner_id']
-                # sale_order_ids = self.pool['sale.order'].search(cr, uid, [('partner_id', '=', main_partner_id)], limit=1)
-                if not sale_order_ids:
-                    raise osv.except_osv(
-                        'Error',
-                        _('Missing Sale Order for main company'))
+        order_requirement_values = {
+                'sale_order_id': sale_order_ids[0],
+                'note': _("Created from Stock Out"),
+                'order_requirement_line_ids': [(0, 0, vals) for vals in order_requirement_line]
+        }
+        order_requirement_ids.append(self.pool['order.requirement'].create(cr, uid, order_requirement_values, context))
 
-                order_requirement_line = []
-                sequence = 0
-                for product_data in location_data['products']:
-                    ord_req_line_vals = {
-                        'sequence': sequence,
-                        'product_id': product_data['product'].id,
-                        'qty': product_data['qty_buy']
-                    }
-                    sequence += 10
-                    order_requirement_line.append(ord_req_line_vals)
-
-                order_requirement_values = {
-                    'sale_order_id': sale_order_ids[0],
-                    'note': _("Created from Stock Out"),
-                    'order_requirement_line_ids': [(0, 0, vals) for vals in order_requirement_line]
-                }
-                order_requirement_ids.append(self.pool['order.requirement'].create(cr, uid, order_requirement_values, context))
+        if context.get('force_po'):
+            for order_requirement in self.pool['order.requirement'].browse(cr, uid, order_requirement_ids, context):
+                for line in order_requirement.order_requirement_line_ids:
+                    line.action_open_bom()
+                    line.confirm_suppliers()
+                order_requirement.write({'state': 'done'})
 
         mod_model = self.pool['ir.model.data']
         act_model = self.pool['ir.actions.act_window']

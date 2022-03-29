@@ -13,7 +13,19 @@
 <!--                    -->
                     <group col="2" states="done">
                         <separator colspan="2" string="Report done"/>
-                        <field name="name" nolabel="1" />
+<!--                        <field name="name" nolabel="1" />-->
+<!--                        <separator/>-->
+                        <field name="line_ids" nolabel="1" readonly="1">
+                            <tree colors="black:buy==True;grey:buy==False">
+                                <field name="product_id"/>
+                                <field name="qty" />
+                                <field name="qty_buy" />
+                                <field name="purchase_order" />
+                                <field name="buy" />
+                                <button name="check_buy" string="Buy" type="object" icon="gtk-yes" attrs="{'invisible': [('buy', '=', True)]}"/>
+                                <button name="uncheck_buy" string="No Buy" type="object" icon="gtk-no" attrs="{'invisible': [('buy', '!=', True)]}"/>
+                            </tree>
+                        </field>
                     </group>
                     <separator colspan="4"/>
                     <group col="2">
@@ -23,6 +35,7 @@
                         <button icon='gtk-cancel' special="cancel" string="Cancel" />
                         <button name="compute_out" string="Check Stock" colspan="1" type="object" icon="gtk-ok" attrs="{'readonly': [('state','=','done')]}" />
                         <button name="create_order_requirement" string="Create Order Requirement" colspan="1" type="object" icon="terp-mrp"/>
+                        <button name="create_order_requirement" string="Create Order Requirement and PO" colspan="1" type="object" icon="terp-mrp" context="{'force_po': True}"/>
                         <field invisible="1" name="state"/>
                     </group>
                 </form>

@@ -31,7 +31,7 @@ Add a scheduler launched automatically every night by OpenERP,
 and the result is send by email to all user in
 'Warehouse Management / Stock Monitor' group.
 """,
-    "version": "0.1.1.3",
+    "version": "0.1.1.4",
     "author": "Enterprise Objects Consulting",
     "website": "http://www.eoconsulting.com.ar",
     "category": "Warehouse Management",

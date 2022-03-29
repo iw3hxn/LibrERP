@@ -21,4 +21,5 @@
 #
 ##############################################################################
 
-import stock_compute_out
+from . import stock_compute_out
+from . import stock_compute_out_line
