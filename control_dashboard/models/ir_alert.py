@@ -23,6 +23,11 @@ import logging
 from datetime import datetime
 # from datetime import date
 from datetime import timedelta
+from urllib import quote as quote
+try:
+    from mako.template import Template as MakoTemplate
+except ImportError:
+    logging.getLogger('init').warning("email_template: mako templates not available, templating features will not work!")
 
 import pytz
 from tools.translate import _
@@ -143,6 +148,7 @@ class ir_alert(orm.Model):
         return True
 
     def generate_alerts(self, cr, uid, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         # control change model' state
         self.control_state_message(cr, uid, context)
 
@@ -155,8 +161,10 @@ class ir_alert(orm.Model):
         mail_message_obj = self.pool['mail.message']
 
         # my server and port
-        host_ids = obj_config_parameter.search(cr, uid, [('key', '=', 'web.base.url')])
-        host_data = obj_config_parameter.read(cr, uid, host_ids[0], context=context)
+        # host_ids = obj_config_parameter.search(cr, uid, [('key', '=', 'web.base.url')])
+        # host_data = obj_config_parameter.read(cr, uid, host_ids[0], context=context)
+        base_url = self.pool.get('ir.config_parameter').get_param(cr, uid, 'web.base.url',
+                                                                  default='http://localhost:8069', context=context)
 
         # object's data
         obj_alert_ids = alert_config_model.search(cr, uid, [], context=context)
@@ -220,8 +228,18 @@ class ir_alert(orm.Model):
                         # read object
                         row = target_model.browse(cr, uid, target_id, context=context)
                         # compose name message
-                        message_dict['name'] = config_alert_data['message'].format(object=row)
-
+                        try:
+                            template = config_alert_data['message']
+                            user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
+                            message_dict['name'] = MakoTemplate(template).render_unicode(object=row,
+                                                                                         user=user,
+                                                                                         # context kw would clash with mako internals
+                                                                                         ctx=context,
+                                                                                         quote=quote,
+                                                                                         format_exceptions=True)
+                        except Exception as e:
+                            _logger.error("generate_alerts {e}".format(e=e))
+                            continue
                         # user_ids
                         if user_field_id:
                             message_dict['user_id'] = row[user_field_id].id
@@ -312,7 +330,7 @@ class ir_alert(orm.Model):
                         }
 
                         link_string = '{0[server]}/web/webclient/home#model={0[model]}&view_type=list&title=Alerts&page=0&action_id={0[action_id]}'
-                        link_dict = {'server': host_data['value'], 'model': obj_model_data['model'],
+                        link_dict = {'server': base_url, 'model': obj_model_data['model'],
                                      'action_id': config_alert_data['action_id']}
                         message_dict['link'] = link_string.format(link_dict)
                         if exist_record_parent:
@@ -329,7 +347,8 @@ class ir_alert(orm.Model):
             to_remove_ids = self.search(cr, uid, [('model_id', '=', config_alert_data['model_id'][0]),
                                                   ('ids', 'not in', target_model_ids), ('state', '=', 'open')],
                                         context=context)
-            self.write(cr, 1, to_remove_ids, {'state': 'done'}, context)
+            if to_remove_ids:
+                self.write(cr, 1, to_remove_ids, {'state': 'done'}, context)
 
         return True
 
