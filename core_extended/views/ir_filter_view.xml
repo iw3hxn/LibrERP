@@ -2,6 +2,21 @@
 <openerp>
     <data>
 
+        <record id="base.ir_filters_view_tree" model="ir.ui.view">
+             <field name="name">ir.filters.tree</field>
+            <field name="model">ir.filters</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Filters" editable="top">
+                    <field name="name"/>
+                    <field name="model_id" readonly="1" required="1"/>
+                    <field name="user_id" readonly="1"/>
+                    <field name="domain" groups="base.group_extended"/>
+                    <field name="context" groups="base.group_extended"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="ir_filters_view_rules" model="ir.ui.view">
             <field name="name">ir_filters_view_rules</field>
             <field name="model">ir.filters</field>
