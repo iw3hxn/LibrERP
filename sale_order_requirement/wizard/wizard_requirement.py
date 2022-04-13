@@ -6,7 +6,10 @@ class WizardRequirement(orm.TransientModel):
     _description = "Wizard Requirement"
 
     _columns = {
-        'order_line_ids': fields.many2many('order.requirement.line', string='Lines', required=True),
+        'order_id': fields.many2one('order.requirement', string="Order Requirement", required=True),
+        'order_line_ids': fields.many2many('order.requirement.line',
+                                           string='Lines',
+                                           required=False),
     }
 
     def force(self, cr, uid, ids, context):
