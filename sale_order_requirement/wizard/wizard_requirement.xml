@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record id="view_wizard_requirement" model="ir.ui.view">
+            <field name="name">Add Order Line</field>
+            <field name="model">wizard.requirement</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            <form string="Add Order Line" col="4" >
+                <field name="order_line_ids" required="1" colspan="8">
+                    <tree>
+                        <field name="seq" />
+                    <field name="sequence" invisible="1"/>
+                    <field name="row_color" invisible="1"/>
+                    <field name="delivery_date" />
+                    <field name="user_id" />
+                    <field name="has_bom" invisible="1"/>
+                    <field name="product_id"/>
+                    <field name="new_product_id"/>
+                    <field name="qty" sum="qty"/>
+                    <field name="stock_availability"/>
+                    <field name="spare"/>
+                    <field name="state" />
+                    <field name="sale_order_line_id" invisible="1"/>
+                    </tree>
+                </field>
+                <button icon='gtk-cancel' special="cancel"
+                    string="Cancel" />
+                <button name="force" string="Ok"
+                    type="object" icon="gtk-ok" />
+            </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -23,6 +23,7 @@ and choose if manufacture or buy products from suppliers.
         'security/ir.model.access.csv',
         'security/security.xml',
         'wizard/order_requirement_line_add.xml',
+        'wizard/wizard_requirement.xml',
         # 'wizard/order_requirement_line_add_match.xml',
         'views/order_requirement.xml',
         'views/order_requirement_line.xml',

@@ -311,3 +311,30 @@ class order_requirement(orm.Model):
             'context': "{}"
         })
         return action
+
+    def action_force_all(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if not ids:
+            return False
+        order_requirement = self.browse(cr, uid, ids, context)[0]
+        order_requirement_line_ids = []
+        for line in order_requirement.order_requirement_line_ids:
+            if line.state == 'draft':
+                order_requirement_line_ids.append(line.id)
+
+        res_id = self.pool['wizard.requirement'].create(cr, uid, {
+            'order_line_ids': [(6, 0, order_requirement_line_ids)]
+        }, context)
+
+        action_vals = {
+            'type': 'ir.actions.act_window',
+            'name': _('Wizard Requirement'),
+            'res_model': 'wizard.requirement',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [],
+            'target': 'new',
+            'context': {},
+            'res_id': res_id
+        }
+        return action_vals
