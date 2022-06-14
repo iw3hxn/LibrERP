@@ -32,10 +32,10 @@ from report import report_sxw
 import pooler
 
 
-class crm_meeting_report_by_province(report_sxw.rml_parse):
+class Parser(report_sxw.rml_parse):
 
     def __init__(self, cr, uid, name, context):
-        super(crm_meeting_report_by_province, self).__init__(cr, uid, name, context=context)
+        super(Parser, self).__init__(cr, uid, name, context=context)
         self.month = False
         self.year = False
         self.localcontext.update({
@@ -119,4 +119,4 @@ class crm_meeting_report_by_province(report_sxw.rml_parse):
                 'meetings': [],
             }]
 
-report_sxw.report_sxw('report.crm.meeting.province', 'crm.meeting', 'crm_lead_correct/report/crm_meeting_report_by_province.rml', parser=crm_meeting_report_by_province, header='internal')
+report_sxw.report_sxw('report.crm.meeting.province', 'crm.meeting', 'crm_lead_correct/report/crm_meeting_report_by_province.rml', parser=Parser, header='internal')
