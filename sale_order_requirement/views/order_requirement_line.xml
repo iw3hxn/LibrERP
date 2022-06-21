@@ -27,9 +27,13 @@
                     <field name="buy" attrs="{'readonly': ['|', ('is_manufactured','=',True)]}"/>
                     <field name="is_manufactured" attrs="{'invisible': [('has_bom','=',False)]}"
                            on_change="onchange_is_manufactured(is_manufactured,new_product_id,qty)"/>
-                    <field name="supplier_id" attrs="{'invisible': [('is_manufactured', '=', True), ('buy', '=', False)],
-                                'required': [('is_manufactured', '=', False), ('buy', '=', True)],
-                                'readonly': [('state','!=','draft')]}"/>
+                    <field name="supplier_id"
+                           attrs="{ 'invisible': [('is_manufactured', '=', True), ('buy', '=', False)],
+                                    'required': [('is_manufactured', '=', False), ('buy', '=', True)],
+                                    'readonly': [('state','!=','draft')]}"
+                           on_change="onchange_partner_id(supplier_id)"
+                           context="{'supplier_warning': True}"
+                    />
                     <field name="supplier_ids" invisible="1"/>
                     <field name="id" invisible="1"/>
                     <field name="user_id" widget="selection" />
@@ -102,7 +106,10 @@
                                                     'readonly': ['|','|', '|', ('is_manufactured', '=', True),
                                                                      ('product_type','!=','product'),
                                                                      ('level','=',0),
-                                                                     ('state', '!=', 'draft')]}"/>
+                                                                     ('state', '!=', 'draft')]}"
+                                               context="{'supplier_warning': True}"
+
+                                        />
                                         <field name="purchase_order_line_id" domain="[('product_id', '=', product_id), ('partner_id', '=', supplier_id)]"
                                                on_change="onchange_purchase_order_line_id(purchase_order_line_id, context)"
                                                attrs="{'readonly': ['|', '|', ('supplier_id','=',False), ('buy', '=', False), ('state', '!=', 'draft')]}"

@@ -815,6 +815,11 @@ class OrderRequirementLine(orm.Model):
             res.append((ordreqline['id'], name))
         return res
 
+    def onchange_partner_id(self, cr, uid, ids, supplier_id, context=None):
+        res = self.pool['purchase.order'].onchange_partner_id(cr, uid, [], supplier_id)
+        res['value'] = {}
+        return res
+
     def action_reload_bom(self, cr, uid, ids, context):
         temp_mrp_bom_model = self.pool['temp.mrp.bom']
         all_line_to_clear_ids = temp_mrp_bom_model.search(cr, uid, [('order_requirement_line_id', 'in', ids)], context=context)
@@ -871,12 +876,25 @@ class OrderRequirementLine(orm.Model):
 
         return {'value': result_dict}
 
+    def _onchange_product_warning(self, product):
+        warning = {}
+        if product.purchase_line_warn != 'no-message':
+            if product.purchase_line_warn == 'block':
+                raise orm.except_orm(_('Alert for %s !') % (product.name), product.purchase_line_warn_msg)
+            title = _("Warning for %s") % product.name
+            message = product.purchase_line_warn_msg
+            warning['title'] = title
+            warning['message'] = message
+        return warning
+
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result_dict = {}
+        warning = {}
         if new_product_id:
             temp_mrp_bom_model = self.pool['temp.mrp.bom']
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
+            warning = self._onchange_product_warning(product)
             suppliers = self.get_suppliers(cr, uid, ids, product, context)
             # Update BOM according to new product
             # Removing existing temp mrp bom
@@ -914,7 +932,10 @@ class OrderRequirementLine(orm.Model):
             'view_bom': True
         })
 
-        return {'value': result_dict}
+        return {
+            'value': result_dict,
+            'warning': warning
+        }
 
     def onchange_qty(self, cr, uid, ids, qty, context=None):
         temp_mrp_bom_model = self.pool['temp.mrp.bom']
@@ -1031,9 +1052,11 @@ class OrderRequirementLine(orm.Model):
         if obj.purchase_order_id:
             purchase_order_ids = [obj.purchase_order_id.id]
         else:
-            purchase_order_ids = purchase_order_model.search(cr, uid,
-                                                       [('partner_id', '=', supplier_id), ('shop_id', '=', shop_id),
-                                                        ('state', '=', 'draft')], limit=1, context=context)
+            purchase_order_ids = purchase_order_model.search(cr, uid, [
+                ('partner_id', '=', supplier_id),
+                ('shop_id', '=', shop_id),
+                ('state', '=', 'draft')
+            ], limit=1, context=context)
 
         present_order_id = False
         order_line_id = False
@@ -1092,8 +1115,8 @@ class OrderRequirementLine(orm.Model):
             # Extending order if I have found orders to same supplier for the same shop
 
             # Take first order
-            present_order_id = purchase_order_ids[0]
-            present_order = purchase_order_model.browse(cr, uid, present_order_id, context)
+            purchase_id = purchase_order_ids[0]
+            present_order = purchase_order_model.browse(cr, uid, purchase_id, context)
 
             # Search for same product with same UOM in Product lines
             purchase_line_search = [('order_id', 'in', purchase_order_ids), ('product_id', '=', product_id)]
@@ -1117,7 +1140,7 @@ class OrderRequirementLine(orm.Model):
                 purchase_order_line_values.update({
                     # 'account_analytic_id': account_analytic_id,
                     'product_qty': qty,
-                    'order_id': present_order_id,
+                    'order_id': purchase_id,
                     'order_requirement_ids': [(4, line.order_requirement_id.id)],
                     'order_requirement_line_ids': [(4, line.id)],
                     # 'sale_order_ids': [(4, sale_order_id)],
@@ -1130,17 +1153,17 @@ class OrderRequirementLine(orm.Model):
                 purchase_line_id = purchase_order_line_model.create(cr, uid, purchase_order_line_values, context)
                 # Link to line many2many fields
                 line.write({
-                    'purchase_order_ids': [(4, present_order_id)],
+                    'purchase_order_ids': [(4, purchase_id)],
                     'purchase_order_line_ids': [(4, purchase_line_id)],
                 })
 
                 # Add references also to purchase order
                 refence_values = {'sale_order_ids': [(4, sale_order_id)]}
-                purchase_order_model.write(cr, uid, present_order_id, refence_values, context)
+                purchase_order_model.write(cr, uid, purchase_id, refence_values, context)
 
                 if is_temp_bom:
                     # If is a temp mrp bom, associate purchase line also to it
-                    temp_mrp_bom_model.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
+                    temp_mrp_bom_model.write(cr, uid, obj.id, {'purchase_order_id': purchase_id,
                                                              'purchase_order_line_id': purchase_line_id}, context)
             else:
                 # Add qty to existing line
@@ -1190,13 +1213,14 @@ class OrderRequirementLine(orm.Model):
                                                              'purchase_order_line_id': order_line_id}, context)
 
             purchase_vals = {}
-            if present_order_id:
-                purchase_vals.update(purchase_order_ids=[(4, present_order_id)])
+            if purchase_id:
+                purchase_vals.update(purchase_order_ids=[(4, purchase_id)])
             if order_line_id:
                 purchase_vals.update(purchase_order_line_ids=[(4, order_line_id)])
 
             self.write(cr, uid, line.id, purchase_vals, context)
 
+        purchase_order_model.onchange_partner_id(cr, uid, [purchase_id], supplier_id)
         return True
 
     def _manufacture_or_purchase_all(self, cr, uid, line, context):

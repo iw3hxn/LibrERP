@@ -1,6 +1,6 @@
 {
     "name": "Sale Order Requirement",
-    "version": "4.49.71.71",
+    "version": "4.50.71.71",
     "author": "Antonio Mignolli - Didotech SRL",
     "category": 'Sales Management',
     "description": """
@@ -18,6 +18,7 @@ and choose if manufacture or buy products from suppliers.
         "purchase",
         "work_order",
         "res_users_helper_functions",
+        "warning"
     ],
     'data': [
         'security/ir.model.access.csv',

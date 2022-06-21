@@ -348,7 +348,12 @@ class TempMrpBom(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         user = self.pool['res.users'].browse(cr, uid, uid, context)
         # is_split = user.company_id.split_mrp_production
+        order_requirement_line_model = self.pool['order.requirement.line']
         for line in self.browse(cr, uid, ids, context):
+            # test
+            order_requirement_line_model._onchange_product_warning(line.product_id)
+            order_requirement_line_model.onchange_partner_id(cr, uid, ids, line.supplier_id.id, context=None)
+
             is_split = line.order_requirement_line_id.split_mrp_production
             self._manufacture_or_purchase_rec(cr, uid, line, is_split, context)
         return True
@@ -499,7 +504,9 @@ class TempMrpBom(orm.Model):
             'is_manufactured': is_manufactured
         })
 
-        return {'value': ret}
+        product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
+        warning = self.pool['order.requirement.line']._onchange_product_warning(product)
+        return {'value': ret, 'warning': warning}
 
     def onchange_temp_product_qty(self, cr, uid, ids, qty, context=None):
         if 'line_id' not in context:
