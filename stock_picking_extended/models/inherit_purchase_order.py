@@ -45,15 +45,16 @@ class PurchaseOrder(orm.Model):
 
     def onchange_partner_id(self, cr, uid, ids, partner_id):
         res = super(PurchaseOrder, self).onchange_partner_id(cr, uid, ids, partner_id)
-        supplier = self.pool['res.partner'].browse(cr, uid, partner_id)
-        payment_term = supplier.property_payment_term and supplier.property_payment_term.id or False
-        carriage_condition_id = supplier.carriage_condition_id and supplier.carriage_condition_id.id or False
-        res['value'].update(
-            {
-                'payment_term': payment_term,
-                'carriage_condition_id': carriage_condition_id
-            }
-        )
+        if partner_id:
+            supplier = self.pool['res.partner'].browse(cr, uid, partner_id)
+            payment_term = supplier.property_payment_term and supplier.property_payment_term.id or False
+            carriage_condition_id = supplier.carriage_condition_id and supplier.carriage_condition_id.id or False
+            res['value'].update(
+                {
+                    'payment_term': payment_term,
+                    'carriage_condition_id': carriage_condition_id
+                }
+            )
         return res
 
     def action_invoice_create(self, cr, uid, ids, context=None):
