@@ -33,6 +33,7 @@
     'depends': [
         'base',
         'sale',
+        'purchase',
         'warning',
         'account_due_list',
         'res_users_helper_functions'

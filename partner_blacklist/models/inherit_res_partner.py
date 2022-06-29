@@ -24,7 +24,7 @@ COLOR_SELECTION = [
 ]
 
 
-class res_partner(orm.Model):
+class ResPartner(orm.Model):
     _inherit = "res.partner"
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
