@@ -1140,7 +1140,7 @@ class OrderRequirementLine(orm.Model):
                 purchase_order_line_values.update({
                     # 'account_analytic_id': account_analytic_id,
                     'product_qty': qty,
-                    'order_id': purchase_id,
+                    'order_id': present_order_id,
                     'order_requirement_ids': [(4, line.order_requirement_id.id)],
                     'order_requirement_line_ids': [(4, line.id)],
                     # 'sale_order_ids': [(4, sale_order_id)],
@@ -1153,17 +1153,17 @@ class OrderRequirementLine(orm.Model):
                 purchase_line_id = purchase_order_line_model.create(cr, uid, purchase_order_line_values, context)
                 # Link to line many2many fields
                 line.write({
-                    'purchase_order_ids': [(4, purchase_id)],
+                    'purchase_order_ids': [(4, present_order_id)],
                     'purchase_order_line_ids': [(4, purchase_line_id)],
                 })
 
                 # Add references also to purchase order
                 refence_values = {'sale_order_ids': [(4, sale_order_id)]}
-                purchase_order_model.write(cr, uid, purchase_id, refence_values, context)
+                purchase_order_model.write(cr, uid, present_order_id, refence_values, context)
 
                 if is_temp_bom:
                     # If is a temp mrp bom, associate purchase line also to it
-                    temp_mrp_bom_model.write(cr, uid, obj.id, {'purchase_order_id': purchase_id,
+                    temp_mrp_bom_model.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
                                                              'purchase_order_line_id': purchase_line_id}, context)
             else:
                 # Add qty to existing line
@@ -1225,7 +1225,7 @@ class OrderRequirementLine(orm.Model):
         return True
 
     def _manufacture_or_purchase_all(self, cr, uid, line, context):
-        # line is a order_requirement_line, not a bom line
+        # line is an order_requirement_line, not a bom line
         # user = self.pool['res.users'].browse(cr, uid, uid, context)
         #
         # split_mrp_production = user.company_id.split_mrp_production
