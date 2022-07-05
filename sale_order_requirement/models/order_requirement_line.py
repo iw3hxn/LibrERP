@@ -1115,8 +1115,8 @@ class OrderRequirementLine(orm.Model):
             # Extending order if I have found orders to same supplier for the same shop
 
             # Take first order
-            purchase_id = purchase_order_ids[0]
-            present_order = purchase_order_model.browse(cr, uid, purchase_id, context)
+            present_order_id = purchase_order_ids[0]
+            present_order = purchase_order_model.browse(cr, uid, present_order_id, context)
 
             # Search for same product with same UOM in Product lines
             purchase_line_search = [('order_id', 'in', purchase_order_ids), ('product_id', '=', product_id)]
@@ -1213,8 +1213,9 @@ class OrderRequirementLine(orm.Model):
                                                              'purchase_order_line_id': order_line_id}, context)
 
             purchase_vals = {}
-            if purchase_id:
-                purchase_vals.update(purchase_order_ids=[(4, purchase_id)])
+            if present_order_id:
+                purchase_vals.update(purchase_order_ids=[(4, present_order_id)])
+                purchase_id = present_order_id
             if order_line_id:
                 purchase_vals.update(purchase_order_line_ids=[(4, order_line_id)])
 
