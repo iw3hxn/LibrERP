@@ -12,6 +12,11 @@ class FullOrderRequirementLine(orm.Model):
     _rec_name = 'product_id'
     _auto = False
     _order = 'bom_id, bom_parent_id'
+    
+    def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
+        # [['order_requirement_id', '=', 380], ['categ_id', 'child_of', 228]]
+        print(args)
+        return super(FullOrderRequirementLine, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         res = {}
