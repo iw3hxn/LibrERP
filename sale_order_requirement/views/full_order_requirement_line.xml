@@ -8,6 +8,10 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Full Order Requirement">
+                    <filter icon="terp-document-new" string="Draft" domain="[('state','=','draft')]"/>
+                    <filter icon="terp-check" string="Confirmed" domain="[('state','=', 'done')]"/>
+
+                    <separator orientation="vertical"/>
                     <field name="order_requirement_id" />
                     <field name="supplier_id"/>
                     <field name="categ_id"/>
@@ -16,9 +20,11 @@
                     <group expand="0" string="Group By...">
                         <filter string="Order Requirement" name="by_order_requirement_id"  domain="[]" context="{'group_by': 'order_requirement_id'}" />
                         <filter string="Supplier" name="by_customer_id" icon="terp-personal" domain="[]" context="{'group_by': 'supplier_id'}"/>
-                        <filter string="Product" name="by_product" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'product_id'}"/>
                         <separator orientation="vertical"/>
+                        <filter string="Product" name="by_product" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'product_id'}"/>
                         <filter string="Category" name="by_category" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'categ_id'}"/>
+                        <separator orientation="vertical"/>
+                        <filter string="State" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
                     </group>
                 </search>
             </field>
