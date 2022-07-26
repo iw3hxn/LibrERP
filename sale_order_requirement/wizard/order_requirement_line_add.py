@@ -17,8 +17,9 @@ class OrderRequirementLineAdd(orm.TransientModel):
         if context.get('active_id'):
             line = self.pool['order.requirement.line'].browse(cr, uid, context['active_id'], context=context)
             if 'order_id' in fields:
-                order_id = line.order_requirement_id.sale_order_id
-                res.update(order_id=order_id.id)
+                order_id = line.order_requirement_id and line.order_requirement_id.sale_order_id
+                if order_id:
+                    res.update(order_id=order_id.id)
 
         return res
 
@@ -82,15 +83,26 @@ class OrderRequirementLineAdd(orm.TransientModel):
                     'company_id': order.company_id.id,
                     'auto_picking': True,
                 }
-                if order.project_project:
+                create_project = True if order.project_project else False
+                if create_project:
+                    if order_requirement_line.product_id.is_kit:
+                        create_project = False
+
+                picking_id = stock_picking_obj.create(cr, uid, picking_vals, context)
+                if create_project:
                     project = order.project_project
-                    picking_vals.update({
+                    picking_vals = {
                         'project_id': project.id,
                         'account_id': project.analytic_account_id.id,
                         'sale_project': project.id
-                    })
-
-                picking_id = stock_picking_obj.create(cr, uid, picking_vals, context)
+                    }
+                else:
+                    picking_vals = {
+                        'project_id': False,
+                        'account_id': False,
+                        'sale_project': False
+                    }
+                stock_picking_obj.write(cr, uid, picking_id, picking_vals, context)
 
                 location_id = order.shop_id.warehouse_id.lot_stock_id.id
                 output_id = order.shop_id.warehouse_id.lot_output_id.id
