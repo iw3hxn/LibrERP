@@ -745,7 +745,7 @@ class commitment_line(orm.AbstractModel):
             if not res.get('xml_Cognome') or not res.get('xml_Nome'):
                 res['xml_Error'] += self._get_error(_('Invalid First or Last name %s') % (partner.name), context)
         else:
-            res['xml_Denominazione'] = partner.name
+            res['xml_Denominazione'] = partner.name[:80]
             if not partner.vat and \
                     (res['xml_Nazione'] == 'IT' or
                      res['xml_Nazione'] in EU_COUNTRIES):
