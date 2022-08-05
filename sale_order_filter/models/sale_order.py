@@ -34,8 +34,8 @@ class sale_order(orm.Model):
         result = []
         first_order_id = self.search(cr, uid, [('date_order', '!=', False)], order='date_order asc', limit=1, context=context)
         if first_order_id:
-            first_order = self.browse(cr, uid, first_order_id[0], context)
-            first_year = datetime.strptime(first_order.date_order, '%Y-%m-%d').year
+            date_order = self.read(cr, uid, first_order_id[0], ['date_order'], context)['date_order']
+            first_year = datetime.strptime(date_order, '%Y-%m-%d').year
         else:
             first_year = datetime.today().year
         
