@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Sales commissions',
-    'version': '3.1.0.2',
+    'version': '4.1.0.2',
     'author': 'Pexego, Didotech srl',
     "category": "Generic Modules/Sales & Purchases",
     'depends': [
