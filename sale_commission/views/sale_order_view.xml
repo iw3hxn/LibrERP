@@ -11,12 +11,13 @@
             <field name="arch" type="xml">
 
                 <field name="origin" position="after">
-                    <group colspan="2" col="2" groups="sale_commission.commission_technical">
+                    <group colspan="2" col="2" groups="sale_commission.commission_user">
                         <separator colspan="2" string="Agents/Consultancy"/>
                         <field name="sale_agent_ids" nolabel="1">
                             <tree string="Agents and Commissions" editable="top">
                                 <field name="agent_id" on_change="onchange_agent_id(agent_id)"/>
                                 <field name="commission_id" on_change="onchange_commission_id(agent_id,commission_id)"/>
+                                <field name="amount" sum="sum"/>
                             </tree>
                         </field>
                     </group>

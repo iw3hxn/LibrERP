@@ -21,23 +21,23 @@
 ##############################################################################
 
 
-from . import invoice_line_agent
-from . import res_partner_agent
-from . import product_agent_commission
-from . import sale_agent
-from . import sale_line_agent
-from . import sale_order_agent
 from . import commission
 from . import commission_section
 from . import hr_agent_commission
-from . import inherit_res_partner
-from . import inherit_crm_case_section
 from . import inherit_account_invoice
 from . import inherit_account_invoice_line
-from . import inherit_stock_picking
+from . import inherit_crm_case_section
+from . import inherit_product_product
+from . import inherit_res_partner
 from . import inherit_sale_order
 from . import inherit_sale_order_line
-from . import inherit_product_product
-
+from . import inherit_stock_picking
+from . import product_agent_commission
+from . import res_partner_agent
+from . import sale_agent
+from . import sale_line_agent
+from . import sale_order_agent
+# invoice_line_agent must be the last
+from . import invoice_line_agent
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

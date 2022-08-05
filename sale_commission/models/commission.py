@@ -24,6 +24,26 @@ class Commission(orm.Model):
         'type': lambda *a: 'fix',
     }
 
+    def get_amount_order(self, cr, uid, ids, amount_untaxed, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        commission = self.browse(cr, uid, ids, context)[0]
+        amount = 0
+        if commission.type == 'sections':
+            base = amount_untaxed
+            for rule in commission.sections:
+                commission_from = rule.commission_from
+                if amount_untaxed >= commission_from:
+                    commission_until = rule.commission_until
+                    if commission_until:
+                        amount_base = min(base, commission_until - commission_from)
+                    else:
+                        amount_base = base
+                    section_commission = (amount_base * rule.percent) / 100
+                    amount += section_commission
+                    base = max(base - amount_base, 0)
+
+        return amount
+
     def calculate_sections(self, cr, uid, ids, base, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)

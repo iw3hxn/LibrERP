@@ -22,8 +22,9 @@
 
 """Modificamos las ventas para incluir el comportamiento de comisiones"""
 
-from openerp.osv import orm, fields
 from tools.translate import _
+
+from openerp.osv import orm, fields
 
 
 class sale_order_agent(orm.Model):
@@ -39,10 +40,17 @@ class sale_order_agent(orm.Model):
             res.append((obj.id, obj.agent_id.name))
         return res
 
+    def _compute_amount(self, cr, uid, ids, name, arg, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = line.commission_id.get_amount_order(line.sale_id.amount_untaxed)
+        return res
+
     _columns = {
         'sale_id': fields.many2one('sale.order', 'Sale order', required=False, ondelete='cascade', help=''),
         'agent_id': fields.many2one('sale.agent', 'Agent', required=True, ondelete='cascade', help=''),
         'commission_id': fields.many2one('commission', 'Applied commission', required=True, help=''),
+        'amount': fields.function(_compute_amount, method=True, string='Amount', type='float', store=False),
     }
 
     def onchange_agent_id(self, cr, uid, ids, agent_id, context=None):

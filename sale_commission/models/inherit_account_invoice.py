@@ -20,6 +20,7 @@
 #
 ##############################################################################
 
+import decimal_precision as dp
 """invoice agents"""
 
 from openerp.osv import orm, fields
@@ -31,13 +32,41 @@ class account_invoice(orm.Model):
 
     _inherit = "account.invoice"
 
+    def _compute_sale_agent_commission(self, cr, uid, ids, name, arg, context=None):
+
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        agent_id = int(context.get('agent_id', 0))
+        invoice_line_agent_model = self.pool["invoice.line.agent"]
+        res = {}
+        for invoice_id in ids:
+            rule = invoice_line_agent_model.search_browse(cr, uid, [('invoice_id', '=', invoice_id), ('agent_id', '=', agent_id) ], context=context, limit=1)
+            res[invoice_id] = rule and rule.amount or 0.0
+        return res
+
+    def _compute_sale_agent_list(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for invoice in self.browse(cr, uid, ids, context=context):
+            agents = []
+            for agent in invoice.sale_agent_ids:
+                agents.append(agent.agent_id.name)
+
+            res[invoice.id] = ', '.join(agents)
+        return res
+
     _columns = {
-        'section_id': fields.many2one('crm.case.section', 'Sales Team', domain=[('sale_agent_id', '!=', False)], states={'draft': [('readonly', False)]}),
-        'agent_id': fields.related('section_id', 'sale_agent_id', type='many2one', relation='sale.agent',
+        'section_id': fields.many2one('crm.case.section', 'Sales Team', domain=[('sale_agent_id', '!=', False)],
+                                      states={'draft': [('readonly', False)]}),
+
+        'agent_id': fields.related('sale_agent_ids', 'agent_id', type='many2one', relation='sale.agent',
                                    string='Agent'),
         'sale_order_ids': fields.many2many(
             'sale.order', 'sale_order_invoice_rel', 'invoice_id', 'order_id', 'Sale orders'
-        )
+        ),
+        'sale_agent_ids': fields.one2many('invoice.line.agent', 'invoice_id', 'Agents', readonly=False),
+        'sale_agent_list': fields.function(_compute_sale_agent_list, type='text', string='Agents'),
+        'sale_agent_commission': fields.function(_compute_sale_agent_commission, type='float', string='Sale Commission',
+                                                 digits_compute=dp.get_precision('Sale Price')),
     }
 
     _default = {
@@ -57,16 +86,35 @@ class account_invoice(orm.Model):
         res = super(account_invoice, self).onchange_partner_id(cr, uid, ids, type, part, date_invoice=date_invoice,
                                                                payment_term=payment_term,
                                                                partner_bank_id=partner_bank_id, company_id=company_id)
-
+        context = self.pool['res.users'].context_get(cr, uid)
+        sale_order_agent = self.pool['invoice.line.agent']
+        ids and sale_order_agent.unlink(cr, uid, sale_order_agent.search(cr, uid, [('invoice_id', 'in', ids)]), context)
+        sale_agent_ids = []
         if part and res.get('value', False):
-
-            section = self.pool['res.partner'].browse(cr, uid, part).section_id
+            partner = self.pool['res.partner'].browse(cr, uid, part, context)
+            section = partner.section_id
             if section:
                 res['value']['section_id'] = section.id
+            if partner.section_id and partner.section_id.sale_agent_id:
+                vals = {
+                    'commission_id': partner.section_id.sale_agent_id.commission.id,
+                }
+                sale_agent_id = sale_order_agent.create(cr, uid, vals, context)
+                sale_agent_ids.append(int(sale_agent_id))
+            else:
+                for partner_agent in partner.commission_ids:
+                    vals = {
+                        'agent_id': partner_agent.agent_id.id,
+                        'commission_id': partner_agent.commission_id.id,
+                        'invoice_id': ids and ids[0] or False
+                    }
+                    sale_agent_id = sale_order_agent.create(cr, uid, vals, context)
+                    sale_agent_ids.append(int(sale_agent_id))
 
-            partner = self.pool['res.partner'].browse(cr, uid, part)
             if partner.commission_ids:
                 res['value']['agent_id'] = partner.commission_ids[0].agent_id.id
+
+            res['value']['sale_agent_ids'] = sale_agent_ids
 
         return res
 
@@ -132,3 +180,4 @@ class account_invoice(orm.Model):
         res = super(account_invoice, self).write(cr, uid, ids, values, context=context)
 
         return res
+

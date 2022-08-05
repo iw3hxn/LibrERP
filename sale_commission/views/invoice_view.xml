@@ -11,7 +11,7 @@
                     <field name="agent_id"/>
                     <field name="commission_id"/>
                     <field name="settled"/>
-                    <field name="quantity"/>
+                    <field name="amount"/>
                 </tree>
             </field>
         </record>
@@ -25,7 +25,7 @@
                     <field name="agent_id" on_change="onchange_agent_id(agent_id)"/>
                     <field name="commission_id" on_change="onchange_commission_id(agent_id, commission_id)"/>
                     <field name="settled"/>
-                    <field name="quantity" readonly="1"/>
+                    <field name="amount" readonly="1"/>
                 </form>
             </field>
         </record>
@@ -53,7 +53,6 @@
             <field name="arch" type="xml">
                 <field name="period_id" position="after">
                     <field name="section_id"/>
-                    <field name="agent_id" invisible="1"/>
                 </field>
             </field>
         </record>
@@ -66,10 +65,59 @@
             <field name="arch" type="xml">
                 <field name="move_id" position="after">
                     <field name="section_id"/>
-                    <field name="agent_id" invisible="1"/>
+                    <group colspan="2" col="2" groups="sale_commission.commission_user">
+                        <separator colspan="2" string="Agents/Consultancy"/>
+                        <field name="sale_agent_ids" nolabel="1">
+                            <tree string="Agents and Commissions" editable="top">
+                                <field name="agent_id" on_change="onchange_agent_id(agent_id)"/>
+                                <field name="commission_id" on_change="onchange_commission_id(agent_id,commission_id)"/>
+                                <field name="amount" sum="sum"/>
+                            </tree>
+                        </field>
+                    </group>
                 </field>
             </field>
         </record>
+
+        <record id="view_account_invoice_filter_by_year" model="ir.ui.view">
+            <field name="name">account.invoice.filter.by.year</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="agent_id"
+                           widget="selection"
+                           invisible="context.get('type') != 'out_invoice'"
+                           groups="sale_commission.commission_user"
+                           context="{'agent_id': self, 'show_agent': True}"
+                    />
+                    <filter name="only_agent"
+                            invisible="context.get('type') != 'out_invoice'"
+                            icon="terp-stock_symbol-selection"
+                            domain="[['sale_agent_ids', '!=', False]]"
+                            string="Con Agenti"
+                            groups="sale_commission.commission_user"
+                            context="{'show_agent': True}"
+                    />
+                </field>
+
+            </field>
+        </record>
+
+        <record id="invoice_tree_reg_date" model="ir.ui.view">
+            <field name="name">account.invoice.tree.bank</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="sale_agent_list" invisible="not context.get('show_agent')" groups="sale_commission.commission_user"/>
+                    <field name="sale_agent_commission" invisible="not context.get('agent_id')" groups="sale_commission.commission_user"/>
+                </field>
+            </field>
+        </record>
+
 
     </data>
 </openerp>

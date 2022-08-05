@@ -28,6 +28,7 @@ class commission_section(orm.Model):
 
     _name = "commission.section"
     _description = "Commission section"
+    _order = 'commission_from asc'
     _columns = {
         'commission_from': fields.float('From'),
         'commission_until': fields.float('Until'),
@@ -35,5 +36,25 @@ class commission_section(orm.Model):
         'commission_id': fields.many2one('commission', 'Commission', required=True)
     }
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+    def _check_commission_overlap(self, cr, uid, ids, context=None):
+        for section in self.browse(cr, uid, ids, context=context):
+            where = []
+            if section.commission_from:
+                where.append("((commission_until > '%s') or (commission_until is null))" % (section.commission_from,))
+            if section.commission_until:
+                where.append("((commission_from < '%s') or (commission_from is null))" % (section.commission_until,))
+
+            cr.execute('SELECT id FROM commission_section WHERE ' + ' and '.join(where) + (where and ' and ' or '') +
+                       'commission_id = %s AND id != %s', (
+                           section.commission_id.id,
+                           section.id))
+            if cr.fetchall():
+                return False
+        return True
+
+    _constraints = [
+        (_check_commission_overlap, 'You cannot have section that overlap!',
+            ['commission_from', 'commission_until'])
+    ]
+
 

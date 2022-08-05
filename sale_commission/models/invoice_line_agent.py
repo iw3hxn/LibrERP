@@ -23,24 +23,26 @@
 """invoice agents"""
 
 from openerp.osv import orm, fields
-from tools.translate import _
 
 
 class invoice_line_agent(orm.Model):
     """invoice agents"""
 
     _name = "invoice.line.agent"
+    _inherit = "sale.order.agent"
+
+    def _compute_amount(self, cr, uid, ids, name, arg, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = line.commission_id.get_amount_order(line.invoice_id.amount_untaxed)
+        return res
 
     _columns = {
-        'invoice_line_id': fields.many2one('account.invoice.line', 'Invoice Line', required=False, ondelete='cascade',
-                                           help=''),
-        'invoice_id': fields.related('invoice_line_id', 'invoice_id', type='many2one', relation='account.invoice',
-                                     string='Invoice'),
-        'invoice_date': fields.related('invoice_id', type='date_invoice', readonly=True),
-        'agent_id': fields.many2one('sale.agent', 'Agent', required=True, ondelete='cascade', help=''),
-        'commission_id': fields.many2one('commission', 'Applied commission', required=True, help=''),
+        'invoice_line_id': fields.many2one('account.invoice.line', 'Invoice Line', required=False, ondelete='cascade'),
+        'invoice_id': fields.many2one('account.invoice', required=True, ondelete='cascade', string='Invoice'),
+        'invoice_date': fields.related('invoice_id.date_invoice', type='date', readonly=True),
         'settled': fields.boolean('Settled', readonly=True),
-        'quantity': fields.float('Settled amount')
+        'amount': fields.function(_compute_amount, method=True, string='Amount', type='float', store=False),
     }
     _defaults = {
         'settled': lambda *a: False,
@@ -59,47 +61,4 @@ class invoice_line_agent(orm.Model):
             if line_agent.commission_id.type == 'fix' and line_agent.commission_id.fix_qty:
                 quantity = line_agent.invoice_line_id.price_subtotal * (line_agent.commission_id.fix_qty / 100.0)
                 self.write(cr, uid, line_agent.id, {'quantity': quantity}, context)
-
-    def onchange_agent_id(self, cr, uid, ids, agent_id, context=None):
-        """al cambiar el agente se le carga la comisión"""
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
-        result = {}
-        value = {}
-
-        if agent_id:
-            agent = self.pool['sale.agent'].browse(cr, uid, agent_id, context)
-            value['commission_id'] = agent.commission.id
-
-            agent_line = self.browse(cr, uid, ids, context)
-            if agent_line:
-                value['quantity'] = agent_line[0].invoice_line_id.price_subtotal * (agent.commission.fix_qty / 100.0)
-            else:
-                value['quantity'] = 0
-
-        result['value'] = value
-        return result
-
-    def onchange_commission_id(self, cr, uid, ids, agent_id, commission_id, context=None):
-        """alerta al usuario sobre la comisión elegida"""
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
-        result = {}
-        value = {}
-        if commission_id and ids:
-            partner_commission = self.pool['commission'].browse(cr, uid, commission_id, context)
-            agent_line = self.browse(cr, uid, ids)
-            value['quantity'] = agent_line[0].invoice_line_id.price_subtotal * (partner_commission.fix_qty / 100.0)
-            result['value'] = value
-            if partner_commission.sections:
-                if agent_id:
-                    agent = self.pool['sale.agent'].browse(cr, uid, agent_id, context)
-
-                    if agent.commission.id != partner_commission.id:
-                        result['warning'] = {}
-                        result['warning']['title'] = _('Fee installments!')
-                        result['warning']['message'] = _(
-                            'A commission has been assigned by sections that does not match that defined for the agent by default, so that these sections shall apply only on this bill.')
-        return result
-
 
