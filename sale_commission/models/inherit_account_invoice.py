@@ -87,10 +87,10 @@ class account_invoice(orm.Model):
                                                                payment_term=payment_term,
                                                                partner_bank_id=partner_bank_id, company_id=company_id)
         context = self.pool['res.users'].context_get(cr, uid)
-        sale_order_agent = self.pool['invoice.line.agent']
-        ids and sale_order_agent.unlink(cr, uid, sale_order_agent.search(cr, uid, [('invoice_id', 'in', ids)]), context)
+        invoice_line_agent_model = self.pool['invoice.line.agent']
+        ids and invoice_line_agent_model.unlink(cr, uid, invoice_line_agent_model.search(cr, uid, [('invoice_id', 'in', ids)]), context)
         sale_agent_ids = []
-        if part and res.get('value', False):
+        if part and res.get('value', False) and type in ['out_invoice', 'out_refund'] and ids:
             partner = self.pool['res.partner'].browse(cr, uid, part, context)
             section = partner.section_id
             if section:
@@ -98,8 +98,9 @@ class account_invoice(orm.Model):
             if partner.section_id and partner.section_id.sale_agent_id:
                 vals = {
                     'commission_id': partner.section_id.sale_agent_id.commission.id,
+                    'invoice_id': ids and ids[0] or False
                 }
-                sale_agent_id = sale_order_agent.create(cr, uid, vals, context)
+                sale_agent_id = invoice_line_agent_model.create(cr, uid, vals, context)
                 sale_agent_ids.append(int(sale_agent_id))
             else:
                 for partner_agent in partner.commission_ids:
@@ -108,7 +109,7 @@ class account_invoice(orm.Model):
                         'commission_id': partner_agent.commission_id.id,
                         'invoice_id': ids and ids[0] or False
                     }
-                    sale_agent_id = sale_order_agent.create(cr, uid, vals, context)
+                    sale_agent_id = invoice_line_agent_model.create(cr, uid, vals, context)
                     sale_agent_ids.append(int(sale_agent_id))
 
             if partner.commission_ids:
