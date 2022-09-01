@@ -36,4 +36,9 @@ class account_invoice_line(orm.Model):
                                           help="Commissions asociated to invoice line."),
     }
 
+    def copy_data(self, cr, uid, ids, default=None, context=None):
+        if not default:
+            default = {}
+        default.update({'commission_ids': False})
+        return super(account_invoice_line, self).copy_data(cr, uid, ids, default, context=context)
 
