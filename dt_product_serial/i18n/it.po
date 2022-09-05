@@ -488,3 +488,48 @@ msgstr "Inviato"
 #: view:stock.partial.picking.line:0
 msgid "Product code for search in line"
 msgstr "Ricerca prodotto tra le righe"
+
+#. module: dt_product_serial
+#: view:stock.production.lot.reconcile:0
+msgid "Reconciliation"
+msgstr "Riconcilia"
+
+
+#. module: dt_product_serial
+#: field:stock.production.lot.reconcile,trans_nbr:0
+msgid "# of Transaction"
+msgstr "# di Transazioni"
+
+
+#. module: dt_product_serial
+#: view:stock.production.lot.reconcile:0
+msgid "Reconcile"
+msgstr "Riconcilia"
+
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_production_lot_reconcile.py:38
+#, python-format
+msgid "For Reconcile you must select same product"
+msgstr "Per riconciliare devi selezionare lo stesso prodotto"
+
+
+#. module: dt_product_serial
+#: view:stock.production.lot.reconcile:0
+msgid "Reconciliation transactions"
+msgstr "Movimenti da Riconciliare"
+
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_production_lot_reconcile.py:41
+#, python-format
+msgid "For Reconcile you must select product with 0 move"
+msgstr "Per riconciliare devi selezionare prodotti la cui somma è 0"
+
+
+#. module: dt_product_serial
+#: model:ir.actions.act_window,name:dt_product_serial.action_reconcile_stock_production_lot
+msgid "Reconcile Stock Production Lot"
+msgstr "Riconcilia i movimenti per Lotto"
+
+

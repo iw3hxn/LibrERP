@@ -19,6 +19,7 @@
 #
 ##############################################################################
 
-#from . import stock_splitinto
-from . import stock_partial_picking
 from . import stock_move
+# from . import stock_splitinto
+from . import stock_partial_picking
+from . import stock_production_lot_reconcile
