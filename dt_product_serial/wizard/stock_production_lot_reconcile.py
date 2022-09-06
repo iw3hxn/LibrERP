@@ -37,8 +37,6 @@ class StockProductionLotReconcile(orm.TransientModel):
         if len(list(set(stock_production_lots.mapped('product_id')))) != 1:
             raise orm.except_orm(_('Processing Error'), _('For Reconcile you must select same product'))
         stock_available = sum(stock_production_lots.mapped('stock_available'))
-        if float_compare(stock_available, 0, stock_production_lots.mapped('product_id')[0].uom_id.id):
-            raise orm.except_orm(_('Processing Error'), _('For Reconcile you must select product with 0 move'))
 
         return {'trans_nbr': len(context['active_ids']), 'credit': stock_available}
 
@@ -59,7 +57,7 @@ class StockProductionLotReconcile(orm.TransientModel):
 
         if 'active_ids' in context and context['active_ids']:
             stock_picking_vals = {
-                'name': _('LOT INV'),
+                'name': '/',
                 'origin': _('LOT INV'),
                 'move_type': 'one',
                 'type': 'internal'
@@ -67,8 +65,11 @@ class StockProductionLotReconcile(orm.TransientModel):
             picking_id = stock_picking_model.create(cr, uid, stock_picking_vals, context)
 
             move_ids = []
-            for line in stock_production_lot_model.browse(cr, uid, context['active_ids'], context=context):
-                change = - line.stock_available
+            stock_moves = stock_production_lot_model.browse(cr, uid, context['active_ids'], context=context)
+            qty = min(stock_moves.mapped('stock_available'))
+
+            for line in stock_moves:
+                change = qty if line.stock_available > 0 else -qty
                 lot_id = line.id
                 if change:
                     location_id = line.product_id.product_tmpl_id.property_stock_inventory.id

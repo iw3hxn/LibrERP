@@ -10,6 +10,7 @@
                 <form string="Reconciliation">
                     <separator string="Reconciliation Move" colspan="4"/>
                     <field name="trans_nbr"/>
+                    <field name="credit" />
                     <group colspan="4" col="6">
                         <label string="" colspan="2"/>
                         <button icon="gtk-cancel" special="cancel" string="Cancel"/>
