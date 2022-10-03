@@ -1227,3 +1227,8 @@ msgstr "Colore Riga"
 #, python-format
 msgid "You can't reopen Sale Order that already generated Requirement Order"
 msgstr "Non puoi riaprire un Ordine di Vendita con un Fabbisogno Ordine già creato"
+
+#. module: sale_order_requirement
+#: field:order.requirement,group_purchase_by_sale_order:0
+msgid "Group Purchase by Sale Order"
+msgstr "Raggruppa gli ordini d'acquisto per Ordine di Vendita"

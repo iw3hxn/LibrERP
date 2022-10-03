@@ -153,6 +153,7 @@ class order_requirement(orm.Model):
                                                     string='Purch. orders approved', readonly=True),
         'purchase_orders_state': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
                                                  string='Deliveries', readonly=True),
+        'group_purchase_by_sale_order': fields.boolean("Group Purchase by Sale Order", default=False)
     }
 
     _defaults = {

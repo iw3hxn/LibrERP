@@ -1028,10 +1028,12 @@ class OrderRequirementLine(orm.Model):
         product_id = product.id
 
         if is_temp_bom:
+            group_purchase_by_sale_order = obj.order_requirement_line_id.order_requirement_id.group_purchase_by_sale_order
             qty = obj.product_qty
             line = obj.order_requirement_line_id
             obj_formatted_id = [(4, obj.id)]
         else:
+            group_purchase_by_sale_order = obj.order_requirement_id.group_purchase_by_sale_order
             qty = obj.qty
             line = obj
             obj_formatted_id = False
@@ -1052,11 +1054,15 @@ class OrderRequirementLine(orm.Model):
         if obj.purchase_order_id:
             purchase_order_ids = [obj.purchase_order_id.id]
         else:
-            purchase_order_ids = purchase_order_model.search(cr, uid, [
+            purchase_search_domain = [
                 ('partner_id', '=', supplier_id),
                 ('shop_id', '=', shop_id),
                 ('state', '=', 'draft')
-            ], limit=1, context=context)
+            ]
+            if group_purchase_by_sale_order:
+                purchase_search_domain.append(('sale_order_ids', 'in', [sale_order_id]))
+
+            purchase_order_ids = purchase_order_model.search(cr, uid, purchase_search_domain, limit=1, context=context)
 
         present_order_id = False
         order_line_id = False

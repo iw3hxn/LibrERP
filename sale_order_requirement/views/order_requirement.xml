@@ -49,6 +49,7 @@
                     </group>
                     <notebook colspan="4">
                         <page string="Order Requeriment">
+                            <field name="group_purchase_by_sale_order" />
                             <group col="1" colspan="4">
                                 <field name="order_requirement_line_ids" nolabel="1" context="{'order_id': id}"/>
                             </group>
