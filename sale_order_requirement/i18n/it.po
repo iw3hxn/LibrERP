@@ -182,7 +182,12 @@ msgstr "Ordini di Produzione"
 #: field:order.requirement.line,split_mrp_production:0
 #: field:res.company,split_mrp_production:0
 msgid "Split Production order from order requirement"
-msgstr "Dividi l'Ordine di Produzione dal Fabbisogno Ordine"
+msgstr "Crea un MO per ogni livello"
+
+#. module: sale_order_requirement
+#: field:mrp.routing,force_single_production_order:0
+msgid "Force Single MO"
+msgstr "Forza un singolo MO"
 
 #. module: sale_order_requirement
 #: view:order.requirement.line.add:0

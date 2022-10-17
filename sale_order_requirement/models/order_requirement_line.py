@@ -1278,7 +1278,7 @@ class OrderRequirementLine(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if not ids:
             return False
-        line = self.browse(cr, uid, ids, context)[0]
+        line = self.browse(cr, uid, ids[0], context)
 
         # is_manufactured = line.is_manufactured
         qty_mult = line.qty
@@ -1296,10 +1296,13 @@ class OrderRequirementLine(orm.Model):
             'is_manufactured': is_manufactured,
             'supplier_ids': supplier_ids_formatted
         })
+        if product.bom_lines:
+            if product.bom_lines[0].routing_id and product.bom_lines[0].routing_id.force_single_production_order:
+                line_vals['split_mrp_production'] = False
 
         self.write(cr, uid, line.id, line_vals, context)
         # Reload line
-        line = self.browse(cr, uid, ids, context)[0]
+        line = self.browse(cr, uid, ids[0], context)
 
         if line.cost == 0 or line.original_cost == 0:
             total_cost = line.new_product_id.cost_price
