@@ -8,6 +8,9 @@ class mrp_routing_workcenter(osv.Model):
 
     def _get_cost_efficiency(self, cr, uid, ids, context):
         res = {}
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+
         for line in self.browse(cr, uid, ids, context):
             res[line.id] = line.cost_efficiency
         return res
@@ -19,7 +22,7 @@ class mrp_routing_workcenter(osv.Model):
             cycle = wline.cycle_nbr
             # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
             #  float(wc_use.hour_nbr*mult + ((wc.time_start or 0.0)+(wc.time_stop or 0.0)+cycle*(wc.time_cycle or 0.0)) * (wc.time_efficiency or 1.0)),
-            cost_efficiency = wline._get_cost_efficiency()[wline.id]
+            cost_efficiency = self._get_cost_efficiency(cr, uid, wline.id, context)[wline.id]
             cost = (wc.costs_cycle * cycle + wc.costs_hour * (wline.hour_nbr + (wc.time_start or 0.0) + (wc.time_stop or 0.0))) * (wc.time_efficiency or 1.0)
             # cost = line['hour_nbr'] * line['costs_hour'] * line['cycle_nbr']
             res[wline['id']] = cost * cost_efficiency
