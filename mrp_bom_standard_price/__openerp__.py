@@ -23,12 +23,12 @@
 #"license" : "AGPL-3",
 {
     "name": "This module inherits standard price field in mrp.bom", 
-    "version": "3.3.2.8",
+    "version": "3.4.2.8",
     "author": "Vauxoo, Didotech",
     "category": "Generic Modules", 
     "description": """This module inherits standard price field in mrp.bom and also sequence
     """, 
-    "website": "http://www.didotech.com",
+    "website": "https://www.didotech.com",
     "license": "", 
     "depends": [
         "product", 
@@ -39,6 +39,7 @@
     "data": [
         "views/mrp_bom_view.xml",
         "views/mrp_routing_view.xml",
+        "views/mrp_routing_workcenter_view.xml",
         "views/product_product_view.xml",
     ], 
     "test": [], 
