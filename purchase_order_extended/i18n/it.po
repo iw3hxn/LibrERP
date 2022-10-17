@@ -34,3 +34,9 @@ msgstr "Questo metodo di pagamento verrà utilizzato rispetto a quello di defaul
 #: field:purchase.order,contact_id:0
 msgid "Contact"
 msgstr "Contatto"
+
+#. module: purchase_order_extended
+#: field:purchase.order.line,delivered_qty:0
+msgid "Delivered Qty"
+msgstr "Q.tà Cons"
+

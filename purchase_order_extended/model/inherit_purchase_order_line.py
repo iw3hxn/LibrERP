@@ -23,6 +23,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+import decimal_precision as dp
 
 
 class purchase_order_line(orm.Model):
@@ -43,12 +44,25 @@ class purchase_order_line(orm.Model):
     #     for line_id in self.pool['purchase.order.line'].search(cr, uid, [('order_id', 'in', ids)], context=context):
     #         result[line_id] = True
     #     return result.keys()
+    def _delivered_qty(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            qty = 0
+            for move in line.move_ids:
+                if move.state == 'done':
+                    qty += move.product_qty
+
+            res[line.id] = qty
+        return res
 
     _columns = {
         'seq': fields.function(_get_order_line_sequence, string='Line #', type='integer', method=True),
         'sequence': fields.integer('Sequence',
                                    help="Gives the sequence order when displaying a list of sales order lines."),
-        'date_order': fields.related('order_id', 'date_order', type='date', string='Order Date', readonly=True, store=False)
+        'date_order': fields.related('order_id', 'date_order', type='date', string='Order Date', readonly=True, store=False),
+        'delivered_qty': fields.function(_delivered_qty, digits_compute=dp.get_precision('Product UoM'),
+                                         string='Delivered Qty'),
     }
 
     _order = 'sequence asc, id'

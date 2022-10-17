@@ -24,7 +24,7 @@
 
 {
     "name": "Purchase Order Extended",
-    "version": "3.5.26.10",
+    "version": "3.6.26.10",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Purchase',
