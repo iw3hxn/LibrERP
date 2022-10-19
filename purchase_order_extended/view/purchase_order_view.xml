@@ -63,7 +63,7 @@
                     <field name="sequence" groups="base.group_system"/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree//field[@name='product_uom']" position="after">
-                    <field name="delivered_qty" groups="base.group_system"/>
+                    <field name="delivered_qty" />
                 </xpath>
                 <field name="fiscal_position" position="attributes">
                     <attribute name="on_change">onchange_fiscal_position(fiscal_position, order_line, context)</attribute>
