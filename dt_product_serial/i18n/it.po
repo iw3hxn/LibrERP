@@ -418,7 +418,7 @@ msgstr "Partner"
 #: code:addons/dt_product_serial/stock.py:154
 #, python-format
 msgid "Product '%s' has 'Lot split type' = 'Logistical Unit' but is missing packaging information."
-msgstr "Prodotto '%s' ha 'Tipo di Split' = 'Unitò logistica' ma mancano le informazioni sul packaging."
+msgstr "Prodotto '%s' ha 'Tipo di Split' = 'Unità logistica' ma mancano le informazioni sul packaging."
 
 #. module: dt_product_serial
 #: code:addons/dt_product_serial/prodlot_wizard.py:102
