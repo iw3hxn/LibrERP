@@ -178,12 +178,10 @@ class stock_move(orm.Model):
             qty = move.product_qty
             lu_qty = False
             if move.product_id.lot_split_type == 'lu':
-                if not move.product_id.packaging:
-                    raise orm.except_orm(_('Error :'), _(
-                        "Product '%s' has 'Lot split type' = 'Logistical Unit' but is missing packaging information.") % (
-                                             move.product_id.name))
-                lu_qty = move.product_id.packaging[0].qty
-
+                if move.product_id.packaging:
+                    lu_qty = move.product_id.packaging[0].qty
+                else:
+                    lu_qty = move.product_qty
             elif move.product_id.lot_split_type == 'single':
                 lu_qty = 1
 
