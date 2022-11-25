@@ -22,7 +22,7 @@
 
 import logging
 
-import decimal_precision as dp
+from openerp.addons.decimal_precision import decimal_precision as dp
 from openerp import netsvc
 from openerp.osv import fields, orm
 from openerp.tools.translate import _
@@ -207,6 +207,7 @@ class account_invoice(orm.Model):
             cr, uid, fp_id, context)
 
         partner_id, prop_ar_id = self._get_partner(cr, uid, fiscal_position, invoice, context)
+        partner_address = self.pool['res.partner'].address_get(cr, uid, [partner_id], ['default', 'invoice'])
         # ----- Get actual invoice copy
         copy_inv = self.copy_data(cr, uid, invoice_id, {}, context)
         if not copy_inv:
@@ -222,6 +223,7 @@ class account_invoice(orm.Model):
             'state': 'draft',
             'move_id': False,
             'partner_id': partner_id,
+            'address_invoice_id': partner_address['invoice'],
             'account_id': prop_ar_id,
             'journal_id': fiscal_position.journal_auto_invoice_id.id,
             'date_invoice': invoice.registration_date,
