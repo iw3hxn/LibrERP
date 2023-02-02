@@ -49,7 +49,7 @@ setup(
         "simplejson >= 2.0.9",
         "python-dateutil >= 1.4.1, < 2",
         "pytz",
-        "werkzeug == 0.15.3",
+        "werkzeug == 0.15.5",
     ],
     tests_require=[
         'unittest2',
