@@ -18,7 +18,7 @@ msgstr ""
 #. module: avanzosc_product_extended
 #: field:product.product,last_purchase_price:0
 msgid "Last purchase price"
-msgstr "Ultimo prezzo acquisto"
+msgstr "Ultimo prezzo acquisto in fattura"
 
 #. module: product_extended
 #: field:product.product,last_purchase_date:0
@@ -28,7 +28,7 @@ msgstr "Ultima data acquisto"
 #. module: product_extended
 #: field:product.product,last_sale_price:0
 msgid "Last sale price"
-msgstr "Ultimo prezzo vendita"
+msgstr "Ultimo prezzo vendita in fattura"
 
 #. module: product_extended
 #: field:product.product,last_supplier_id:0

@@ -33,9 +33,18 @@ class account_invoice(orm.Model):
         self.update_product(cr, uid, ids, context)
         return res
 
+    def _skip_invoice_update_product(self, cr, uid, ids, context):
+        return ids
+    # exclude_journal_ids = []
+    #             fiscal_position_model = self.pool['account.fiscal.position']
+    #             fiscal_position_ids = fiscal_position_model.search(cr, uid, [('journal_auto_invoice_id', '!=', False)], context=context)
+    #             for fiscal_position in fiscal_position_model.browse(cr, uid, fiscal_position_ids, context):
+    #                 exclude_journal_ids.append(fiscal_position.journal_auto_invoice_id.id)
+
     def update_product(self, cr, uid, ids, context):
         user = self.pool['res.users'].browse(cr, uid, uid, context)
         to_currency = user.company_id.currency_id.id
+        ids = self._skip_invoice_update_product(cr, uid, ids, context)
         for invoice in self.browse(cr, uid, ids, context):
             from_currency = invoice.currency_id.id
             for line in invoice.invoice_line:

@@ -89,6 +89,16 @@ class account_invoice(orm.Model):
 
     _inherit = 'account.invoice'
 
+    def _skip_invoice_update_product(self, cr, uid, ids, context):
+        exclude_journal_ids = []
+        fiscal_position_model = self.pool['account.fiscal.position']
+        fiscal_position_ids = fiscal_position_model.search(cr, uid, [('journal_auto_invoice_id', '!=', False)], context=context)
+        for fiscal_position in fiscal_position_model.browse(cr, uid, fiscal_position_ids, context):
+            exclude_journal_ids.append(fiscal_position.journal_auto_invoice_id.id)
+
+        res = self.search(cr, uid, [('id', 'in', ids), ('journal_id', 'not in', exclude_journal_ids)], context=context)
+        return res
+
     def _auto_invoice_amount_all(self, cr, uid, ids, name, args, context=None):
         res = {}
         tax_obj = self.pool['account.tax']
