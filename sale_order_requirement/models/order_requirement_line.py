@@ -2,7 +2,7 @@
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
 import datetime
-
+import logging
 import tools
 from dateutil.relativedelta import relativedelta
 from openerp.addons.sale_order_requirement.models.order_requirement import STATE_SELECTION
@@ -15,6 +15,8 @@ from ..util import rounding
 
 routing_colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
 sequence = 0
+
+_logger = logging.getLogger(__name__)
 
 
 class OrderRequirementLine(orm.Model):
@@ -186,6 +188,7 @@ class OrderRequirementLine(orm.Model):
         return ret_vals
 
     def _get_temp_vals_from_mrp_bom(self, cr, uid, ids, bom, qty_mult, temp_father_id, level, context):
+        _logger.info(u"_get_temp_vals_from_mrp_bom bom='{}' qty_mult={}, level={}".format(bom and bom.name_get()[0][1], qty_mult, level))
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_model = self.pool['temp.mrp.bom']
 
@@ -193,9 +196,11 @@ class OrderRequirementLine(orm.Model):
         line_id = ids and ids[0] or False
         is_leaf = not bool(bom.child_buy_and_produce_ids)
         product = bom.product_id
+        _logger.info(u"_get_temp_vals_from_mrp_bom product='{}' qty_mult={}, level={}".format(product.name_get()[0][1], qty_mult, level))
         is_manufactured = not is_leaf
         buy = False
         if is_leaf:
+            _logger.info(u"_get_temp_vals_from_mrp_bom product='{}' is_leaf".format(product.name_get()[0][1]))
             buy = product.procure_method == 'make_to_order'
 
         line = self.browse(cr, uid, line_id, context)
@@ -248,6 +253,7 @@ class OrderRequirementLine(orm.Model):
         }
 
     def _get_temp_vals_from_product(self, cr, uid, ids, product, qty_mult, temp_father_id, level, context):
+        _logger.info(u"_get_temp_vals_from_product qty_mult={}, level={}".format(qty_mult, level))
         # Set temp values by product => LEAF
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_model = self.pool['temp.mrp.bom']
@@ -313,6 +319,7 @@ class OrderRequirementLine(orm.Model):
         mrp_bom_model = self.pool['mrp.bom']
 
         product = product_model.browse(cr, uid, product_id, context)
+        _logger.info(u"get_temp_vals product={}, qty_mult={}, level={}".format(product.name_get()[0][1], qty_mult, level))
         bom_ids = mrp_bom_model.search_browse(cr, uid, [('product_id', '=', product_id),
                                                       ('bom_id', '=', False)], context=context)
 
@@ -320,9 +327,11 @@ class OrderRequirementLine(orm.Model):
             # Get by its BOM
             if not isinstance(bom_ids, list):
                 bom_ids = [bom_ids]
+                _logger.info(u"get_temp_vals call _get_temp_vals_from_mrp_bom")
             return self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom_ids[0], qty_mult, father_temp_id, level, context)
         else:
             # Get by products
+            _logger.info(u"get_temp_vals call _get_temp_vals_from_product")
             return self._get_temp_vals_from_product(cr, uid, ids, product, qty_mult, father_temp_id, level, context)
 
     def _sort_temp_mrp_bom(self, cr, uid, ids, context):
@@ -425,6 +434,8 @@ class OrderRequirementLine(orm.Model):
         if isinstance(product, (int, long)):
             product = product_model.browse(cr, uid, product, context)
 
+        _logger.info(u"create_temp_mrp_bom product='{}'".format(product.name_get()[0][1]))
+
         # bom_ids = product.bom_lines # NO, wrong, duplicates !
         bom_ids = []
         today = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
@@ -445,7 +456,10 @@ class OrderRequirementLine(orm.Model):
             global sequence
 
             father = temp_mrp_bom_model.browse(cr, uid, father_id, context)
-            mult = qty_mult * father.original_qty if father_id else qty_mult
+            mult = qty_mult
+            # Not always we have a father
+            if father.id:
+                mult *= father.product_qty
 
             bom_children = bom_rec.child_buy_and_produce_ids
             if not bom_children:
@@ -1317,6 +1331,7 @@ class OrderRequirementLine(orm.Model):
         if is_manufactured and not line.temp_mrp_bom_ids:
             # if line.product_id.
             product = line.new_product_id or line.product_id
+            _logger.info(u"action_open_bom call create_temp_mrp_bom with product '{}' and qty={}".format(product.name_get()[0][1], qty_mult))
             temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, product, qty_mult, False, 0, 0, True, True, context)
             if temp_ids:
                 temp_mrp_bom_model = self.pool['temp.mrp.bom']
