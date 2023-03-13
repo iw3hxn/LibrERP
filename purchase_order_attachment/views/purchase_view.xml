@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record id="purchase_order_form" model="ir.ui.view" >
+            <field name="name">purchase.order.view.form.atra</field>
+            <field name="type">form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <field name="origin" position="after">
+                    <button name="%(action_wizard_download_purchase_attachments)d" string="Download Product Attachments" type="action" icon="gtk-execute"/>
+                </field>
+
+
+            </field>
+        </record>
+
+    </data>
+</openerp>
