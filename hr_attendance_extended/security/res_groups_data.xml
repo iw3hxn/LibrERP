@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="hr_attendance_extended.group_hr_change_attendance" model="res.groups">
+            <field name="name">Può Modificare le timbrature</field>
+            <field name="category_id" ref="base.module_category_human_resources"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_hr_user'))]"/>
+        </record>
+
+    </data>
+</openerp>

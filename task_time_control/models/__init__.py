@@ -21,9 +21,9 @@
 #
 ##############################################################################
 
+from . import inherit_hr_employee
+from . import inherit_project_project
 from . import inherit_project_task
 from . import inherit_project_task_history
 from . import inherit_project_task_work
 from . import time_control_user_task
-
-

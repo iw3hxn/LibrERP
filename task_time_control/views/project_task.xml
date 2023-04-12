@@ -133,12 +133,18 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree editable="top" string="Task Work">
-                    <field name="partner_id" groups="project.group_project_manager" readonly="1"/>
+                    <field name="partner_id" groups="project.group_project_manager" invisible="1"/>
                     <field name="date"/>
                     <field name="user_id" groups="project.group_project_manager"/>
                     <field name="name"/>
+                    <field name="project_id"
+                           required="1"
+                           context="{'no_create': True}"
+                           on_change="onchange_project_id(project_id, context)"
+                    />
                     <field name="task_id" required="1"
-                           domain="['|', '|', ('user_id','=', False), ('user_id','=',uid), ('other_users_ids','in',uid), ('state','in',['open','working'])]"/>
+                           context="{'default_project_id': project_id}"
+                           domain="['|', '|', ('user_id','=', False), ('user_id','=',uid), ('other_users_ids','in',uid), ('project_id', '=', project_id)]"/>
                     <field name="hours" widget="float_time" sum="Hours"/>
                     <field name="remaining_hours" readonly="1" widget="float_time"/>
                 </tree>
@@ -173,8 +179,11 @@
                         <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
                         <separator orientation="vertical"/>
                         <field name="task_id"/>
-                        <field name="user_id" groups="project.group_project_manager"/>
-                        <filter domain="[('user_id','=',uid)]" help="My Tasks" icon="terp-personal"/>
+
+                        <field name="user_id" groups="project.group_project_manager">
+                            <filter name="my_tasks" domain="[('user_id','=',uid)]" help="My Tasks" icon="terp-personal"/>
+                        </field>
+
                         <separator orientation="vertical"/>
                         <field name="partner_id"/>
                     </group>
@@ -200,6 +209,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
             <field name="search_view_id" ref="project_task_work_search"/>
+            <field name="context">{"search_default_my_tasks": 1}</field>
         </record>
         
         <menuitem id="menu_project_task_work_list"

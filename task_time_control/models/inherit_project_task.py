@@ -27,7 +27,7 @@ from openerp.tools.translate import _
 from openerp.osv import orm, fields
 
 
-class project_task(orm.Model):
+class ProjectTask(orm.Model):
     _inherit = "project.task"
 
     def _get_users_working(self, cr, uid, ids, field_name, args, context=None):
@@ -38,18 +38,17 @@ class project_task(orm.Model):
         user_task_obj = self.pool["time.control.user.task"]
         
         for task in self.browse(cr, uid, ids, context):
-            stream = ''
+            stream = []
             user_ids = []
             user_task_ids = user_task_obj.search(cr, uid, [('started_task', '=', task.id)])
             if user_task_ids:
                 for user_task in user_task_obj.browse(cr, uid, user_task_ids, context):
                     if user_task.user.name:
-                        stream += user_task.user.name + u","
+                        stream.append(user_task.user.name)
                     user_ids.append(user_task.user.id)
                     
-                res[task.id] = {'working_users': stream, 'user_is_working': uid in user_ids}
-            else:
-                res[task.id] = {'working_users': '', 'user_is_working': False}
+            res[task.id] = {'working_users': ','.join(stream), 'user_is_working': uid in user_ids}
+
         return res
     
     _columns = {
@@ -148,6 +147,6 @@ class project_task(orm.Model):
                 raise orm.except_orm(_("Warning!"), _('Task started by another user.'))
         else:
             raise orm.except_orm(_("Warning!"), _('User has no opened tasks.'))
-        return True
+
 
 

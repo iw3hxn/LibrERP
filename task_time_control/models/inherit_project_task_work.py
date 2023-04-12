@@ -37,3 +37,9 @@ class ProjectTaskWork(orm.Model):
         'issue_id': fields.many2one('project.issue', 'Issue'),
         'partner_id': fields.related('task_id', 'project_id', 'analytic_account_id', 'partner_id', relation='res.partner', type='many2one', string='Partner', store=True),
     }
+
+    def onchange_project_id(self, cr, uid, ids, project_id=False, context=None):
+        val = {}
+        if not project_id:
+            val['task_id'] = False
+        return {'value': val}

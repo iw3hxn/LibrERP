@@ -23,9 +23,23 @@ import openerp.tools as tools
 import time
 
 
-class Hr_Attendance(orm.Model):
+class HrAttendance(orm.Model):
 
     _inherit = "hr.attendance"
+
+    def fields_get(self, cr, uid, allfields=None, context=None):
+        if not context:
+            context = {}
+        group_obj = self.pool['res.groups']
+        FIELDS_READONLY = ['name', 'action', 'employee_id', 'action_desc']
+        res = super(HrAttendance, self).fields_get(cr, uid, allfields=allfields, context=context)
+
+        if not group_obj.user_in_group(cr, uid, uid, 'hr_attendance_extended.group_hr_change_attendance', context=context):
+            for field in FIELDS_READONLY:
+                if field in res:
+                    res[field]['readonly'] = True
+
+        return res
 
     def _get_date_tz(self, cr, uid, ids, field_names=None, arg=False, context={}):
         context = context or self.pool['res.users'].context_get(cr, uid)

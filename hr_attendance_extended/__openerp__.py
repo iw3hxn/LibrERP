@@ -24,7 +24,7 @@
 
 {
     "name": "HR Expense Extended",
-    "version": "3.1.0.2",
+    "version": "3.2.0.2",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Human Resources',
@@ -38,6 +38,7 @@
         'hr_attendance',
     ],
     "data": [
+        'security/res_groups_data.xml',
         'views/hr_attendance_view.xml',
         'views/hr_employee_view.xml',
     ],
