@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<openerp>
+  <data>
+
+    <record id="view_bank_statement_form_add_fields" model="ir.ui.view">
+      <field name="name">view.bank.statement.form.add.fields</field>
+      <field name="model">account.bank.statement</field>
+      <field name="inherit_id" ref="account.view_bank_statement_form"/>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <data>
+          <xpath expr="/form/notebook/page[@name='move_live_ids']/field[@name='move_line_ids']/tree/field[@name='account_id']" position="after">
+            <field name="external_code"/>
+          </xpath>
+        </data>
+      </field>
+    </record>
+  </data>
+</openerp>
