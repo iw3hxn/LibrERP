@@ -22,7 +22,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
+import datetime
+from dateutil.relativedelta import relativedelta
 from openerp.osv import fields, orm, osv
 from openerp.tools.translate import _
 
@@ -270,11 +271,51 @@ class account_move_line(orm.Model):
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):
         view_payments_tree_id = self.pool['ir.model.data'].get_object_reference(cr, uid, 'account_due_list', 'view_payments_tree')
         view_payments_tree2_id = self.pool['ir.model.data'].get_object_reference(cr, uid, 'account_due_list', 'view_account_ledger_tree')
-        if view_id == view_payments_tree_id[1] or view_id == view_payments_tree2_id[1]:
+        use_default_view = context.get('use_default_view')
+        if view_id == view_payments_tree_id[1] or view_id == view_payments_tree2_id[1] or use_default_view:
             # Use due list
             result = super(orm.Model, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
         else:
             # Use special views for account.move.line object (for ex. tree view contains user defined fields)
             result = super(account_move_line, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
         return result
+
+    def action_view_due_invoice(self, cr, uid, ids, context=None):
+        account_fiscal_position_model = self.pool['account.fiscal.position']
+        account_fiscal_position_ids = account_fiscal_position_model.search(cr, uid, [('journal_auto_invoice_id', '!=', False)], context=context)
+        exclude_journal_ids = []
+        for afp in account_fiscal_position_model.browse(cr, uid, account_fiscal_position_ids, context=context):
+            if afp.journal_auto_invoice_id:
+                exclude_journal_ids.append(afp.journal_auto_invoice_id.id)
+        journal_ids = self.pool['account.journal'].search(cr, uid, [('type', 'in', ['sale', 'sale_refund']), ('id', 'not in', exclude_journal_ids)], context=context)
+        domain = [
+            ('stored_invoice_id.journal_id', 'in', journal_ids),
+            ('account_id.type', 'in', ['receivable']),
+            ('stored_invoice_id', '!=', False),
+            '|',  ('credit', '=', 0), ('debit', '=', 0),
+            ('reconcile_id', '=', False),
+            ('date_maturity', '<', datetime.date.today().strftime('%Y-%m-01 00:00:00')),
+            # ('date_maturity', '>=', (datetime.date.today() - relativedelta(months=1)).strftime('%Y-%m-01 00:00:00'))
+        ]
+
+        move_ids = self.search(cr, uid, domain, context=context)
+        mod_model = self.pool['ir.model.data']
+        form_id = mod_model.get_object_reference(cr, uid, 'account_due_list', 'view_move_line_form')
+        form_res = form_id and form_id[1] or False
+        tree_id = mod_model.get_object_reference(cr, uid, 'account_due_list', 'view_payments_due_tree')
+        tree_res = tree_id and tree_id[1] or False
+        search_id = mod_model.get_object_reference(cr, uid, 'account_due_list', 'view_payments_due_filter')
+        search_res = search_id and search_id[1] or False
+        return {
+            'domain': "[('id', 'in', %s)]" % move_ids,
+            'name': _('Scaduti'),
+            'view_type': 'form',
+            'view_mode': 'tree, form',
+            'search_view_id': search_res,
+            'res_model': self._name,
+            'view_id': tree_res,
+            'views': [(tree_res, 'tree'), (form_res, 'form')],
+            'type': 'ir.actions.act_window',
+            'context': {'use_default_view': True}
+        }
 

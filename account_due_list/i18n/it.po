@@ -111,6 +111,13 @@ msgstr "Entrate"
 
 #. module: account_due_list
 #: view:account.move.line:0
+#: model:ir.actions.act_window,name:account_due_list.ir_actions_server_view_due_invoice
+#: model:ir.ui.menu,name:account_due_list.menu_ir_actions_server_view_due_invoice
+msgid "Payments to be solicited"
+msgstr "Pagamenti da sollecitare"
+
+#. module: account_due_list
+#: view:account.move.line:0
 #: model:ir.actions.act_window,name:account_due_list.action_invoice_payable
 #: model:ir.ui.menu,name:account_due_list.menu_action_invoice_payable
 msgid "Payable"

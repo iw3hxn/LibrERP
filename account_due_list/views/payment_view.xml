@@ -37,6 +37,49 @@
             </field>
         </record>
 
+        <!--****************************** PAYMENTS ***********************************-->
+        <record id="view_payments_due_tree" model="ir.ui.view">
+            <field name="name">Payments Due</field>
+            <field name="model">account.move.line</field>
+            <field name="field_parent">partner_id</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <tree
+                        string="Payments"
+                        create="false"
+                        edit="false"
+                        delete="false"
+                        >
+                    <button name="show_narration" string="" type="object" icon="gtk-dialog-error" attrs="{'invisible': [('narration_internal', '=', False)]}" />
+                    <field name="stored_invoice_id" readonly="1"/>
+                    <button name="action_view_invoice"
+                            string="Open Invoice"
+                            type="object"
+                            icon="gtk-zoom-in"
+                    />
+                    <field name="invoice_date" readonly="1"/>
+                    <!--<field name="invoice_origin" readonly="1"/>-->
+                    <field name="partner_id" string="Partner" readonly="1" invisible="context.get('filter_partner_id', False)"/>
+                    <!--<field name="partner_ref" readonly="1"/>-->
+                    <field name="payment_term_id" readonly="1"/>
+                    <field name="payment_term_type" readonly="1"/>
+                    <field name="bank_id" invisible="1"/>
+                    <field name="account_id" invisible="1"/>
+                    <field name="debit" readonly="1" sum="Total Debit" invisible="1"/>
+                    <field name="credit" readonly="1" sum="Total Credit" invisible="1"/>
+                    <field name="residual" sum="Total Residual"/>
+                    <field name="date_maturity"/>
+                    <field name="move_id" readonly="1" invisible="1"/>
+                    <field name="reconcile_id" readonly="1" invisible="1"/>
+                    <field name="reconcile_partial_id" readonly="1" invisible="1"/>
+                    <field name="reconcile_function_id" readonly="1" invisible="not 1"/>
+                    <field name="day" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="narration_internal" invisible="1" />
+                </tree>
+            </field>
+        </record>
 
         <record id="view_payments_calendar" model="ir.ui.view">
             <field name="name">Payments Calendar</field>
@@ -49,6 +92,70 @@
                     <field name="invoice_date"/>
                     <field name="residual"/>
                 </calendar>
+            </field>
+        </record>
+
+        <record id="view_move_line_form" model="ir.ui.view">
+            <field name="name">account.move.line.form</field>
+            <field name="model">account.move.line</field>
+            <field name="type">form</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Journal Item">
+                    <group col="6" colspan="4">
+                        <field name="name" select="1"/>
+                        <field name="ref"/>
+                        <field name="partner_id" select="1" on_change="onchange_partner_id(False,partner_id,account_id,debit,credit,date)"/>
+
+                        <field name="journal_id"/>
+                        <field name="period_id"/>
+                        <field name="company_id" required="1" groups="base.group_multi_company"/>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Information">
+
+
+                            <group col="2" colspan="2">
+                                <separator colspan="2" string="Accounting Documents"/>
+                                <field name="invoice" readonly="True"/>
+                                <field name="move_id" required="False"/>
+                                <field name="statement_id" readonly="True"/>
+                            </group>
+
+                            <group col="2" colspan="2">
+                                <separator colspan="2" string="Dates"/>
+                                <field name="date" select="1"/>
+                                <field name="date_maturity"/>
+                                <field name="date_created" readonly="True"/>
+                            </group>
+
+                            <group col="2" colspan="2" attrs="{'readonly':[('state','=','valid')]}" >
+                                <separator colspan="2" string="Currency"/>
+                                <field name="currency_id"/>
+                                <field name="amount_currency"/>
+                            </group>
+
+                            <group col="2" colspan="2">
+                                <separator colspan="2" string="Reconciliation"/>
+                                <field name="reconcile_id"/>
+                                <field name="reconcile_partial_id"/>
+                            </group>
+
+                            <group col="2" colspan="2">
+                                <separator colspan="2" string="States"/>
+                                <field name="state"/>
+                                <field name="blocked"/>
+                            </group>
+
+
+                            <separator string="Internal Note" colspan="4"/>
+                            <field name="narration" colspan="4" nolabel="1"/>
+                        </page>
+                        <page string="Note Solleciti" >
+                            <field name="narration_internal" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </form>
             </field>
         </record>
 
@@ -118,6 +225,35 @@
             </field>
         </record>
 
+        <record id="view_payments_due_filter" model="ir.ui.view">
+            <field name="name">Payments Due Select</field>
+            <field name="model">account.move.line</field>
+            <field name="type">search</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <search string="Search Payments">
+                    <field name="date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
+
+                    <field name="stored_invoice_id"/>
+                    <field name="invoice_origin"/>
+                    <field name="partner_id" context="{'filter_partner_id': True}"/>
+                    <newline/>
+                    <field name="payment_term_type"/>
+                    <field name="bank_id" domain="[('state', '=', 'iban')]" context="{'only_iban': True}"/>
+                    <separator orientation="vertical"/>
+
+                    <group expand="0" string="Group By...">
+                        <filter string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Invoice" icon="terp-folder-orange" domain="[]" context="{'group_by':'stored_invoice_id'}"/>
+                        <filter string="Due date" icon="terp-go-today" domain="[]" context="{'group_by':'day'}"/>
+                        <filter string="Month" icon="terp-go-month" domain="[]" context="{'group_by':'date_maturity'}"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
         <!-- Invoice Payments -->
         <record id="action_invoice_payments" model="ir.actions.act_window">
             <field name="name">All Payments</field>
@@ -145,6 +281,13 @@
                 ('debit','=', 0)
             ]</field>
             <field name="context">{'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
+        </record>
+
+        <record id="ir_actions_server_view_due_invoice" model="ir.actions.server">
+            <field name="name">Payments to be solicited</field>
+            <field name="model_id" ref="account_due_list.model_account_move_line"/>
+            <field name="state">code</field>
+            <field name="code">action = pool.get('account.move.line').action_view_due_invoice(cr, uid, None, context)</field>
         </record>
 
         <record id="action_invoice_payable" model="ir.actions.act_window">
@@ -175,6 +318,15 @@
                   id="menu_action_invoice_receivable" sequence="6"/>
         <menuitem name="Payable" parent="schedule" action="action_invoice_payable" id="menu_action_invoice_payable"
                   sequence="7"/>
+<!--        <menuitem name="Payments to be solicited" parent="schedule" action="action_view_due_invoice" id="menu_action_invoice_payable"-->
+<!--                  sequence="7"/>-->
+        <record id="menu_ir_actions_server_view_due_invoice" model="ir.ui.menu">
+            <field name="name">Payments to be solicited</field>
+            <field eval="17" name="sequence"/>
+            <field name="parent_id" ref="account_due_list.schedule"/>
+            <field name="icon">STOCK_JUSTIFY_FILL</field>
+            <field name="action" ref="ir_actions_server_view_due_invoice"/>
+        </record>
 
 
         <!--
