@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 
+import logging
 from datetime import datetime
-from openerp.tools.translate import _
-from openerp.osv import orm, fields
+
+from openerp.osv import orm
+
+_logger = logging.getLogger(__name__)
 
 
 class HrEmployee(orm.Model):
@@ -13,10 +16,13 @@ class HrEmployee(orm.Model):
         res = super(HrEmployee, self).attendance_action_change(cr, uid, ids, ttype, context, dt, *args)
         if ttype == 'sign_out':
             time_control_model = self.pool['time.control.user.task']
-
+            _logger.info("attendance_action_change ttype == 'sign_out'")
+            task_ids = self.pool['project.task'].search(cr, uid, [('state', '=', 'working')], context=context)
+            _logger.info("attendance_action_change task in state working ='{}'".format(task_ids))
             for employee in self.pool['hr.employee'].browse(cr, uid, ids, context):
-                task_ids = self.pool['project.task'].search(cr, uid, [('state', '=', 'working')], context=context)
+                _logger.info("attendance_action_change employee='{}'".format(employee.name))
                 time_control_ids = time_control_model.search(cr, uid, [('user', '=', employee.user_id.id), ('started_task', 'in', task_ids)], context=context)
+                _logger.info("attendance_action_change find task working by employee='{}'".format(time_control_ids))
                 for time_control in time_control_model.browse(cr, uid, time_control_ids, context):
                     if time_control.work_start:
                         start_datetime = datetime.strptime(time_control.work_start, '%Y-%m-%d %H:%M:%S.%f')
@@ -38,6 +44,7 @@ class HrEmployee(orm.Model):
                     }
                     self.pool['project.task.work'].create(cr, uid, project_task_work_vals, context)
                     time_control.write({'work_start': None, 'work_end': None, 'started_task': None})
+                    time_control.started_task.write({'state': 'open'})
 
         return res
     #
