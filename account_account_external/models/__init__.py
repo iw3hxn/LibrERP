@@ -2,3 +2,4 @@
 ##############################################################################
 from . import account_account
 from . import account_move_line
+from . import wizard_export_fatturapa

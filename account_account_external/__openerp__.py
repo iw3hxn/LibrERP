@@ -22,7 +22,7 @@
 
 {
     "name": "Account Account Extended",
-    "version": "3.0.0.1",
+    "version": "3.0.0.2",
     "author": "Odoo SA",
     "website": "",
     "category": "Base",
@@ -33,7 +33,8 @@
 
     """,
     "depends": [
-        'account'
+        'account',
+        'l10n_it_fatturapa_out'
     ],
     "data": [
         'views/account_account_view.xml',
