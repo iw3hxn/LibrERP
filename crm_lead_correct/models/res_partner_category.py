@@ -32,8 +32,12 @@ from tools.translate import _
 
 
 class ResPartnerCategory(orm.Model):
+
     _inherit = 'res.partner.category'
-    _order = "name"
+    _parent_name = "parent_id"
+    _parent_store = True
+    _parent_order = 'name'
+    _order = 'parent_left'
 
     def create(self, cr, uid, values, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)

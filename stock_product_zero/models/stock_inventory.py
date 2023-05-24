@@ -123,13 +123,13 @@ class StockInventory(orm.Model):
                                                      order='product_id.name, prodlot_id.prefix, prodlot_id.name'),
         'total_count': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                        multi='sums', string="Total Count", store={
-                'stock.inventory.line': (_get_inventory, ['product_qty', 'inventory_id'], 60),
-                'stock.inventory': (lambda self, cr, uid, ids, c={}: ids, ['name', 'date', 'inventory_line_id'], 30),
+                'stock.inventory.line': (_get_inventory, ['product_qty', 'product_qty_calc', 'inventory_id'], 60),
+                'stock.inventory': (lambda self, cr, uid, ids, c={}: ids, ['name', 'date', 'inventory_line_id', 'state'], 30),
             }, ),
         'total_qty_calc': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                        multi='sums', string="Total Calculated", store={
-                'stock.inventory.line': (_get_inventory, ['product_qty_calc', 'inventory_id'], 40),
-                'stock.inventory': (lambda self, cr, uid, ids, c={}: ids, ['name', 'date', 'inventory_line_id'], 30),
+                'stock.inventory.line': (_get_inventory, ['product_qty', 'product_qty_calc', 'inventory_id'], 40),
+                'stock.inventory': (lambda self, cr, uid, ids, c={}: ids, ['name', 'date', 'inventory_line_id', 'state'], 30),
             }, ),
         'user_id': fields.many2one('res.users', 'User'),
     }
@@ -139,6 +139,9 @@ class StockInventory(orm.Model):
     }
 
     _order = 'date desc'
+    
+    def create(self, cr, user, vals, context=None):
+        return super(StockInventory, self).create(cr, user, vals, context)
 
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
         new_args = []

@@ -39,7 +39,8 @@ class product_category(orm.Model):
         'product_sequence_id': fields.many2one('ir.sequence', 'Product sequence', domain=[('code', '=', 'product.product')]),
     }
 
-    _order = 'name, parent_id'
+    _parent_order = 'sequence, name'
+    _order = 'parent_left'
 
 
 class product_supplierinfo(orm.Model):

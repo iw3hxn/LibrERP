@@ -25,16 +25,13 @@ from osv import fields, osv
 
 
 class account_payment_term_type(osv.osv):
-	
 	_name = 'account.payment.term.type'
 	_description = 'Payment term type list'
 
 	_columns = {
-		'name' : fields.char('Codice', size=16),
-		'description' : fields.char('Descrizione', size=64),
+		'name': fields.char('Codice', size=16),
+		'description': fields.char('Descrizione', size=64),
 	}
-
-account_payment_term_type()
 
 
 class account_payment_term(osv.osv):

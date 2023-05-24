@@ -394,7 +394,7 @@ class stock_picking(orm.Model):
             ("none", "Not Applicable")], "Invoice Control",
             select=True, required=True, readonly=False),
         'client_order_ref': fields.related('sale_id', 'client_order_ref', type='char',
-            string='Customer Reference'),
+            string='Customer Reference', readonly=True),
         'credit_limit': fields.function(_credit_limit, string="Remaining Credit Limit", type='float', readonly=True,
                                         method=True),
         'visible_credit_limit': fields.related('company_id', 'check_credit_limit', type='boolean',
