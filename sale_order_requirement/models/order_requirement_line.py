@@ -456,10 +456,11 @@ class OrderRequirementLine(orm.Model):
             global sequence
 
             father = temp_mrp_bom_model.browse(cr, uid, father_id, context)
-            mult = qty_mult
-            # Not always we have a father
-            if father.id:
-                mult *= father.product_qty
+            mult = qty_mult * father.original_qty if father_id else qty_mult
+            # mult = qty_mult
+            # # Not always we have a father
+            # if father.id:
+            #     mult *= father.product_qty
 
             bom_children = bom_rec.child_buy_and_produce_ids
             if not bom_children:
