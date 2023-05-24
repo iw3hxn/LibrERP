@@ -4,6 +4,8 @@
 import logging
 from datetime import datetime
 
+import tools
+
 from openerp.osv import orm
 
 _logger = logging.getLogger(__name__)
@@ -31,9 +33,11 @@ class HrEmployee(orm.Model):
 
                     end_datetime = datetime.now()
                     hours = (end_datetime - start_datetime).seconds / 60.0 / 60.0
+                    end_datetime = end_datetime.strftime(tools.DEFAULT_SERVER_DATETIME_FORMAT)
+                    start_datetime = start_datetime.strftime(tools.DEFAULT_SERVER_DATETIME_FORMAT)
                     project_task_work_vals = {
                         'name': "",
-                        'date': end_datetime.strftime('%d-%m-%Y %H:%M:%S'),
+                        'date': end_datetime,
                         'task_id': time_control.started_task.id,
                         'issue_id': False,
                         'hours': hours,
