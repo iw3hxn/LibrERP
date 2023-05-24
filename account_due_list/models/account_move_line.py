@@ -149,6 +149,18 @@ class account_move_line(orm.Model):
     #                 'payment_term_type': move.stored_invoice_id.payment_term and move.stored_invoice_id.payment_term.type or '',
     #             }
     #     return res
+    def _get_credit_phonecall_ids(self, cr, uid, ids, name, args, context):
+        res = {}
+        credit_phonecall_model = self.pool['credit.phonecall']
+        for line in self.browse(cr, uid, ids, context):
+            partner = line.partner_id
+            invoice = line.invoice
+            credit_phonecall_ids = []
+            if partner and invoice:
+                credit_phonecall_ids = credit_phonecall_model.search(cr, uid, [('partner_id', '=', partner.id), ('invoice_id', '=', invoice.id)], context=context)
+            res[line.id] = credit_phonecall_ids
+
+        return res
 
     def _get_running_balance(self, cr, uid, ids, name, args, context):
         res = {}
@@ -200,6 +212,29 @@ class account_move_line(orm.Model):
                     u'{0}'.format(move.narration_internal))
         return True
 
+    def send_report_due(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        mail_template = self.pool['email.template']
+        credit_phonecall_model = self.pool['credit.phonecall']
+        for move in self.browse(cr, uid, ids, context):
+            if move.blocked:
+                continue
+            if not move.invoice:
+                continue
+            if move.partner_id:
+                credit_phonecall_model.create(cr, uid, {
+                    'partner_id': move.partner_id.id,
+                    'invoice_id': move.invoice.id,
+                    'name': "Invio Sollecito per email",
+                    'state': 'done'
+                }, context)
+                lang = move.partner_id.lang
+                if lang == 'it_IT':
+                    msg_id = mail_template.send_mail(cr, uid, 17, move.invoice.id, context=context)
+                else:
+                    msg_id = mail_template.send_mail(cr, uid, 18, move.invoice.id, context=context)
+        return True
+
     def _get_reconcile(self, cr, uid, ids, prop, unknown_none, context=None):
         if not len(ids):
             return {}
@@ -248,6 +283,14 @@ class account_move_line(orm.Model):
             type='many2one',
             relation="account.move.reconcile", store=False
         ),
+        'credit_phonecall_ids': fields.function(
+            _get_credit_phonecall_ids,
+            string="Day",
+            type='one2many',
+            relation="credit.phonecall",
+            readonly=True,
+            method=True
+        )
     }
 
     _order = "date desc, ref asc, move_id asc, id asc"

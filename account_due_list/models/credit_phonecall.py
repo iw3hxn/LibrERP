@@ -22,7 +22,7 @@ class CreditPhonecall(orm.Model):
         'create_date': fields.datetime('Creation Date', readonly=True),
         'user_id': fields.many2one('res.users', 'Responsible'),
         'partner_id': fields.many2one('res.partner', 'Partner', select=1),
-
+        'invoice_id': fields.many2one('account.invoice', 'Invoice'),
         'company_id': fields.many2one('res.company', 'Company'),
         'description': fields.text('Description'),
         'state': fields.selection([

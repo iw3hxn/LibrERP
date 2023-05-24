@@ -126,6 +126,17 @@ class res_partner(orm.Model):
 
         return []
 
+    def _get_len_credit_phonecall_ids(self, cr, uid, ids, field_name, arg, context=None):
+        res = dict.fromkeys(ids, 0.0)
+        cr.execute("""
+            SELECT partner_id, COUNT(*) AS call_count
+            FROM credit_phonecall
+            GROUP BY partner_id;
+        """)
+        res_sql = cr.fetchall()
+        for res_id in res_sql:
+            res[res_id[0]] = res_id[1]
+        return res
     def _get_overdue_credit(self, cr, uid, ids, field_name, arg, context=None):
         res = dict.fromkeys(ids, 0.0)
         current_date = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
@@ -280,6 +291,7 @@ class res_partner(orm.Model):
         'next_overdue_credit_activity_date': fields.function(_get_credit_activity_history_next, fnct_search=_search_next_overdue_credit_activity_date, method=True, string="Next Activity On", type='date'),
         'collections_out': fields.boolean('Recupero Presso Terzi'),
         'credit_phonecall_ids': fields.one2many('credit.phonecall', 'partner_id', 'Phonecalls'),
+        'len_credit_phonecall_ids': fields.function(_get_len_credit_phonecall_ids, string="Numero Solleciti", type='integer', method=True),
         'excluding_recall': fields.boolean('Escluso dai richiami'),
     }
 

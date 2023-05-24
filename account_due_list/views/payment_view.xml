@@ -50,8 +50,10 @@
                         create="false"
                         edit="false"
                         delete="false"
+                        colors="grey:blocked"
                         >
-                    <button name="show_narration" string="" type="object" icon="gtk-dialog-error" attrs="{'invisible': [('narration_internal', '=', False)]}" />
+                    <button name="send_report_due" string="" type="object" icon="terp-mail-message-new" attrs="{'invisible': [('blocked', '!=', False)]}" />
+                    <button name="show_narration" string="" type="object" icon="gtk-dialog-error" attrs="{'invisible': [('blocked', '=', False)]}" />
                     <field name="stored_invoice_id" readonly="1"/>
                     <button name="action_view_invoice"
                             string="Open Invoice"
@@ -76,6 +78,7 @@
                     <field name="reconcile_function_id" readonly="1" invisible="not 1"/>
                     <field name="day" invisible="1"/>
                     <field name="company_id" invisible="1"/>
+                    <field name="blocked" invisible="1"/>
                     <field name="narration_internal" invisible="1" />
                 </tree>
             </field>
@@ -144,15 +147,18 @@
                             <group col="2" colspan="2">
                                 <separator colspan="2" string="States"/>
                                 <field name="state"/>
-                                <field name="blocked"/>
                             </group>
-
 
                             <separator string="Internal Note" colspan="4"/>
                             <field name="narration" colspan="4" nolabel="1"/>
                         </page>
-                        <page string="Note Solleciti" >
-                            <field name="narration_internal" nolabel="1"/>
+                        <page string="Solleciti" >
+                            <button name="send_report_due" string="Sollecito Manuale" type="object" icon="terp-mail-message-new" attrs="{'invisible': [('blocked', '!=', False)]}" />
+                            <field name="blocked"/>
+                            <field name="narration_internal" nolabel="1" colspan="4"
+                                attrs="{'required': [('blocked', '=', True)]}"
+                            />
+                            <field name="credit_phonecall_ids" nolabel="1"/>
                         </page>
                     </notebook>
                 </form>

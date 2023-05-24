@@ -52,6 +52,7 @@
             <field name="arch" type="xml">
                 <field name="user_id" position="after" >
                     <field name="overdue_credit" groups="account_due_list.can_view_due_list" />
+                    <field name="len_credit_phonecall_ids" />
                     <field name="last_overdue_credit_activity_date" groups="account_due_list.can_view_due_list" invisible="not context.get('show_overdue_activity', False)"/>
                     <field name="next_overdue_credit_activity_date" groups="account_due_list.can_view_due_list" invisible="not context.get('show_overdue_activity', False)"/>
                 </field>
