@@ -21,6 +21,21 @@
                     </field>                    
                     <field name="maturity_ids" nolabel="1" attrs="{'invisible':[('state','not in',['open', 'paid'])]}">
                         <tree string="Maturities">
+                            <button name="send_report_due"
+                                    string=""
+                                    type="object"
+                                    icon="terp-mail-message-new"
+                                    attrs="{'invisible': [('invisible_send_report_due', '=', True)]}"
+                                    confirm="Sicuro di sollecitare?" groups="account.group_account_manager"
+                            />
+                            <button name="show_narration"
+                                    string=""
+                                    type="object"
+                                    icon="gtk-dialog-error"
+                                    attrs="{'invisible': [('blocked', '=', False)]}"
+                            />
+                            <field name="invisible_send_report_due" invisible="1" />
+                            <field name="blocked" invisible="1" />
                             <field name="date_maturity"/>
                             <field name="maturity_debit" string="Amount"/>
                             <field name="maturity_currency" />

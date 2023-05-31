@@ -30,6 +30,7 @@
     "depends": [
         'account',
         'account_payment_term_month',  # for update payment with tax in function compute
+        'account_due_list'
     ],
     "data": [
         'views/invoice_view.xml'

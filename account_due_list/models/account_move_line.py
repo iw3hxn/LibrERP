@@ -23,8 +23,10 @@
 #
 ##############################################################################
 import datetime
-from dateutil.relativedelta import relativedelta
-from openerp.osv import fields, orm, osv
+
+from tools import DEFAULT_SERVER_DATE_FORMAT
+
+from openerp.osv import fields, orm
 from openerp.tools.translate import _
 
 PAYMENT_TERM_TYPE_SELECTION = [
@@ -245,6 +247,25 @@ class account_move_line(orm.Model):
             res[line['id']] = reconcile_id
         return res
 
+    def _compute_invisible_send_report_due(self, cr, uid, ids, field_names, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        today = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        for line in self.browse(cr, uid, ids, context):
+            res[line.id] = line.date_maturity > today
+        return res
+
+    def _maturity_amount(self, cr, uid, ids, field_names, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context):
+            res[line.id] = {
+                'maturity_currency': line.currency_id and line.currency_id.symbol or line.company_id and line.company_id.currency_id.symbol or '',
+                'maturity_debit': line.amount_currency or line.debit or '',
+            }
+
+        return res
+
     _columns = {
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, ),
         'invoice_origin': fields.related('stored_invoice_id', 'origin', type='char', string='Source Doc', store=False),
@@ -290,7 +311,14 @@ class account_move_line(orm.Model):
             relation="credit.phonecall",
             readonly=True,
             method=True
-        )
+        ),
+        'invisible_send_report_due': fields.function(
+            _compute_invisible_send_report_due, type="boolean", string="Invisible"
+        ),
+        'maturity_currency': fields.function(
+            _maturity_amount, type="char", store=False, string="Currency", method=True, multi='maturity_amount'),
+        'maturity_debit': fields.function(
+            _maturity_amount, type="float", store=False, method=True, multi='maturity_amount')
     }
 
     _order = "date desc, ref asc, move_id asc, id asc"

@@ -72,6 +72,7 @@
                     <field name="credit" readonly="1" sum="Total Credit" invisible="1"/>
                     <field name="residual" sum="Total Residual"/>
                     <field name="date_maturity"/>
+                    <field name="amount_residual_currency" sum="sum"/>
                     <field name="move_id" readonly="1" invisible="1"/>
                     <field name="reconcile_id" readonly="1" invisible="1"/>
                     <field name="reconcile_partial_id" readonly="1" invisible="1"/>
@@ -116,8 +117,6 @@
                     </group>
                     <notebook colspan="4">
                         <page string="Information">
-
-
                             <group col="2" colspan="2">
                                 <separator colspan="2" string="Accounting Documents"/>
                                 <field name="invoice" readonly="True"/>
