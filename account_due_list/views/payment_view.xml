@@ -116,7 +116,7 @@
                         <field name="company_id" required="1" groups="base.group_multi_company"/>
                     </group>
                     <notebook colspan="4">
-                        <page string="Information">
+                        <page string="Information" groups="account.group_account_invoice">
                             <group col="2" colspan="2">
                                 <separator colspan="2" string="Accounting Documents"/>
                                 <field name="invoice" readonly="True"/>
@@ -152,7 +152,20 @@
                             <field name="narration" colspan="4" nolabel="1"/>
                         </page>
                         <page string="Solleciti" >
-                            <button name="send_report_due" string="Sollecito Manuale" type="object" icon="terp-mail-message-new" attrs="{'invisible': [('blocked', '!=', False)]}" />
+                            <button name="send_report_due"
+                                    string="Sollecito Manuale"
+                                    type="object"
+                                    icon="terp-mail-message-new"
+                                    attrs="{'invisible': [('invisible_send_report_due', '=', True)]}"
+                                    groups="account.group_account_manager"
+                            />
+                            <button name="show_narration"
+                                    string=""
+                                    type="object"
+                                    icon="gtk-dialog-error"
+                                    attrs="{'invisible': [('blocked', '=', False)]}"
+                            />
+                            <field name="invisible_send_report_due" invisible="1" />
                             <field name="blocked"/>
                             <field name="narration_internal" nolabel="1" colspan="4"
                                 attrs="{'required': [('blocked', '=', True)]}"

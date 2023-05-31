@@ -252,7 +252,10 @@ class account_move_line(orm.Model):
         res = {}
         today = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
         for line in self.browse(cr, uid, ids, context):
-            res[line.id] = line.date_maturity > today
+            maturity_check = line.date_maturity > today
+            blocked_check = line.blocked
+            reconcile_check = True if line.reconcile_function_id else False
+            res[line.id] = maturity_check or blocked_check or reconcile_check
         return res
 
     def _maturity_amount(self, cr, uid, ids, field_names, arg, context=None):
