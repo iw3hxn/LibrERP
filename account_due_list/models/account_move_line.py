@@ -24,7 +24,7 @@
 ##############################################################################
 import datetime
 
-from tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 from openerp.osv import fields, orm
 from openerp.tools.translate import _
@@ -269,6 +269,39 @@ class account_move_line(orm.Model):
 
         return res
 
+    def _compute_date_payment(self, cr, uid, ids, field_names, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for aml in self.browse(cr, uid, ids, context):
+            payment_data_lists = []
+            payment_data = ''
+            payment_delta_days = 0
+            today = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+            if aml.date_maturity:
+                if aml.reconcile_id:
+                    for payment_line in aml.reconcile_id.line_id:
+                        if payment_line.id == aml.id:
+                            continue
+                        if payment_line.invoice:
+                            continue
+                        payment_data_lists.append(payment_line.date)
+                if payment_data_lists:
+                    payment_data = max(payment_data_lists)
+                else:
+                    payment_data = today
+                date_maturity = aml.date_maturity
+
+                payment_data_dt = datetime.datetime.strptime(payment_data, DEFAULT_SERVER_DATE_FORMAT)
+                date_maturity_dt = datetime.datetime.strptime(date_maturity, DEFAULT_SERVER_DATE_FORMAT)
+                payment_delta_days = (payment_data_dt - date_maturity_dt).days
+
+            res[aml.id] = {
+                'date_payment': payment_data,
+                'payment_delta_days': payment_delta_days
+            }
+
+        return res
+
     _columns = {
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, ),
         'invoice_origin': fields.related('stored_invoice_id', 'origin', type='char', string='Source Doc', store=False),
@@ -321,7 +354,27 @@ class account_move_line(orm.Model):
         'maturity_currency': fields.function(
             _maturity_amount, type="char", store=False, string="Currency", method=True, multi='maturity_amount'),
         'maturity_debit': fields.function(
-            _maturity_amount, type="float", store=False, method=True, multi='maturity_amount')
+            _maturity_amount, type="float", store=False, method=True, multi='maturity_amount'),
+        'date_payment': fields.function(
+            _compute_date_payment,
+            type="date",
+            string="Payment Data",
+            # store={
+            #     'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['date_maturity', 'reconcile_id'], 10),
+            # },
+            method=True,
+            multi='compute_date_payment'
+        ),
+        'payment_delta_days': fields.function(
+            _compute_date_payment,
+            type="integer",
+            string="Payment Delta Day",
+            # store={
+            #     'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['date_maturity', 'reconcile_id'], 10),
+            # },
+            method=True,
+            multi='compute_date_payment'
+        ),
     }
 
     _order = "date desc, ref asc, move_id asc, id asc"

@@ -23,6 +23,23 @@
             </field>
         </record>
 
+        <record id="invoice_form_reg_date" model="ir.ui.view">
+            <field name="name">account.invoice.form.reg_date</field>
+            <field name="model">account.invoice</field>
+            <field name="priority">1000</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <field name="payment_ids" position="after">
+                    <field name="credit_phonecall_ids"
+                           colspan="4"
+                           nolabel="1"
+                           context="{'tree_view_ref':'account_due_list.credit_case_inbound_phone_tree_view' }"
+                           readonly="1"
+                    />
+                </field>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="invoice_supplier_form_approve">
             <field name="name">invoice.supplier.form.approve</field>
             <field name="model">account.invoice</field>
@@ -43,6 +60,18 @@
                             groups="account_due_list.group_account_invoice_approve_manager"/>
                 </xpath>
 
+            </field>
+        </record>
+
+        <record id="invoice_tree_reg_date" model="ir.ui.view">
+            <field name="name">account.invoice.tree.payment_delta_days</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="payment_delta_days" invisible="context.get('type') != 'out_invoice'" />
+                </field>
             </field>
         </record>
 

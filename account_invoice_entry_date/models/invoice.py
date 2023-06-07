@@ -35,20 +35,15 @@ class account_invoice(orm.Model):
         if not context:
             context = self.pool['res.users'].context_get(cr, uid)
         res = {}
-        records = {}
         for invoice in self.browse(cr, uid, ids, context):
             if invoice.id not in res:
                 res[invoice.id] = []
             if invoice.move_id and invoice.move_id.line_id:
-                # records.append(invoice.move_id.line_id)
-                for line in invoice.move_id.line_id:
-                    if line.date_maturity:
-                        records[line.id] = []
-                        records[line.id].append(line.date_maturity)
-                        # res[invoice.id].append(line.id)
-                sorted_records = sorted(records.items(), key=lambda r: r[1])
-                for date in sorted_records:
-                    res[invoice.id].append(date[0])
+                line_ids = [x.id for x in invoice.move_id.line_id]
+                maturity_lines = self.pool['account.move.line'].search(
+                    cr, uid, [('id', 'in', line_ids), ('date_maturity', '!=', False)], context=context, order='date_maturity desc')
+                for line_id in maturity_lines:
+                    res[invoice.id].append(line_id)
         return res
 
     def _format_time(self, date):

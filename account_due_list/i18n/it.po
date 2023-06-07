@@ -589,7 +589,7 @@ msgstr "Minima"
 #: view:credit.phonecall:0
 #: model:ir.actions.act_window,name:credit.crm_case_categ_phone0
 msgid "Phone Calls"
-msgstr "Chiamate Telefoniche"
+msgstr "Chiamate per Solleciti"
 
 #. module: account_due_list
 #: view:credit.phonecall:0

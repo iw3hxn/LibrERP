@@ -37,6 +37,7 @@
                             <field name="invisible_send_report_due" invisible="1" />
                             <field name="blocked" invisible="1" />
                             <field name="date_maturity"/>
+                            <field name="date_payment" />
                             <field name="maturity_debit" string="Amount"/>
                             <field name="maturity_currency" />
                             <field name="amount_residual_currency" sum="sum"/>
