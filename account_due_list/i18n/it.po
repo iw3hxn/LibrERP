@@ -619,3 +619,14 @@ msgstr "Bloccato il pagamento"
 msgid "Approve payment"
 msgstr "Approvato il pagamento"
 
+#. module: account_due_list
+#: field:account.invoice,payment_delta_days:0
+#: field:account.move.line,payment_delta_days:0
+msgid "Payment Delta Day"
+msgstr "Giorni di differenza"
+
+#. module: account_due_list
+#: field:account.move.line,date_payment:0
+msgid "Payment Data"
+msgstr "Data Pagamento"
+
