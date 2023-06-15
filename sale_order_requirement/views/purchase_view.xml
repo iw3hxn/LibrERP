@@ -46,6 +46,10 @@
                     <field name="customer_account_invoice_ids" readonly="1" nolabel="1" colspan="4"
                            groups="account.group_customer_account_invoice"/>
                 </field>
+                               <xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']"
+                       position="after">
+                    <field name="sale_order_list" />
+                </xpath>
             </field>
         </record>
 

@@ -457,6 +457,7 @@ class OrderRequirementLine(orm.Model):
 
             father = temp_mrp_bom_model.browse(cr, uid, father_id, context)
             mult = qty_mult * father.original_qty if father_id else qty_mult
+            # todo vedere bene
             # mult = qty_mult
             # # Not always we have a father
             # if father.id:

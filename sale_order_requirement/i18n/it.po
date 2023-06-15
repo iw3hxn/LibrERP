@@ -987,6 +987,7 @@ msgstr "Và assegnato un lotto di produzione per questo prodotto"
 
 #. module: sale_order_requirement
 #: view:purchase.order.line:0
+#: field:purchase.order.line,sale_order_list:0
 msgid "Sale Order Lines"
 msgstr "Ordine di Vendita Collegati"
 

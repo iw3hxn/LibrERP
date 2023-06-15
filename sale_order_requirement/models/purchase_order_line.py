@@ -7,10 +7,21 @@ from openerp.osv import orm, fields
 class PurchaseOrderLine(orm.Model):
     _inherit = 'purchase.order.line'
 
+    def _compute_sale_order_list(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        for line in self.browse(cr, uid, ids, context):
+            sale_order_list = []
+            for order_requirement in line.order_requirement_ids:
+                # sale_order_list.append(order_requirement.sale_order_id.name)
+                sale_order_list.append(order_requirement.sale_order_id.name_get()[0][1])
+            res[line.id] = ','.join(sale_order_list) if sale_order_list else ''
+        return res
+
     _columns = {
         'order_requirement_ids': fields.many2many('order.requirement', string='Order Requirements', readonly=True),
         'order_requirement_line_ids': fields.many2many('order.requirement.line', string='Order Requirement Lines', readonly=True),
         'temp_mrp_bom_ids': fields.many2many('temp.mrp.bom', string='Sale Orders', readonly=True),
+        'sale_order_list': fields.function(_compute_sale_order_list, type='char', string='Sale Order Lines')
         # NOT possible to have related many2many => unsupported in OpenERP 6.1
         # 'sale_order_ids': fields.related('order_requirement_ids', 'sale_order_id', string='Sale Orders',
         #                                  relation='sale.order', type='many2many', readonly=True, store=False)
