@@ -75,6 +75,17 @@ class res_partner_address(orm.Model):
                     result[address.id][field_name] = False
         return result
 
+    def _hock_get_full_name(self, partner, addr):
+        if partner.city:
+            addr += (partner.city or '')
+        if partner.province:
+            addr += ' (' + partner.province.code + ')'
+        addr += ', '
+        if partner.street:
+            addr += (partner.street or '')
+
+        return addr
+
     _columns = {
         'province': fields.many2one('res.province', string='Province', ondelete='restrict'),
         'region': fields.many2one('res.region', string='Region', ondelete='restrict'),

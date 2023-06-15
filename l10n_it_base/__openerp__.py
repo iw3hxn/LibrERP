@@ -40,7 +40,8 @@ Funcionalities:
     'website': 'http://www.didotech.com',
     'license': 'AGPL-3',
     "depends": [
-        'base'
+        'base',
+        'base_address_contacts'
     ],
     "init_xml": [],
     "data": [

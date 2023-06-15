@@ -144,6 +144,10 @@ class res_partner_address_contact(orm.Model):
 class res_partner_address(orm.Model):
     _inherit = 'res.partner.address'
 
+    def _hock_get_full_name(self, partner, addr):
+        addr += (partner.city or '') + ', ' + (partner.street or '')
+        return addr
+
     def get_full_name(self, cr, uid, ids, field_name, arg, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
@@ -154,7 +158,8 @@ class res_partner_address(orm.Model):
                     addr = re.name or ''
                     if re.name and (re.city or re.country_id):
                         addr += ', '
-            addr += (re.city or '') + ', ' + (re.street or '')
+            addr = self._hock_get_full_name(re, addr)
+
             if re.partner_id and context.get('contact_display', False) in ['partner_address', 'partner']:
                 addr = "%s: %s" % (re.partner_id.name.upper(), addr.strip())
                 # addr = re.partner_id.name + ': ' + addr
