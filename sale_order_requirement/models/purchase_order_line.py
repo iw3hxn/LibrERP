@@ -14,7 +14,7 @@ class PurchaseOrderLine(orm.Model):
             for order_requirement in line.order_requirement_ids:
                 # sale_order_list.append(order_requirement.sale_order_id.name)
                 sale_order_list.append(order_requirement.sale_order_id.name_get()[0][1])
-            res[line.id] = ','.join(sale_order_list) if sale_order_list else ''
+            res[line.id] = ','.join(list(set(sale_order_list))) if sale_order_list else ''
         return res
 
     _columns = {

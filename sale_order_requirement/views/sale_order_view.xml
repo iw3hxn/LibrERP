@@ -21,6 +21,9 @@
                         <field colspan="4" name="order_requirement_line_ids" nolabel="1" />
                     </page>
                 </xpath>
+                <xpath expr="//field[@name='order_line' or @name='abstract_line_ids']/tree" position="inside">
+                    <field name="purchase_order_list"  />
+                </xpath>
 
             </field>
         </record>

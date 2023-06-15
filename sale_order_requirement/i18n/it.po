@@ -226,8 +226,8 @@ msgid "Workcenter"
 msgstr "Centro di Lavoro"
 
 #. module: sale_order_requirement
-#: code:addons/sale_order_requirement/models/order_requirement.py:277
-#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:572
+#: code:addons/sale_order_requirement/models/order_requirement.py:278
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:598
 #: model:ir.model,name:sale_order_requirement.model_purchase_order
 #: field:order.requirement.line,purchase_order_id:0
 #: field:order.requirement.line.add.match,order_id:0
@@ -235,6 +235,12 @@ msgstr "Centro di Lavoro"
 #, python-format
 msgid "Purchase Order"
 msgstr "Ordine Acquisto"
+
+#. module: sale_order_requirement
+#: field:sale.order.line,purchase_order_list:0
+#, python-format
+msgid "Purchase Order"
+msgstr "Ordini Acquisto"
 
 #. module: sale_order_requirement
 #: model:ir.model,name:sale_order_requirement.model_mrp_bom
