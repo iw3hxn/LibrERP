@@ -24,9 +24,9 @@
 
 {
     "name": "Purchase Order Extended",
-    "version": "3.6.26.10",
+    "version": "3.7.26.10",
     "author": "Didotech SRL",
-    "website": "http://www.didotech.com",
+    "website": "https://www.didotech.com",
     "category": 'Purchase',
     "description": """
         Module adds extra functionality to purchase_order:
@@ -43,7 +43,8 @@
     "data": [
         'view/partner_view.xml',
         'view/purchase_order_view.xml',
-        'view/purchase_order_menu.xml'
+        'view/purchase_order_menu.xml',
+        'view/stock_move_view.xml'
     ],
     "active": False,
     "installable": True,
