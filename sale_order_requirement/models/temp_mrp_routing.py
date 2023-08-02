@@ -19,8 +19,8 @@ class temp_mrp_routing(orm.Model):
         'sequence': fields.integer('Sequence'),
         'cycle': fields.float('Cycle'),
         'hour': fields.float('Hour'),
-        'row_color': fields.char('Row Color', store=False),
-        'temp_mrp_bom_id': fields.many2one('temp.mrp.bom', 'Temp BoM', required=True, ondelete='cascade', select=True),
+        'row_color': fields.char('Row Color'),
+        'temp_mrp_bom_id': fields.many2one(obj='temp.mrp.bom', string='Temp BoM', required=True, ondelete='cascade', select=True),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line',
                                                      required=True, ondelete='cascade', select=True)
     }

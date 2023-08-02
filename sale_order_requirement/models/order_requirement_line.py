@@ -542,7 +542,7 @@ class OrderRequirementLine(orm.Model):
                     _get_rec(bom_father, father_temp_id, start_level + 1)
 
             for routing_vals in temp_mrp_routing_vals:
-                temp_mrp_routing_model.create(cr, uid, routing_vals, context)
+                routing_vals['id'] = temp_mrp_routing_model.create(cr, uid, routing_vals, context)
 
         if not temp_mrp_bom_vals:
             raise orm.except_orm(_(u'Error !'),
@@ -907,8 +907,10 @@ class OrderRequirementLine(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result_dict = {}
         warning = {}
+        temp_mrp_bom_vals = temp_mrp_routing_vals = []
         if new_product_id:
             temp_mrp_bom_model = self.pool['temp.mrp.bom']
+            temp_mrp_routing_model = self.pool['temp.mrp.routing']
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
             warning = self._onchange_product_warning(product)
             suppliers = self.get_suppliers(cr, uid, ids, product, context)
@@ -916,15 +918,16 @@ class OrderRequirementLine(orm.Model):
             # Removing existing temp mrp bom
             line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
             if line.temp_mrp_bom_ids:
-                temp_mrp_bom_ids = [temp['id'] for temp in line.temp_mrp_bom_ids]
-                temp_mrp_bom_model.unlink(cr, uid, temp_mrp_bom_ids, context)
+                temp_mrp_bom_model.unlink(cr, uid, line.temp_mrp_bom_ids.mapped('id'), context)
+            if line.temp_mrp_bom_routing_ids:
+                temp_mrp_routing_model.unlink(cr, uid, line.temp_mrp_bom_routing_ids.mapped('id'), context)
 
             supplier_ids_formatted = suppliers['supplier_ids']
             result_dict.update(supplier_ids=suppliers['supplier_ids'][0][2], supplier_id=suppliers['supplier_id'])
             self.write(cr, uid, line.id, {'new_product_id': product.id, 'supplier_ids': supplier_ids_formatted}, context)
-            temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product, qty, False, 0, 0, True, True, context)
+            temp_mrp_bom_vals, temp_mrp_routing_vals = self.create_temp_mrp_bom(cr, uid, ids, product, qty, False, 0, 0, True, True, context)
             # TODO: maybe another option create_if_leaf in create temp mrp bom
-            temp = temp_ids[0]
+            temp = temp_mrp_bom_vals[0]
             if temp['is_leaf']:
                 # I don't want to see an "empty" bom with the father only
                 temp_mrp_bom_model.unlink(cr, uid, temp['id'], context)
@@ -938,12 +941,13 @@ class OrderRequirementLine(orm.Model):
 
         # RELOAD
         line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
-        temp_mrp_bom_ids = [t.id for t in line.temp_mrp_bom_ids]
-        temp_mrp_bom_routing_ids = [t.id for t in line.temp_mrp_bom_routing_ids]
+        if temp_mrp_bom_vals:
+            result_dict['temp_mrp_bom_ids'] = [(6, 0, [x['id'] for x in temp_mrp_bom_vals])]
+
+        if temp_mrp_routing_vals:
+            result_dict['temp_mrp_bom_routing_ids'] = [(6, 0, [x['id'] for x in temp_mrp_routing_vals])]
 
         result_dict.update({
-            'temp_mrp_bom_ids': temp_mrp_bom_ids,
-            'temp_mrp_bom_routing_ids': temp_mrp_bom_routing_ids,
             'cost': line.cost,
             'view_bom': True
         })
