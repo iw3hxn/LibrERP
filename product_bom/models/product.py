@@ -117,7 +117,7 @@ class product_product(orm.Model):
 
         if ENABLE_CACHE:
             if debug_logger:
-                _logger.debug(u'[{product.default_code}] {product.name}'.format(product=product))
+                _logger.debug(u'_compute_product_purchase_price [{product.default_code}] {product.name}'.format(product=product))
             # cached_price = self.product_cost_cache.get(product_id, 0)
 
         bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
@@ -128,11 +128,11 @@ class product_product(orm.Model):
 
             if ENABLE_CACHE and debug_logger:
                 _logger.debug(
-                    u'[{product.default_code}] Start Explosion ========================'.format(product=product))
+                    u'_compute_product_purchase_price [{product.default_code}] Start Explosion ========================'.format(product=product))
 
             for sub_product in sub_products:
                 if sub_product.product_id.id == product.id:
-                    error = "Product '{product.name}' (id: {product.id}) is referenced to itself".format(
+                    error = "_compute_product_purchase_price Product '{product.name}' (id: {product.id}) is referenced to itself".format(
                         product=product)
                     _logger.error(error)
                     continue
@@ -148,21 +148,21 @@ class product_product(orm.Model):
                 #     std_price = sub_product.product_id.cost_price
                 std_price = self._get_subproduct_cost_price(cr, uid, sub_product.product_id, False, context)
 
-                to_uom = sub_product.product_id.uom_po_id or sub_product.product_id.uom_id
-
-                uos_coeff = sub_product.product_id.uos_coeff or 1
                 if sub_product.product_uom.category_id.id != sub_product.product_id.uom_id.category_id.id:
+                    uos_coeff = sub_product.product_id.uos_coeff or 1
                     qty = sub_product.product_qty * uos_coeff
                 else:
-                    product_qty = uom_obj._compute_qty(cr, uid,
-                                               from_uom_id=sub_product.product_uom.id,
-                                               qty=sub_product.product_qty,
-                                               to_uom_id=to_uom.id)
-                    qty = product_qty * uos_coeff
+                    qty = uom_obj._compute_qty(
+                        cr, uid,
+                        from_uom_id=sub_product.product_uom.id,
+                        qty=sub_product.product_qty,
+                        to_uom_id=sub_product.product_id.uom_id.id
+                    )
+
 
                 if ENABLE_CACHE and debug_logger:
                     _logger.debug(
-                        u'[{product.default_code}] price += {std_price} * {qty} \t ({total_line})'.format(product=sub_product.product_id,
+                        u'_compute_product_purchase_price [{product.default_code}] price += {std_price} * {qty} \t ({total_line})'.format(product=sub_product.product_id,
                                                                                         std_price=std_price, qty=qty, total_line=std_price * qty))
 
                 # print(std_price, qty)
@@ -175,8 +175,12 @@ class product_product(orm.Model):
                 bom = bom_obj.browse(cr, uid, bom_id, context)
 
             if debug_logger:
-                _logger.debug(u"cost without Routing {}".format(price))
+                _logger.debug(u"_compute_product_purchase_price (only product sum) cost without routing {}".format(price))
+
+            all_routing_cost = 0
+
             if bom.routing_id and not context.get('exclude_routing', False):
+                _logger.debug(u'_compute_product_purchase_price COMPUTE ROUTING COST ')
                 for wline in bom.routing_id.workcenter_lines:
                     wc = wline.workcenter_id
                     cycle = wline.cycle_nbr
@@ -187,13 +191,19 @@ class product_product(orm.Model):
                                        wc.time_efficiency or 1.0)
                     routing_cost = cost * cost_efficiency
                     if debug_logger:
-                        _logger.debug(u"Add WC {} cost {} * efficiency {} = {}".format(wline.name, cost, cost_efficiency, routing_cost))
-                    price += routing_cost
+                        _logger.debug(u"_compute_product_purchase_price Add WC '{}' cost {} * efficiency {} = {}".format(wline.name, cost, cost_efficiency, routing_cost))
+                    all_routing_cost += routing_cost
+
+            if all_routing_cost and debug_logger:
+                _logger.debug(u"_compute_product_purchase_price routing cost {}".format(all_routing_cost))
+
+            price += all_routing_cost
+
             price /= bom.product_qty
             price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
             if ENABLE_CACHE and debug_logger:
                 _logger.debug(
-                    u'==== SUM [{product.default_code}] bom_price = {price}'.format(product=product, price=price))
+                    u'_compute_product_purchase_price ==== SUM [{product.default_code}] bom_price = {price}'.format(product=product, price=price))
 
             return price
         else:
@@ -218,7 +228,8 @@ class product_product(orm.Model):
                 if pricelist:
                     price, rule = self.pool['product.pricelist'].price_rule_get_multi(cr, uid, [pricelist.id], products_by_qty_by_partner=[(product, 1, partner_id)], context=context)[product.id][pricelist.id]
                     if not price:
-                        _logger.error(u"Not find price for pricelist '{}' and product {}".format(pricelist.name, product.name_get()[0][1]))
+                        _logger.error(u"_compute_product_purchase_price Not find price for pricelist '{}' and product {}".format(pricelist.name, product.name_get()[0][1]))
+                        # price = 0
                 else:
                     raise orm.except_orm(
                         _("Error"),
@@ -241,7 +252,7 @@ class product_product(orm.Model):
 
             if ENABLE_CACHE and debug_logger:
                 _logger.debug(
-                    u'NO BOM [{product.default_code}] price = {price}'.format(product=product, price=cost_price))
+                    u'_compute_product_purchase_price NO BOM [{product.default_code}] price = {price}'.format(product=product, price=cost_price))
 
             return cost_price
 
@@ -282,13 +293,16 @@ class product_product(orm.Model):
         for product in self.browse(cr, uid, ids, context):
             # res[product.id] = self._compute_product_purchase_price(cr, uid, product.id, bom_properties,
             #                                                        log_product=product, context=context)
+            product_name = product.name_get()[0][1]
             try:
-                res[product.id] = self._compute_product_purchase_price(cr, uid, product, bom_properties, context=context)
+                price = self._compute_product_purchase_price(cr, uid, product, bom_properties, context=context)
             except Exception as e:
-                res[product.id] = 99999999
-                _logger.error(u'{product} ERRORE: {error}'.format(product=product.name_get()[0][1], error=e))
+                price = 99999999
+                _logger.error(u"_compute_purchase_price: '{product}' error for _compute_product_purchase_price: {error}".format(product=product_name, error=e))
 
-        # else:
+            _logger.info(u"_compute_purchase_price '{}' price={}".format(product_name, price))
+            res[product.id] = price
+            # else:
         #     for product_id in ids:
         #         res[product_id] = self._compute_product_purchase_price(cr, uid, product_id, bom_properties, context=context)
 
