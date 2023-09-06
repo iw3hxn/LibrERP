@@ -22,7 +22,7 @@
 
 {
     "name": "Account Account Extended",
-    "version": "3.0.0.2",
+    "version": "6.1.0.0.0",
     "author": "Odoo SA",
     "website": "",
     "category": "Base",
@@ -38,7 +38,8 @@
     ],
     "data": [
         'views/account_account_view.xml',
-        'views/account_bank_statement_view.xml'
+        'views/account_bank_statement_view.xml',
+        'data/ir_cron.xml'
     ],
     "active": False,
     "installable": True,
