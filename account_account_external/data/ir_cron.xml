@@ -4,6 +4,7 @@
 
         <record id="cron_export_invoice_external_code" model="ir.cron">
             <field name="name">Cron Export Invoice External Code</field>
+            <field name="active" eval="0" />
             <field name="interval_number">1</field>
             <field name="interval_type">hours</field>
             <field name="numbercall">-1</field>
