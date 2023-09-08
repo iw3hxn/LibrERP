@@ -19,3 +19,9 @@ class WizardExportFatturapa(orm.TransientModel):
             AltriDatiGestionali = AltriDatiGestionaliType(TipoDato='MASTRO', RiferimentoTesto=line.account_id.external_code or line.account_id.code)
             DettaglioLinea.AltriDatiGestionali.append(AltriDatiGestionali)
         return res
+
+    def setDatiGeneraliDocumento(self, cr, uid, invoice, body, context=None):
+        res = super(WizardExportFatturapa, self).setDatiGeneraliDocumento(cr, uid, invoice, body, context)
+        if invoice.type in ['in_invoice', 'in_refund']:
+            body.DatiGenerali.DatiGeneraliDocumento.Numero = invoice.supplier_invoice_number
+        return res

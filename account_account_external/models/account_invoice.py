@@ -1,19 +1,17 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.osv import orm, fields
-import os
 import base64
-import errno
 import logging
-import shutil
-from StringIO import StringIO
-import logging
+import os
+
 import tools
+
+from openerp.osv import orm
 
 _logger = logging.getLogger(__name__)
 INVOICE_ROOT_PATH = tools.config.get('export_invoice_path', 'export_invoice')
+
 
 class AccountInvoice(orm.Model):
     _inherit = 'account.invoice'
