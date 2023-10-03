@@ -191,8 +191,10 @@ class stock_picking(orm.Model):
                 if picking.sale_id:
                     sale = picking.sale_id
                     date_confirm = sale.minimum_planned_date or sale.commitment_date
-
-                    start_date = datetime.strptime(date_confirm, DEFAULT_SERVER_DATE_FORMAT)
+                    if date_confirm:
+                        start_date = datetime.strptime(date_confirm, DEFAULT_SERVER_DATE_FORMAT)
+                    else:
+                        start_date = datetime.now()
                     start_date = date(start_date.year, start_date.month, start_date.day)
 
                     # month in italian start_date.strftime('%B').capitalize()
