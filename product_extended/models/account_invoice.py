@@ -48,7 +48,7 @@ class account_invoice(orm.Model):
         for invoice in self.browse(cr, uid, ids, context):
             from_currency = invoice.currency_id.id
             for line in invoice.invoice_line:
-                if line.product_id and line.quantity != 0.0 and line.price_unit != 0.0:
+                if line.product_id and line.quantity >= 0.0 and line.price_unit != 0.0:
                     if invoice.type == 'out_invoice':
                         price_subtotal = self.pool['res.currency'].compute(
                             cr, uid,
