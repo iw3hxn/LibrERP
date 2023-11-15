@@ -33,7 +33,8 @@ class split_in_production_lot(orm.TransientModel):
         'product_uom': fields.many2one('product.uom', 'UoM'),
         'line_ids': fields.one2many('stock.move.split.lines', 'wizard_id', 'Production Lots'),
         'line_exist_ids': fields.one2many('stock.move.split.lines', 'wizard_exist_id', 'Production Lots'),
-        'use_exist': fields.boolean('Existing Lots', help="Check this option to select existing lots in the list below, otherwise you should enter new ones line by line."),
+        'use_exist': fields.boolean('Existing Lots',
+                                    help="Check this option to select existing lots in the list below, otherwise you should enter new ones line by line."),
         'location_id': fields.many2one('stock.location', 'Source Location')
     }
 
@@ -55,8 +56,8 @@ class split_in_production_lot(orm.TransientModel):
         """
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
-        assert context.get('active_model') == 'stock.move',\
-             'Incorrect use of the stock move split wizard'
+        assert context.get('active_model') == 'stock.move', \
+            'Incorrect use of the stock move split wizard'
 
         inventory_id = context.get('inventory_id', False)
         prodlot_obj = self.pool['stock.production.lot']
@@ -77,8 +78,9 @@ class split_in_production_lot(orm.TransientModel):
                     quantity = line.quantity
                     total_move_qty += quantity
                     if total_move_qty > move_qty:
-                        raise orm.except_orm(_('Processing Error'), _('Production lot quantity %d of %s is larger than available quantity (%d) !') \
-                                % (total_move_qty, move.product_id.name, move_qty))
+                        raise orm.except_orm(_('Processing Error'),
+                                             _('Production lot quantity %d of %s is larger than available quantity (%d) !') \
+                                             % (total_move_qty, move.product_id.name, move_qty))
                     if quantity <= 0 or move_qty == 0:
                         continue
                     quantity_rest -= quantity
@@ -96,7 +98,8 @@ class split_in_production_lot(orm.TransientModel):
                     if quantity_rest > 0:
                         current_move = move_obj.copy(cr, uid, move.id, default_val, context=context)
                         if inventory_id and current_move:
-                            inventory_obj.write(cr, uid, inventory_id, {'move_ids': [(4, current_move)]}, context=context)
+                            inventory_obj.write(cr, uid, inventory_id, {'move_ids': [(4, current_move)]},
+                                                context=context)
                         new_move.append(current_move)
 
                     if quantity_rest == 0:
@@ -104,13 +107,14 @@ class split_in_production_lot(orm.TransientModel):
                     if line.prodlot_id:
                         prodlot_id = line.prodlot_id and line.prodlot_id.id or False
                     else:
-                        prodlot_ids = prodlot_obj.search(cr, uid, [('name', '=', line.name), ('product_id', '=', move.product_id.id)])
+                        prodlot_ids = prodlot_obj.search(cr, uid, [('name', '=', line.name),
+                                                                   ('product_id', '=', move.product_id.id)])
                         if not prodlot_ids:
                             prodlot_id = prodlot_obj.create(cr, uid, {
                                 'name': line.name,
                                 'product_id': move.product_id.id
                             },
-                            context=context)
+                                                            context=context)
                         else:
                             prodlot_id = prodlot_ids[0]
 
@@ -145,7 +149,7 @@ class stock_move_split_lines_exist(orm.TransientModel):
         res = {}
         if prodlot_id:
             res = self.pool['stock.move'].onchange_lot_id(cr, uid, [], prodlot_id, product_qty,
-                        loc_id, product_id, uom_id)
+                                                          loc_id, product_id, uom_id)
             if not res.get('warning'):
                 stock_available = self.pool['stock.production.lot'].browse(cr, uid, prodlot_id).stock_available
                 res.update({'value': {'quantity': stock_available}})

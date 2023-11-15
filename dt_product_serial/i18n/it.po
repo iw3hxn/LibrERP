@@ -460,6 +460,11 @@ msgstr "Porta a Zero tutte le righe"
 
 #. module: dt_product_serial
 #: view:stock.partial.picking:0
+msgid "Set Auto Prodlot Code"
+msgstr "Inserisci un codice generato"
+
+#. module: dt_product_serial
+#: view:stock.partial.picking:0
 msgid "Set To Zero Except Check"
 msgstr "Porta a Zero solo le righe non controllate"
 

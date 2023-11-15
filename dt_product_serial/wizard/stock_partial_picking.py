@@ -234,6 +234,16 @@ class stock_partial_picking(orm.TransientModel):
             line.write({'quantity': 0})
         return True
 
+    def action_set_auto_prodlot_code(self, cr, uid, move_ids, context):
+        for line in self.pool['stock.partial.picking'].browse(cr, uid, move_ids, context)[0].move_ids:
+            if not line.new_prodlot_code:
+                new_prodlot_code = "APC/" + str(line.move_id.id)
+                values = self.pool['stock.partial.picking.line'].onchange_new_prodlot_code(cr, uid, [line.id], new_prodlot_code, line.product_id.id, line.prodlot_id.id, context=None)
+                line_value = values.get('value', {})
+                line_value.update({'new_prodlot_code': new_prodlot_code})
+                line.write(line_value)
+        return True
+
     def action_set_zero_except_check(self, cr, uid, move_ids, context):
         for line in self.pool['stock.partial.picking'].browse(cr, uid, move_ids, context)[0].move_ids:
             if not line.line_check:

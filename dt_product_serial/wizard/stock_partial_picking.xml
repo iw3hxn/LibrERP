@@ -21,6 +21,8 @@
                     <field name="tracking_code"/>
                     <field name="arrival_date"/>
                     <newline/>
+                    <button name="action_set_auto_prodlot_code" string="Set Auto Prodlot Code" colspan="1" type="object" icon="gtk-clear"/>
+                    <newline/>
                     <button name="action_set_zero_all" string="Set To Zero All" colspan="1" type="object" icon="gtk-clear"/>
                     <button name="action_set_zero_except_check" string="Set To Zero Except Check" colspan="1" type="object" icon="gtk-clear"/>
                     <button name="action_set_max" string="Set To Max" colspan="1" type="object" icon="gtk-home"/>

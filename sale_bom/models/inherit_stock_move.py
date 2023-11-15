@@ -25,6 +25,10 @@ from openerp.osv import orm, fields
 class StockMove(orm.Model):
     _inherit = 'stock.move'
 
+    _columns = {
+        'just_explode': fields.boolean(string="Just Explode")
+    }
+
     def _action_explode(self, cr, uid, move, context=None):
         """ Explodes pickings.
         @param move: Stock moves
@@ -32,6 +36,8 @@ class StockMove(orm.Model):
         """
         move_obj = self.pool['stock.move']
         processed_ids = [move.id]
+        if move.just_explode:
+            return processed_ids
         if move.sale_line_id and move.sale_line_id._columns.get('with_bom', False) and move.sale_line_id.with_bom:
             if move.sale_line_id.product_id.bom_lines and move.sale_line_id.product_id.bom_lines[0].type == 'normal':
                 return processed_ids
@@ -63,6 +69,7 @@ class StockMove(orm.Model):
                         'move_history_ids2': [(6, 0, [])],
                         'procurements': [],
                         'location_dest_id': location_dest_id,
+                        'just_explode': True
                     }
                     mid = move_obj.copy(cr, uid, move.id, default=valdef)
                     processed_ids.append(mid)
@@ -70,7 +77,8 @@ class StockMove(orm.Model):
                     'location_dest_id': move.location_id.id,  # dummy move for the kit
                     'auto_validate': True,
                     'picking_id': False,
-                    'state': 'confirmed'
+                    'state': 'confirmed',
+                    'just_explode': True
                 })
 
         return processed_ids

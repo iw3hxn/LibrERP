@@ -25,6 +25,20 @@ from openerp.osv import orm, fields
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
 
+    def action_explode(self, cr, uid, move_ids, *args):
+        """Explodes moves by expanding kit components"""
+        new_move_ids = self.pool['stock.move'].search(cr, uid, [('id', 'in', move_ids), ('just_explode', '=', False)])
+        res = super(stock_picking, self).action_explode(cr, uid, new_move_ids, *args)
+        return res
+
+    def action_reopen(self, cr, uid, ids, context=None):
+        move_model = self.pool["stock.move"]
+        move_ids = move_model.search(cr, uid, [('picking_id', 'in', ids)], context=context)
+        move_model.write(cr, uid, move_ids, {'just_explode': True}, context=context)
+        res = super(stock_picking, self).action_reopen(cr, uid, ids, context=context)
+
+        return res
+
     def action_invoice_create(self, cr, uid, ids, journal_id=False,
                             group=False, type='out_invoice', context=None):
 
