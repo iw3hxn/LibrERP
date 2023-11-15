@@ -36,18 +36,18 @@ class stock_move(orm.Model):
 
     def _get_related_fields(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        for move in self.read(cr, uid, ids, ['picking_id'], context):
-            res[move['id']] = {
+        for move in self.browse(cr, uid, ids, context):
+            res[move.id] = {
                 'minimum_planned_date': False,
                 'sale_id': False,
                 'week_nbr': False,
                 'shop_id': False
             }
-            if move['picking_id']:
-                picking = self.pool['stock.picking'].browse(cr, uid, move['picking_id'][0], context)
-                res[move['id']]['week_nbr'] = picking.week_nbr
+            if move.picking_id:
+                picking = move.picking_id
+                res[move.id]['week_nbr'] = picking.week_nbr
                 if picking.sale_id:
-                    res[move['id']].update({
+                    res[move.id].update({
                         'sale_id': picking.sale_id.id,
                         'minimum_planned_date': picking.sale_id.minimum_planned_date,
                         'shop_id': picking.sale_id.shop_id.id
