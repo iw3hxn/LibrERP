@@ -12,7 +12,12 @@
 
                 <xpath expr="//separator[@string='Invoices']"  position="before">
                     <separator colspan="4" string="Order Requirements"/>
-                    <field colspan="4" name="sale_order_requirement_ids" nolabel="1" groups="stock.group_stock_user"/>
+                    <field colspan="4"
+                           name="sale_order_requirement_ids"
+                           nolabel="1"
+                           groups="stock.group_stock_user"
+                           context="{'hide_button': False}"
+                    />
                     <separator colspan="4" string="Production Order"/>
                     <field colspan="4" name="mrp_production_ids" nolabel="1" context="{'view_print': True}" groups="stock.group_stock_user"/>
                 </xpath>

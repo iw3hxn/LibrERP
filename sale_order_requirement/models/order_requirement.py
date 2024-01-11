@@ -124,10 +124,20 @@ class order_requirement(orm.Model):
 
     _columns = {
         'date': fields.date('Data'),
-        'sale_order_id': fields.many2one('sale.order', 'Order', required=True, ondelete='cascade', select=True, auto_join=True),
+        'sale_order_id': fields.many2one(
+            string='Order',
+            obj='sale.order',
+            readonly=True,
+            states={'draft': [('readonly', False)]},
+            required=True,
+            ondelete='cascade',
+            select=True,
+            auto_join=True
+        ),
         'client_order_ref': fields.related('sale_order_id', 'client_order_ref', type='char', string="Customer Reference"),
         'customer_id': fields.related('sale_order_id', 'partner_id', type='many2one', relation='res.partner', string='Customer', store=False),
-        'user_id': fields.many2one('res.users', 'User'),
+        'user_id': fields.many2one(obj='res.users', string='User', readonly=True,
+                                   states={'draft': [('readonly', False)]}, ),
         'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number", store={
             'order.requirement': (lambda self, cr, uid, ids, c={}: ids, ['date'], 30),
         }),
@@ -153,7 +163,12 @@ class order_requirement(orm.Model):
                                                     string='Purch. orders approved', readonly=True),
         'purchase_orders_state': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
                                                  string='Deliveries', readonly=True),
-        'group_purchase_by_sale_order': fields.boolean("Group Purchase by Sale Order", default=False)
+        'group_purchase_by_sale_order': fields.boolean(
+            string="Group Purchase by Sale Order",
+            readonly=True,
+            states={'draft': [('readonly', False)]},
+            default=False
+        )
     }
 
     _defaults = {
@@ -260,6 +275,27 @@ class order_requirement(orm.Model):
         # TODO set_state_done, now commented in view
         # pass
         # self.write(cr, uid, ids, {'state': 'done'})
+
+    def action_view_order_requirement(self, cr, uid, ids, context=None):
+
+        mod_obj = self.pool.get('ir.model.data')
+        act_obj = self.pool.get('ir.actions.act_window')
+
+        result = mod_obj.get_object_reference(cr, uid, 'sale_order_requirement', 'action_view_order_requirement')
+        id = result and result[1] or False
+        result = act_obj.read(cr, uid, [id], context=context)[0]
+        # compute the number of invoices to display
+
+        # choose the view_mode accordingly
+        if len(ids) > 1:
+            result['domain'] = "[('id','in',[" + ','.join(map(str, ids)) + "])]"
+        else:
+            res = mod_obj.get_object_reference(cr, uid, 'sale_order_requirement', 'view_order_requirement_form')
+            result['views'] = [(res and res[1] or False, 'form')]
+            result['view_mode'] = 'page'
+            result['res_id'] = ids and ids[0] or False
+
+        return result
 
     def action_view_purchase_order(self, cr, uid, ids, context=None):
         order = self.browse(cr, uid, ids, context)[0]

@@ -29,7 +29,7 @@ class MrpProduction(orm.Model):
 
     _columns = {
         'is_from_order_requirement': fields.boolean('is from order requirement'),
-        'temp_bom_id': fields.many2one('temp.mrp.bom', 'Bill of Material Line', readonly=True, select=1),
+        'temp_bom_id': fields.many2one(obj='temp.mrp.bom', string='Bill of Material Line', readonly=True, select=1,  ondelete='cascade'),
         'order_requirement_line_id': fields.related('temp_bom_id', 'order_requirement_line_id', string='Order Requirement Line',
                                                     relation='order.requirement.line', type='many2one', readonly=True),
         'level': fields.integer('Level', required=True),
