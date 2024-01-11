@@ -27,6 +27,41 @@ class MrpProduction(orm.Model):
 
         return res
 
+    def _compute_project_id(self, cr, uid, ids, field_name, args, context):
+        result = {}
+        for record in self.browse(cr, uid, ids, context):
+            project_id = False
+            if record.sale_id:
+                project_id = record.sale_id.project_project.id if record.sale_id.project_project else False
+            result[record.id] = project_id
+        return result
+
+    def _get_project_data(self, cr, uid, arg, context):
+        project_model = self.pool['project.project']
+        if arg[1] == '=':
+            return project_model.read(cr, uid, [arg[2]], ['sale_order_ids'], context)
+        else:
+            result = project_model.name_search(
+                cr, uid, name=arg[2], operator=arg[1], context=context, limit=None)
+            if result:
+                project_ids = [x[0] for x in result]
+                return project_model.read(
+                    cr, uid, project_ids, ['sale_order_ids'], context)
+        return None
+
+    def _accumulate_sale_order_ids(self, data):
+        return [_id for item in data for _id in item['sale_order_ids']]
+
+    def _search_project_id(self, cr, uid, obj, name, args, context=None):
+        sale_order_ids = []
+        if args:
+            for arg in args:
+                data = self._get_project_data(cr, uid, arg, context)
+                if data:
+                    sale_order_ids += self._accumulate_sale_order_ids(data)
+            return [('sale_id', 'in', sale_order_ids)]
+        return []
+
     _columns = {
         'is_from_order_requirement': fields.boolean('is from order requirement'),
         'temp_bom_id': fields.many2one(obj='temp.mrp.bom', string='Bill of Material Line', readonly=True, select=1,  ondelete='cascade'),
@@ -36,6 +71,13 @@ class MrpProduction(orm.Model):
         'sale_id': fields.many2one('sale.order', 'Sale order'),
         'analytic_account_id': fields.many2one('account.analytic.account',
                                                'Analytic Account', ),
+        'project_id': fields.function(
+            _compute_project_id,
+            obj='project.project',
+            string='Project',
+            fnct_search=_search_project_id,
+            method=True, type='many2one'),
+
     }
 
     _defaults = {

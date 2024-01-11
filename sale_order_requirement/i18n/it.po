@@ -251,7 +251,7 @@ msgstr "Distinta Base"
 #: field:purchase.order.line,order_requirement_ids:0
 #: view:sale.order:0
 msgid "Order Requirements"
-msgstr "Order Requirements"
+msgstr "Fabbisogni Ordine"
 
 #. module: sale_order_requirement
 #: view:mrp.production:0
@@ -795,9 +795,10 @@ msgid "Error ! You cannot create recursive BoM."
 msgstr "Errore! Impossibile creare BoM ricorsive."
 
 #. module: sale_order_requirement
-#: code:addons/sale_order_requirement/wizard/order_requirement_line_add.py:73
+#: code:addons/sale_order_requirement/wizard/order_requirement_line_add.py:74
 #: view:full.order.requirement.line:0
 #: field:full.order.requirement.line,order_requirement_id:0
+#: field:full.order.requirement.line.by.category,order_requirement_id:0
 #: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement
 #: model:ir.actions.report.xml,name:sale_order_requirement.order_requirement_report
 #: model:ir.ui.menu,name:sale_order_requirement.menu_view_order_requirement
@@ -1244,3 +1245,13 @@ msgstr "Non puoi riaprire un Ordine di Vendita con un Fabbisogno Ordine già cre
 #: field:order.requirement,group_purchase_by_sale_order:0
 msgid "Group Purchase by Sale Order"
 msgstr "Raggruppa gli ordini d'acquisto per Ordine di Vendita"
+
+#. modules: sale_order_requirement
+#: view:order.requirement:0
+msgid "Force"
+msgstr "Forza Manualmente"
+
+#. modules: sale_order_requirement
+#: field:wizard.requirement,order_line_ids:0
+msgid "Lines"
+msgstr "Righe"
