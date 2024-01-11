@@ -327,7 +327,9 @@ class account_move_line(orm.Model):
                                store={
                                    'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['date_maturity'], 10),
                                }),
-        'residual': fields.function(_residual, method=True, string='Residual', type='float', store=False),
+        'residual': fields.function(_residual, method=True, string='Residual', type='float', store={
+                                   'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['debit', 'credit'], 10),
+                               }),
         'direction': fields.function(_direction, method=True, string='Direction', type='char', store=False),
         'balance': fields.function(_balance, method=True, string='Balance', type='float', store=False),
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
