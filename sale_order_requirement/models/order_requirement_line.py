@@ -1069,6 +1069,10 @@ class OrderRequirementLine(orm.Model):
                 'purchase_order_ids': [(4, obj.force_purchase_order_line_id.order_id.id)],
                 'purchase_order_line_ids': [(4, obj.force_purchase_order_line_id.id)]
             }, context)
+            obj.force_purchase_order_line_id.write({
+                'order_requirement_ids': [(4, obj.order_requirement_id.id)],
+                'order_requirement_line_ids': [(4, obj.id)],
+            })
             return True
 
         if obj.purchase_order_id:
@@ -1528,3 +1532,6 @@ class OrderRequirementLine(orm.Model):
             vals['product_id'] = vals['new_product_id']
 
         return super(OrderRequirementLine, self).create(cr, uid, vals, context)
+
+    def write(self, cr, user, ids, vals, context=None):
+        return super(OrderRequirementLine, self).write(cr, user, ids, vals, context)
