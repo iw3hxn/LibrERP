@@ -19,7 +19,10 @@
 #
 ##############################################################################
 
+from datetime import datetime
+
 from openerp.osv import fields, osv
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
 
 
@@ -30,6 +33,23 @@ class wizard_registro_iva(osv.osv_memory):
         ctx = dict(context or {}, account_period_prefer_normal=True)
         period_ids = self.pool['account.period'].find(cr, uid, context=ctx)
         return period_ids
+
+    def _compute_name(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            start_date = False
+            end_date = False
+            for period in line.period_ids:
+                period_start = datetime.strptime(period.date_start, DEFAULT_SERVER_DATE_FORMAT)
+                if not start_date or start_date > period_start:
+                    start_date = period_start
+                period_end = datetime.strptime(period.date_stop, DEFAULT_SERVER_DATE_FORMAT)
+                if not end_date or end_date < period_end:
+                    end_date = period_end
+            name = dict(self.fields_get(cr, uid, allfields=['type'], context=context)['type']['selection'])[line.type].replace(' ', '_')
+            res[line.id] = "Registro_{}_{}_{}".format(name, start_date.strftime("%d%m%Y"), end_date.strftime("%d%m%Y"))
+        return res
 
     _name = "wizard.registro.iva"
     _columns = {
@@ -55,7 +75,7 @@ class wizard_registro_iva(osv.osv_memory):
                  "them prositive"),
         'message': fields.char('Message', size=64, readonly=True),
         'fiscal_page_base': fields.integer('Last printed page', required=True),
-        'name': fields.char('Name', size=16),
+        'name': fields.function(_compute_name, string='Name', type="char"),
         'order_by_date': fields.boolean('Ordina per data')
     }
     _defaults = {

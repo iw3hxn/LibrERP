@@ -44,10 +44,11 @@
         %for object in objects :
             <% counter += 1 %>
             %for line in tax_lines(object) :
+                <tr>
                 %if line['index']==0:
-                    <tr><td class="left_with_line">
+                    <td class="left_with_line">
                 %else:
-                    <tr><td class="left_without_line">
+                    <td class="left_without_line">
                 %endif
                 %if line['index']==0:
                     ${ formatLang(object.date,date=True) or '' | entity}
@@ -121,6 +122,7 @@
                 %endif
                 </tr>
             %endfor
+            <tr><td>.</td></tr>
         %endfor
         </tbody>
     </table>
