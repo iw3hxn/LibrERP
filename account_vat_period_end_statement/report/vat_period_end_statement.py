@@ -9,12 +9,16 @@
 #
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
+import logging
 import time
-from report import report_sxw
-from tools.translate import _
-from openerp.osv import orm
 
 from openerp.addons.core_extended.ordereddict import OrderedDict
+from tools.translate import _
+
+from openerp.osv import orm
+from report import report_sxw
+
+_logger = logging.getLogger(__name__)
 
 
 class print_vat_period_end_statement(report_sxw.rml_parse):
@@ -65,6 +69,7 @@ class print_vat_period_end_statement(report_sxw.rml_parse):
                     'base': not base_code.exclude_from_registries and base_code.sum_period * base_code.vat_statement_sign or 0,
                 }
             for child_code in tax_code.child_ids:
+                _logger.info("Create child tax for {}".format(child_code.name))
                 res = self._build_codes_dict(
                     child_code, res=res, context=context)
         return res
@@ -79,9 +84,13 @@ class print_vat_period_end_statement(report_sxw.rml_parse):
         res = {}
         code_pool = self.pool.get('account.tax.code')
         context['period_id'] = period_id
+        print [tax_code.name for tax_code in code_pool.browse(
+            self.cr, self.uid, tax_code_ids, context=context
+        )]
         for tax_code in code_pool.browse(
             self.cr, self.uid, tax_code_ids, context=context
         ):
+            _logger.info(tax_code.name)
             res = self._build_codes_dict(tax_code, res=res, context=context)
         return OrderedDict(sorted(res.items(), key=lambda t: t[0]))
 

@@ -15,7 +15,7 @@
 # [2017: odoo-italia] Electronic VAT statement
 {
     'name': 'Period End VAT Statement',
-    'version': '6.1.5.1.10',
+    'version': '6.1.5.1.11',
     'category': 'Generic Modules/Accounting',
     'author': 'Agile Business Group,'
               ' Odoo Italia Associazione,'

@@ -573,8 +573,12 @@ class AccountVatPeriodEndStatement(orm.Model):
         line_obj = self.pool.get('account.move.line')
         period_obj = self.pool.get('account.period')
         for statement in self.browse(cr, uid, ids, context):
-            period_ids = period_obj.find(
-                cr, uid, dt=statement.date, context=context)
+            ctx = context.copy()
+            ctx.update({
+                "account_period_prefer_normal": True,
+                "company_id": statement.company_id.id,
+            })
+            period_ids = period_obj.find(cr, uid, dt=statement.date, context=ctx)
             if len(period_ids) != 1:
                 raise orm.except_orm(_('Encoding error'), _(
                     "No period found or more than one period found for the "
