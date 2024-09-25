@@ -132,6 +132,10 @@ class account_invoice(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         show_except = not context.get('no_except', False)
         for invoice in self.browse(cr, uid, ids, context):
+            if invoice.company_id.currency_id != invoice.currency_id:
+                if show_except:
+                    raise orm.except_orm(_('Fattura'), "con valuta differente da {currency}".format(currency=invoice.company_id.currency_id.name))
+                return False
             if invoice.type == 'out_invoice' and invoice.fiscal_position and invoice.fiscal_position.sale_journal_id and invoice.fiscal_position.sale_journal_id != invoice.journal_id:
                 if show_except:
                     raise orm.except_orm(_('Fattura Cliente'),
