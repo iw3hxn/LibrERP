@@ -202,8 +202,11 @@ class sale_order(orm.Model):
 
             approved_order_amount = 0.0
             names = []
-            for order_line in order_line_obj.read(cr, uid, approved_order_line_ids, ['order_id', 'price_subtotal'], context=context):
-                approved_order_amount += order_line['price_subtotal']
+            for order_line in order_line_obj.browse(cr, uid, approved_order_line_ids, context=context):
+                tax_compute = self.pool['account.tax'].compute_all(cr, uid, order_line.tax_id, order_line['price_subtotal'], 1,
+                    address_id=None, product=None, partner=None, force_excluded=False,
+                    context=context)
+                approved_order_amount += tax_compute.get('total_included')
                 order_name = order_line['order_id'][1]
                 if order_name not in names:
                     names.append(order_name)
