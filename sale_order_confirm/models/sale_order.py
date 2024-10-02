@@ -182,8 +182,9 @@ class sale_order(orm.Model):
     def _credit_limit(self, cr, uid, ids, field_name, arg, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = dict.fromkeys(ids, 0.0)
+        _logger.info("_credit_limit")
         for order in self.browse(cr, uid, ids, context=context):
-
+            _logger.info("_credit_limit for order_id={0} policy={1} partner='{2}'".format(order.id, order.order_policy, order.partner_id.name))
             if order.order_policy == 'prepaid':
                 res[order.id] = 0
                 continue
@@ -193,21 +194,38 @@ class sale_order(orm.Model):
             order_obj = self.pool['sale.order']
             order_line_obj = self.pool['sale.order.line']
 
-            approved_order_ids = order_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', 'not in', ['draft', 'cancel', 'done'])], context=context)
+            approved_order_domain = [('active', '=', True), ('partner_id', '=', partner.id), ('state', 'not in', ['draft', 'cancel', 'done'])]
+            if order_obj._columns.get('repair_order_id'):
+                approved_order_domain.append(('repair_order_id', '=', False))
+            approved_order_ids = order_obj.search(cr, uid, approved_order_domain, context=context)
             approved_order_line_ids = order_line_obj.search(cr, uid, [('invoiced', '=', False), ('order_id', 'in', approved_order_ids)], context=context)
 
-            approved_invoices_amount = 0.0
-            for order_line in order_line_obj.read(cr, uid, approved_order_line_ids, ['price_subtotal'], context=context):
-                approved_invoices_amount += order_line['price_subtotal']
+            approved_order_amount = 0.0
+            names = []
+            for order_line in order_line_obj.read(cr, uid, approved_order_line_ids, ['order_id', 'price_subtotal'], context=context):
+                approved_order_amount += order_line['price_subtotal']
+                order_name = order_line['order_id'][1]
+                if order_name not in names:
+                    names.append(order_name)
 
+            _logger.info("_credit_limit order = [{}] approved_order_amount: {}".format(','.join(names), approved_order_amount))
             # We sum from all the invoices that are in draft the total amount
             invoice_obj = self.pool['account.invoice']
             draft_invoices_ids = invoice_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', '=', 'draft')], context=context)
             draft_invoices_amount = 0.0
             for invoice in invoice_obj.browse(cr, uid, draft_invoices_ids, context=context):
                 draft_invoices_amount += invoice.amount_total
-            available_credit = partner.credit_limit - credit - approved_invoices_amount - draft_invoices_amount
+            _logger.info("_credit_limit Calcolo del limite di credito disponibile:")
+            _logger.info("_credit_limit partner.credit_limit: {} - credit: {} - approved_order_amount: {} - draft_invoices_amount: {}".format(
+                    partner.credit_limit, credit, approved_order_amount, draft_invoices_amount))
+            available_credit = partner.credit_limit - credit - approved_order_amount - draft_invoices_amount
+            _logger.info("_credit_limit Risultato del calcolo del limite di credito disponibile: available_credit = {}".format(available_credit))
+
+            # Calcolo del credito residuo per l'ordine
+            _logger.info("_credit_limit Calcolo del credito residuo per l'ordine:")
+            _logger.info("_credit_limit available_credit: {} - order.amount_total: {}".format(available_credit, order.amount_total))
             res[order.id] = available_credit - order.amount_total
+            _logger.info("_credit_limit Risultato finale del calcolo del credito residuo: res[order.id] = {}".format(res[order.id]))
         return res
 
     def partner_overdue_check(self, cr, uid, company, partner, context):
