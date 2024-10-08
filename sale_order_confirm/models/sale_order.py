@@ -207,7 +207,7 @@ class sale_order(orm.Model):
                     address_id=None, product=None, partner=None, force_excluded=False,
                     context=context)
                 approved_order_amount += tax_compute.get('total_included')
-                order_name = order_line['order_id'][1]
+                order_name = order_line['order_id'].name
                 if order_name not in names:
                     names.append(order_name)
 
