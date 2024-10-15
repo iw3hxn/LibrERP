@@ -8,6 +8,8 @@
             <field name="arch" type="xml">
                 <notebook position="inside">
                     <page string="Schedule" groups="account_due_list.can_view_due_list">
+                        <separator string="Credit Analysis" colspan="4"/>
+                        <field name="payment_prospect" widget="text_WYSIWYG"/>
                         <separator string="Schedule" colspan="4"/>
                         <field name="payment_ids" nolabel="1" readonly="1"
                                context="{'color': 'reconcile_function_id', 'order': 'date_maturity desc, date asc, ref desc, move_id desc, id desc', 'form_view_ref' : 'account_due_list.view_move_line_form'}">

@@ -282,6 +282,101 @@ class res_partner(orm.Model):
 
         return []
 
+    def _compute_payment_prospect(self, cr, uid, ids, field_name, arg, context=None):
+        res = dict.fromkeys(ids, "")
+
+        cr.execute("""
+            SELECT
+                partner_id,
+                EXTRACT(YEAR FROM date_invoice) AS year,
+                COUNT(id) AS num_invoice,
+                COUNT(CASE WHEN state = 'open' THEN id END) AS num_invoice_open,
+                COUNT(CASE WHEN state = 'paid' THEN id END) AS num_invoice_paid,
+                SUM(CASE WHEN state = 'open' THEN amount_total ELSE 0 END) AS open,
+                SUM(CASE WHEN state = 'paid' THEN amount_total ELSE 0 END) AS paid
+            FROM
+                account_invoice
+            WHERE
+                type = 'out_invoice'
+                AND partner_id IN (%s)
+                AND state IN ('open', 'paid')
+            GROUP BY
+                partner_id,
+                EXTRACT(YEAR FROM date_invoice)
+        """, (tuple(ids)))
+        res_sql = cr.fetchall()
+        partner_dict = {}
+
+        for row in res_sql:
+            partner_id = row[0]
+            year = int(row[1]) if row[1] else 0
+            num_invoice = row[2]
+            num_invoice_open = row[3]
+            num_invoice_paid = row[4]
+            open = row[5]
+            paid = row[6]
+
+            # Verifica se il partner_id esiste già nel dizionario
+            if partner_id not in partner_dict:
+                partner_dict[partner_id] = {}
+
+            # Aggiungi i dati dell'anno al dizionario del partner_id
+            partner_dict[partner_id][year] = {
+                'num_invoice': num_invoice,
+                'open': open,
+                'paid': paid,
+                'num_invoice_open': num_invoice_open,
+                'num_invoice_paid': num_invoice_paid,
+            }
+
+        for _id in ids:
+            #             <style>
+            #               td {
+            #                 text-align: right;
+            #               }
+            #             </style>
+            html_table = """
+
+                        <table class="table">
+                            <thead>
+                                <th style="border: 1px solid black; padding: 5px;" >Anno</th>
+                                <th style="border: 1px solid black; padding: 5px;"># Fatture</th>
+                                <th style="border: 1px solid black; padding: 5px;">#</th>
+                                <th style="border: 1px solid black; padding: 5px;">Aperte</th>
+                                <th style="border: 1px solid black; padding: 5px;">#</th>
+                                <th style="border: 1px solid black; padding: 5px;">Pagate</th>
+                                <th style="border: 1px solid black; padding: 5px;">gg Pagamento</th>
+                                </thead>
+                                <tbody>
+                                """
+
+            sorted_partner = sorted(partner_dict[_id].items(), key=lambda x: x[0], reverse=True)
+
+
+            for line in sorted_partner:
+                year = line[0]
+                sorted_partner_dict = line[1]
+                domain = [('type', '=', 'out_invoice'), ('partner_id', '=', _id), ('state', '=', 'paid'), ('date_invoice', '>=', str(year)+'-01-01'), ('date_invoice', '<=', str(year)+'-12-31')]
+                inv_ids = self.pool['account.invoice'].search(cr, uid, domain, context=context)
+                inv_paid = self.pool['account.invoice'].read(cr, uid, inv_ids, ['payment_delta_days'], context)
+                payment_days = list(map(lambda x: x['payment_delta_days'], inv_paid))
+                avg = sum(payment_days) / len(payment_days) if payment_days else 0
+                html_table += """
+                                <tr>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
+                                </tr>
+                                """ % (year, sorted_partner_dict['num_invoice'], sorted_partner_dict['num_invoice_open'], sorted_partner_dict['open'], sorted_partner_dict['num_invoice_paid'], sorted_partner_dict['paid'], avg)
+
+            res[_id] = html_table
+        return res
+
+
     _columns = {
         'payment_ids': fields.function(_get_invoice_payment, string="All Open Payment", type='one2many',
                                        method=True, relation='account.move.line'),
@@ -289,6 +384,7 @@ class res_partner(orm.Model):
         'overdue_debit_positive': fields.function(_get_overdue_debit_positive, fnct_search=_search_overdue_debit_positive, string="Overdue positive", type='boolean', method=True),
         'last_overdue_credit_activity_date': fields.function(_get_credit_activity_history_last, method=True, string="Last Activity On", type='date'),
         'next_overdue_credit_activity_date': fields.function(_get_credit_activity_history_next, fnct_search=_search_next_overdue_credit_activity_date, method=True, string="Next Activity On", type='date'),
+        'payment_prospect': fields.function(_compute_payment_prospect, string="Payment Prospect", type='char', method=True),
         'collections_out': fields.boolean('Recupero Presso Terzi'),
         'credit_phonecall_ids': fields.one2many('credit.phonecall', 'partner_id', 'Phonecalls'),
         'len_credit_phonecall_ids': fields.function(_get_len_credit_phonecall_ids, string="Numero Solleciti", type='integer', method=True),
