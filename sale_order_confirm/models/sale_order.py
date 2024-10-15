@@ -184,7 +184,7 @@ class sale_order(orm.Model):
         res = dict.fromkeys(ids, 0.0)
         _logger.info("_credit_limit")
         for order in self.browse(cr, uid, ids, context=context):
-            _logger.info("_credit_limit for order_id={0} policy={1} partner='{2}'".format(order.id, order.order_policy, order.partner_id.name))
+            _logger.info(u"_credit_limit for order_id={0} policy={1} partner='{2}'".format(order.id, order.order_policy, order.partner_id.name))
             if order.order_policy == 'prepaid':
                 res[order.id] = 0
                 continue
@@ -218,17 +218,17 @@ class sale_order(orm.Model):
             draft_invoices_amount = 0.0
             for invoice in invoice_obj.browse(cr, uid, draft_invoices_ids, context=context):
                 draft_invoices_amount += invoice.amount_total
-            _logger.info("_credit_limit Calcolo del limite di credito disponibile:")
-            _logger.info("_credit_limit partner.credit_limit: {} - credit: {} - approved_order_amount: {} - draft_invoices_amount: {}".format(
+            _logger.info(u"_credit_limit Calcolo del limite di credito disponibile:")
+            _logger.info(u"_credit_limit partner.credit_limit: {} - credit: {} - approved_order_amount: {} - draft_invoices_amount: {}".format(
                     partner.credit_limit, credit, approved_order_amount, draft_invoices_amount))
             available_credit = partner.credit_limit - credit - approved_order_amount - draft_invoices_amount
-            _logger.info("_credit_limit Risultato del calcolo del limite di credito disponibile: available_credit = {}".format(available_credit))
+            _logger.info(u"_credit_limit Risultato del calcolo del limite di credito disponibile: available_credit = {}".format(available_credit))
 
             # Calcolo del credito residuo per l'ordine
-            _logger.info("_credit_limit Calcolo del credito residuo per l'ordine:")
-            _logger.info("_credit_limit available_credit: {} - order.amount_total: {}".format(available_credit, order.amount_total))
+            _logger.info(u"_credit_limit Calcolo del credito residuo per l'ordine:")
+            _logger.info(u"_credit_limit available_credit: {} - order.amount_total: {}".format(available_credit, order.amount_total))
             res[order.id] = available_credit - order.amount_total
-            _logger.info("_credit_limit Risultato finale del calcolo del credito residuo: res[order.id] = {}".format(res[order.id]))
+            _logger.info(u"_credit_limit Risultato finale del calcolo del credito residuo: res[order.id] = {}".format(res[order.id]))
         return res
 
     def partner_overdue_check(self, cr, uid, company, partner, context):
