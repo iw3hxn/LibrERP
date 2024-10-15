@@ -19,12 +19,15 @@
 #
 ##############################################################################
 
-import time
+import locale
+import logging
 
+import time
 
 from openerp.osv import fields, orm
 from tools import DEFAULT_SERVER_DATE_FORMAT
 
+_logger = logging.getLogger(__name__)
 
 class res_partner(orm.Model):
     _inherit = 'res.partner'
@@ -283,8 +286,8 @@ class res_partner(orm.Model):
         return []
 
     def _compute_payment_prospect(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = dict.fromkeys(ids, "")
-
         cr.execute("""
             SELECT
                 partner_id,
@@ -330,29 +333,29 @@ class res_partner(orm.Model):
             }
 
         for _id in ids:
-            #             <style>
-            #               td {
-            #                 text-align: right;
-            #               }
-            #             </style>
-            html_table = """
+            if not partner_dict:
+                res[_id] = "No Fatture"
+                continue
 
+            html_table = """
                         <table class="table">
                             <thead>
-                                <th style="border: 1px solid black; padding: 5px;" >Anno</th>
-                                <th style="border: 1px solid black; padding: 5px;"># Fatture</th>
-                                <th style="border: 1px solid black; padding: 5px;">#</th>
-                                <th style="border: 1px solid black; padding: 5px;">Aperte</th>
-                                <th style="border: 1px solid black; padding: 5px;">#</th>
-                                <th style="border: 1px solid black; padding: 5px;">Pagate</th>
-                                <th style="border: 1px solid black; padding: 5px;">gg Pagamento</th>
+                                <th style="border: 1px solid black; padding: 6px;" >Anno</th>
+                                <th style="border: 1px solid black; padding: 6px;"># Fatture</th>
+                                <th style="border: 1px solid black; padding: 6px;">#</th>
+                                <th style="border: 1px solid black; padding: 6px;">Aperte</th>
+                                <th style="border: 1px solid black; padding: 6px;">#</th>
+                                <th style="border: 1px solid black; padding: 6px;">Pagate</th>
+                                <th style="border: 1px solid black; padding: 6px;">gg Pagamento</th>
                                 </thead>
                                 <tbody>
                                 """
 
             sorted_partner = sorted(partner_dict[_id].items(), key=lambda x: x[0], reverse=True)
-
-
+            try:
+                locale.setlocale(locale.LC_ALL, '{}.utf8'.format(context['lang']))
+            except Exception as e:
+                _logger.error("_compute_payment_prospect not locale.setlocale(locale.LC_ALL, '{}.utf8'.format(context['lang']))")
             for line in sorted_partner:
                 year = line[0]
                 sorted_partner_dict = line[1]
@@ -361,18 +364,25 @@ class res_partner(orm.Model):
                 inv_paid = self.pool['account.invoice'].read(cr, uid, inv_ids, ['payment_delta_days'], context)
                 payment_days = list(map(lambda x: x['payment_delta_days'], inv_paid))
                 avg = sum(payment_days) / len(payment_days) if payment_days else 0
+                try:
+                    open_amount_locale = locale.format_string("%.2f", sorted_partner_dict['open'], True)
+                    paid_amount_locale = locale.format_string("%.2f", sorted_partner_dict['paid'], True)
+                except Exception as e:
+                    _logger.error("_compute_payment_prospect locale.format_string")
+                    open_amount_locale = sorted_partner_dict['open']
+                    paid_amount_locale = sorted_partner_dict['paid']
+
                 html_table += """
                                 <tr>
-                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px;">%s</td>
-                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
-                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
-                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
-                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
-                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
-                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 5px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 6px;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 6px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 6px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 6px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 6px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 6px; text-align: right;">%s</td>
+                                    <td style = "border-right: 1px solid black; border-left: 1px solid black; padding: 6px; text-align: right;">%s</td>
                                 </tr>
-                                """ % (year, sorted_partner_dict['num_invoice'], sorted_partner_dict['num_invoice_open'], sorted_partner_dict['open'], sorted_partner_dict['num_invoice_paid'], sorted_partner_dict['paid'], avg)
-
+                                """ % (year, sorted_partner_dict['num_invoice'], sorted_partner_dict['num_invoice_open'], open_amount_locale, sorted_partner_dict['num_invoice_paid'], paid_amount_locale, avg)
             res[_id] = html_table
         return res
 
