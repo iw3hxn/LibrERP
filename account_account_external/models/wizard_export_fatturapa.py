@@ -15,6 +15,18 @@ from openerp.osv import orm
 class WizardExportFatturapa(orm.TransientModel):
     _inherit = "wizard.export.fatturapa"
 
+    def _set_AltriDatiGestionali_line(self, cr, uid, DettaglioLinea, line, context):
+        res = super(WizardExportFatturapa, self)._set_AltriDatiGestionali_line(cr, uid, DettaglioLinea, line, context)
+        AltriDatiGestionali = AltriDatiGestionaliType(TipoDato='MASTRO', RiferimentoTesto=line.account_id.external_code or line.account_id.code)
+        DettaglioLinea.AltriDatiGestionali.append(AltriDatiGestionali)
+        return res
+
+    # def setDatiGeneraliDocumento(self, cr, uid, invoice, body, context=None):
+    #     res = super(WizardExportFatturapa, self).setDatiGeneraliDocumento(cr, uid, invoice, body, context)
+    #     if invoice.type in ['in_invoice', 'in_refund']:
+    #         body.DatiGenerali.DatiGeneraliDocumento.Numero = invoice.supplier_invoice_number
+    #     return res
+
     def _export_fatturapa_external(self, cr, uid, inv, context):
         invoice_line_model = self.pool['account.invoice.line']
         xml_string = inv.fatturapa_attachment_in_id.datas.decode('base64')
