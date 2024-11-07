@@ -17,7 +17,7 @@ class WizardExportFatturapa(orm.TransientModel):
 
     def _set_AltriDatiGestionali_line(self, cr, uid, DettaglioLinea, line, context):
         res = super(WizardExportFatturapa, self)._set_AltriDatiGestionali_line(cr, uid, DettaglioLinea, line, context)
-        AltriDatiGestionali = AltriDatiGestionaliType(TipoDato='MASTRO', RiferimentoTesto=line.account_id.external_code or line.account_id.code)
+        AltriDatiGestionali = AltriDatiGestionaliType(TipoDato='MASTRO', RiferimentoTesto=line.account_id.external_code or 9999)
         DettaglioLinea.AltriDatiGestionali.append(AltriDatiGestionali)
         return res
 
