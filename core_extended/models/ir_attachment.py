@@ -58,10 +58,8 @@ class IrAttachment(orm.Model):
         _logger.debug("get_as_zip: Debug level for zf set to 3")
 
         for attachment_id in ids:
-            _logger.info("get_as_zip: Processing attachment ID: %s", attachment_id)
-            attachment = self.read(cr, uid, attachment_id, context=context)
-            _logger.debug("get_as_zip: Attachment read: %s", attachment)
-
+            attachment = self.read(cr, uid, attachment_id, ['name', 'datas'], context)
+            _logger.info("get_as_zip: Processing attachment ID: %s, name=%s", attachment_id, attachment['name'])
             if attachment['name'] and attachment['datas']:
                 _logger.info("get_as_zip: Adding attachment to ZIP: %s", attachment['name'])
                 # for the name can also be used attachment['datas_fname']
