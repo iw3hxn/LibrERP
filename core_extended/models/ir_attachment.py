@@ -32,27 +32,38 @@ from requests import Session, Request
 from openerp.osv import orm
 
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.DEBUG)
 
 
-class ir_attachment(orm.Model):
+class IrAttachment(orm.Model):
     _inherit = 'ir.attachment'
 
     def get_as_zip(self, cr, uid, ids, log=False, encode=True, compress=True):
+        _logger.info("get_as_zip: Starting function get_as_zip")
+        _logger.debug("get_as_zip: Parameters - cr: %s, uid: %s, ids: %s, log: %s, encode: %s, compress: %s", cr, uid,
+                      ids,
+                      log, encode, compress)
+
         in_memory_zip = StringIO()
 
         context = self.pool['res.users'].context_get(cr, uid)
 
         if compress:
             zf = zipfile.ZipFile(in_memory_zip, "w", zipfile.ZIP_DEFLATED, False)
+            _logger.debug("get_as_zip: ZIP_DEFLATED mode selected for compression")
         else:
             zf = zipfile.ZipFile(in_memory_zip, "w", zipfile.ZIP_STORED, False)
+            _logger.debug("get_as_zip: ZIP_STORED mode selected for no compression")
 
         zf.debug = 3
+        _logger.debug("get_as_zip: Debug level for zf set to 3")
 
         for attachment_id in ids:
+            _logger.info("get_as_zip: Processing attachment ID: %s", attachment_id)
             attachment = self.read(cr, uid, attachment_id, context=context)
+            _logger.debug("get_as_zip: Attachment read: %s", attachment)
+
             if attachment['name'] and attachment['datas']:
+                _logger.info("get_as_zip: Adding attachment to ZIP: %s", attachment['name'])
                 # for the name can also be used attachment['datas_fname']
                 zf.writestr(attachment['name'], attachment['datas'].decode("base64"))
 
@@ -60,21 +71,26 @@ class ir_attachment(orm.Model):
         # Unix permissions are not inferred as 0000
         for zfile in zf.filelist:
             zfile.create_system = 0
+        _logger.debug("get_as_zip: Creation system for ZIP files set to 0")
 
         if not zf.infolist():
+            _logger.warning("get_as_zip: Empty ZIP, adding 'empty' entry")
             zf.writestr('empty', 'empty')
 
         if log:
+            _logger.info("get_as_zip: ZIP file details:")
             for info in zf.infolist():
-                _logger.info(
-                    u"{0}, {1}, {2}, {3}".format(info.filename, info.date_time, info.file_size, info.compress_size))
+                _logger.info("get_as_zip: %s, %s, %s, %s", info.filename, info.date_time, info.file_size,
+                             info.compress_size)
 
         zf.close()
 
         in_memory_zip.seek(0)
         out = in_memory_zip.getvalue()
+        _logger.debug("get_as_zip: Closing the ZIP file and gathering data")
 
         if encode:
+            _logger.info("get_as_zip: Encoding output to base64")
             return out.encode("base64")
         else:
             return out
