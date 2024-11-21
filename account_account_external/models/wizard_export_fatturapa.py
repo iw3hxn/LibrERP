@@ -40,7 +40,7 @@ class WizardExportFatturapa(orm.TransientModel):
                 invoice_line = invoice_line_model.browse(cr, uid, line_ids[0], context=context)
                 external_code = invoice_line.account_id.external_code
                 if not external_code:
-                    external_code = 9999
+                    external_code = '9999'
                 AltriDatiGestionali = AltriDatiGestionaliType(TipoDato='MASTRO', RiferimentoTesto=external_code)
                 line.AltriDatiGestionali.append(AltriDatiGestionali)
 
