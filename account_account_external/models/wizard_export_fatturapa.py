@@ -34,7 +34,7 @@ class WizardExportFatturapa(orm.TransientModel):
         FatturaBody = fatturapa.FatturaElettronicaBody[0]
         for line in FatturaBody.DatiBeniServizi.DettaglioLinee:
             line_ids = invoice_line_model.search(cr, uid,
-                                                 [('name', '=', line.Descrizione), ('invoice_id', '=', inv.id)],
+                                                 [('name', 'ilike', line.Descrizione), ('invoice_id', '=', inv.id)],
                                                  limit=1)
             if line_ids:
                 invoice_line = invoice_line_model.browse(cr, uid, line_ids[0], context=context)
