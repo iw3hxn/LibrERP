@@ -32,12 +32,15 @@ class WizardExportFatturapa(orm.TransientModel):
         xml_string = inv.fatturapa_attachment_in_id.datas.decode('base64')
         fatturapa = fattpa.CreateFromDocument(xml_string)
         FatturaBody = fatturapa.FatturaElettronicaBody[0]
+        _logger.info("_export_fatturapa_external search invoice id='{inv_id}'".format(inv_id=inv.id))
         for line in FatturaBody.DatiBeniServizi.DettaglioLinee:
             name = line.Descrizione.rstrip() if line.Descrizione else ''
+            _logger.info("_export_fatturapa_external search invoice line with name='{name}'".format(name=name))
             line_ids = invoice_line_model.search(cr, uid,
                                                  [('name', 'ilike', name), ('invoice_id', '=', inv.id)],
                                                  limit=1)
             if line_ids:
+                _logger.info("_export_fatturapa_external find invoice line with ids='{line_ids}'".format(line_ids=line_ids))
                 invoice_line = invoice_line_model.browse(cr, uid, line_ids[0], context=context)
                 external_code = invoice_line.account_id.external_code
                 if not external_code:
