@@ -221,23 +221,36 @@ class sale_order(orm.Model):
                     names.append(order_name)
 
             _logger.info("_credit_limit order = [{}] approved_order_amount: {}".format(','.join(names), approved_order_amount))
+            # We sum all stock picking
+            stock_picking_obj = self.pool['stock.picking']
+            picking_ids = stock_picking_obj.search(cr, uid, [
+                ('partner_id', '=', partner.id),
+                ('state', 'in', ['assigned', 'confirmed', 'done']),
+                ('invoice_state', '=', '2binvoiced'),
+                ('sale_id', '!=', False)
+            ], context=context)
             # We sum from all the invoices that are in draft the total amount
+
+            picking_amount = 0.0
+            for picking in stock_picking_obj.browse(cr, uid, picking_ids, context=context):
+                picking_amount += picking.amount_total
+
             invoice_obj = self.pool['account.invoice']
             draft_invoices_ids = invoice_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', '=', 'draft')], context=context)
             draft_invoices_amount = 0.0
             for invoice in invoice_obj.browse(cr, uid, draft_invoices_ids, context=context):
                 draft_invoices_amount += invoice.amount_total
             _logger.info(u"_credit_limit Calcolo del limite di credito disponibile:")
-            _logger.info(u"_credit_limit partner.credit_limit: {} - credit: {} - approved_order_amount: {} - draft_invoices_amount: {}".format(
-                    partner.credit_limit, credit, approved_order_amount, draft_invoices_amount))
-            available_credit = partner.credit_limit - credit - approved_order_amount - draft_invoices_amount
+            _logger.info(u"_credit_limit partner.credit_limit: {} - credit: {} - approved_order_amount: {} - picking_amount: {} - draft_invoices_amount: {}".format(
+                    partner.credit_limit, credit, approved_order_amount, picking_amount, draft_invoices_amount))
+            available_credit = partner.credit_limit - credit - approved_order_amount - picking_amount - draft_invoices_amount
             _logger.info(u"_credit_limit Risultato del calcolo del limite di credito disponibile: available_credit = {}".format(available_credit))
 
             # Calcolo del credito residuo per l'ordine
             _logger.info(u"_credit_limit Calcolo del credito residuo per l'ordine:")
             _logger.info(u"_credit_limit available_credit: {} - order.amount_total: {}".format(available_credit, order.amount_total))
             res[order.id] = available_credit - order.amount_total
-            _logger.info(u"_credit_limit Risultato finale del calcolo del credito residuo: res[order.id] = {}".format(res[order.id]))
+            _logger.info(u"_credit_limit Risultato finale del calcolo del credito residuo: res[{}] = {}".format(order.id, res[order.id]))
         return res
 
     def partner_overdue_check(self, cr, uid, company, partner, context):
