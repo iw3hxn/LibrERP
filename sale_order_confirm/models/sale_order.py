@@ -193,8 +193,17 @@ class sale_order(orm.Model):
             # We sum from all the sale orders that are aproved, the sale order lines that are not yet invoiced
             order_obj = self.pool['sale.order']
             order_line_obj = self.pool['sale.order.line']
-
-            approved_order_domain = [('active', '=', True), ('partner_id', '=', partner.id), ('state', 'not in', ['draft', 'cancel', 'done'])]
+            draft_order_state = [
+                'draft',
+                'cancel',
+                'done',
+                'wait_technical_validation',
+                'wait_manager_validation',
+                'send_to_customer',
+                'wait_customer_validation',
+                'wait_supervisor_validation',
+            ]
+            approved_order_domain = [('active', '=', True), ('partner_id', '=', partner.id), ('state', 'not in', draft_order_state)]
             if order_obj._columns.get('repair_order_id'):
                 approved_order_domain.append(('repair_order_id', '=', False))
             approved_order_ids = order_obj.search(cr, uid, approved_order_domain, context=context)
