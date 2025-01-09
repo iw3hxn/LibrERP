@@ -288,26 +288,29 @@ class res_partner(orm.Model):
     def _compute_payment_prospect(self, cr, uid, ids, field_name, arg, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = dict.fromkeys(ids, "")
-        cr.execute("""
-            SELECT
-                partner_id,
-                EXTRACT(YEAR FROM date_invoice) AS year,
-                COUNT(id) AS num_invoice,
-                COUNT(CASE WHEN state = 'open' THEN id END) AS num_invoice_open,
-                COUNT(CASE WHEN state = 'paid' THEN id END) AS num_invoice_paid,
-                SUM(CASE WHEN state = 'open' THEN amount_total ELSE 0 END) AS open,
-                SUM(CASE WHEN state = 'paid' THEN amount_total ELSE 0 END) AS paid
-            FROM
-                account_invoice
-            WHERE
-                type = 'out_invoice'
-                AND partner_id IN (%s)
-                AND state IN ('open', 'paid')
-            GROUP BY
-                partner_id,
-                EXTRACT(YEAR FROM date_invoice)
-        """, (tuple(ids)))
-        res_sql = cr.fetchall()
+        if ids:
+            cr.execute(query="""
+                SELECT
+                    partner_id,
+                    EXTRACT(YEAR FROM date_invoice) AS year,
+                    COUNT(id) AS num_invoice,
+                    COUNT(CASE WHEN state = 'open' THEN id END) AS num_invoice_open,
+                    COUNT(CASE WHEN state = 'paid' THEN id END) AS num_invoice_paid,
+                    SUM(CASE WHEN state = 'open' THEN amount_total ELSE 0 END) AS open,
+                    SUM(CASE WHEN state = 'paid' THEN amount_total ELSE 0 END) AS paid
+                FROM
+                    account_invoice
+                WHERE
+                    type = 'out_invoice'
+                    AND partner_id IN %s
+                    AND state IN ('open', 'paid')
+                GROUP BY
+                    partner_id,
+                    EXTRACT(YEAR FROM date_invoice)
+            """, params=(tuple(ids),))
+            res_sql = cr.fetchall()
+        else:
+            res_sql = []
         partner_dict = {}
 
         for row in res_sql:
