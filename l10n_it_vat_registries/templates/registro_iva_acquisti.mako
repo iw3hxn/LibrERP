@@ -137,7 +137,7 @@
             </tr>
             <tr>
                 <td colspan="2" style="vertical-align:text-top;padding:10">
-                    <h3>Dettaglio</h3>
+                    <h3>Dettaglio Imposta</h3>
                     <table style="width:100%;">
                         <tr>
                             <th style="text-align:left">Descrizione</th>
