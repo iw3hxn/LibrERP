@@ -195,8 +195,8 @@ tr {
     %endfor
     <tr >
         <td><strong>${_("Total")}</strong></td>
-        <td style="text-align:right">${ statement.payable_vat_amount|entity }</td>
-        <td style="text-align:right">${ statement.deductible_vat_amount|entity }</td>
+        <td style="text-align:right">${ statement.payable_vat_amount + statement.previous_debit_vat_amount | entity}</td>
+        <td style="text-align:right">${ statement.deductible_vat_amount + statement.previous_credit_vat_amount | entity }</td>
     </tr>
     <tr >
         <td><strong>${_("Amount to pay")}</strong></td>
