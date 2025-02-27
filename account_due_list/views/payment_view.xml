@@ -427,6 +427,12 @@
                         <filter icon="terp-go-today" string="From Start Current Month"
                                 domain="[('date','&gt;=',time.strftime('%%Y-%%m-01'))]" help="Start Date"
                                 name="start_month"/>
+                        <separator orientation="vertical"/>
+                        <filter name="draft" string="Draft" domain="[('move_id.state', '=', 'draft')]"/>
+                        <filter name="valid" string="Posted" domain="[('move_id.state', '=', 'posted')]"/>
+                        <separator orientation="vertical" />
+                        <filter name="exclude_opening" string="Exclude Opening" domain="[('period_id.special', '=', False)]"/>
+                        <filter name="only_opening" string="Only Opening" domain="[('period_id.special', '=', True)]"/>
                     </group>
                     <newline/>
                     <group expand="0" string="Group By...">

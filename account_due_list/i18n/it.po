@@ -565,6 +565,7 @@ msgid "Opened"
 msgstr "Aperto"
 
 #. module: account_due_list
+#: view:account.move.line:0
 #: selection:credit.phonecall,state:0
 #, python-format
 msgid "Draft"
@@ -629,4 +630,20 @@ msgstr "Giorni di differenza"
 #: field:account.move.line,date_payment:0
 msgid "Payment Data"
 msgstr "Data Pagamento"
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Posted"
+msgstr "Confermato"
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Exclude Opening"
+msgstr "Escluse Aperture/Chiusure"
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Only Opening"
+msgstr "Solo Aperture/Chiusure"
+
 
