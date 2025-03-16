@@ -94,8 +94,7 @@ class res_partner(orm.Model):
             return False
 
         if not vals.get(property_account, False):
-            vals[property_account] = self._get_chart_template_property(
-                cr, uid, property_account, context)
+            vals[property_account] = self.default_get(cr, uid, [property_account])[property_account]
             
         property_account_id = vals.get(property_account, False)
         if property_account_id:
