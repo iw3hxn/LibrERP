@@ -336,7 +336,7 @@ class res_partner(orm.Model):
             }
 
         for _id in ids:
-            if not partner_dict:
+            if _id not in partner_dict:
                 res[_id] = "No Fatture"
                 continue
 
@@ -353,7 +353,6 @@ class res_partner(orm.Model):
                                 </thead>
                                 <tbody>
                                 """
-
             sorted_partner = sorted(partner_dict[_id].items(), key=lambda x: x[0], reverse=True)
             try:
                 locale.setlocale(locale.LC_ALL, '{}.utf8'.format(context['lang']))
