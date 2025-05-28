@@ -481,7 +481,7 @@ class stock_picking(orm.Model):
     def check_limit(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         for picking in self.browse(cr, uid, ids, context=context):
-            if picking.type == 'out':
+            if picking.type == 'out' and picking.partner_id and picking.partner_id.customer:
                 if picking.credit_limit < 0 and picking.company_id and picking.company_id.check_credit_limit:
                     title = _(u'Credit Over Limit')
                     msg = _(u'Is not possible to confirm because customer exceed the credit limit.')
