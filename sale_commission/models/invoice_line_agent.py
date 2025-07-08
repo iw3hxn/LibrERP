@@ -25,7 +25,7 @@
 from openerp.osv import orm, fields
 
 
-class invoice_line_agent(orm.Model):
+class InvoiceLineAgent(orm.Model):
     """invoice agents"""
 
     _name = "invoice.line.agent"
@@ -37,10 +37,17 @@ class invoice_line_agent(orm.Model):
             res[line.id] = line.commission_id.get_amount_order(line.invoice_id.amount_untaxed)
         return res
 
+    def _compute_invoice_date(self, cr, uid, ids, name, arg, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = line.invoice_id.date_invoice if line.invoice_id else False
+        return res
+
     _columns = {
         'invoice_line_id': fields.many2one('account.invoice.line', 'Invoice Line', required=False, ondelete='cascade'),
-        'invoice_id': fields.many2one('account.invoice', required=True, ondelete='cascade', string='Invoice'),
-        'invoice_date': fields.related('invoice_id.date_invoice', type='date', readonly=True),
+        'invoice_id': fields.many2one('account.invoice', required=True, ondelete='cascade', string='Invoice', copy=False),
+        # 'invoice_date': fields.related('invoice_id.date_invoice', type='date', readonly=True, copy=False),
+        'invoice_date': fields.function(_compute_invoice_date, method=True, string="Date", type='date', store=False),
         'settled': fields.boolean('Settled', readonly=True),
         'amount': fields.function(_compute_amount, method=True, string='Amount', type='float', store=False),
     }
@@ -51,8 +58,9 @@ class invoice_line_agent(orm.Model):
     def copy_data(self, cr, uid, ids, default=None, context=None):
         if not default:
             default = {}
-        default.update({'settled': False})
-        return super(invoice_line_agent, self).copy_data(cr, uid, ids, default, context=context)
+        default.update({'settled': False, 'invoice_id': False, 'invoice_date': False})
+        res = super(InvoiceLineAgent, self).copy_data(cr, uid, ids, default, context=context)
+        return res
 
     def calculate_commission(self, cr, uid, ids, context=None):
         if context is None:

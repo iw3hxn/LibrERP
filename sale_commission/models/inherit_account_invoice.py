@@ -119,7 +119,7 @@ class account_invoice(orm.Model):
 
         return res
 
-    def _refund_cleanup_lines(self, cr, uid, lines):
+    def _refund_cleanup_lines(self, cr, uid, lines, context=None):
         """ugly function to map all fields of account.invoice.line when creates refund invoice"""
         res = super(account_invoice, self)._refund_cleanup_lines(cr, uid, lines)
 
@@ -127,7 +127,7 @@ class account_invoice(orm.Model):
             if 'commission_ids' in line[2]:
                 duply_ids = []
                 for cm_id in line[2].get('commission_ids', []):
-                    dup_id = self.pool['invoice.line.agent'].copy(cr, uid, cm_id, {'settled': False})
+                    dup_id = self.pool['invoice.line.agent'].copy(cr, uid, cm_id, default={'settled': False}, context=context)
                     duply_ids.append(dup_id)
                 # line[2]['commission_ids'] = [(6,0, line[2].get('commission_ids', [])) ]
                 line[2]['commission_ids'] = [(6, 0, duply_ids)]
