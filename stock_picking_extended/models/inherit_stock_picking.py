@@ -28,6 +28,9 @@ from openerp import netsvc
 from openerp.osv import orm, fields
 from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 from tools.translate import _
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 # def _chunkIt(seq, size):
@@ -126,6 +129,34 @@ from tools.translate import _
 
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
+
+    def force_assign(self, cr, uid, ids, context=None):
+        """ Changes state of picking to available if moves are confirmed or waiting.
+        @return: True
+        """
+        just_used_lot = []
+        for pick in self.browse(cr, uid, ids, context):
+            for move in pick.move_lines:
+                if not move.prodlot_id and (
+                   (move.product_id.track_production and move.location_id.usage == 'production') or \
+                   (move.product_id.track_production and move.location_dest_id.usage == 'production') or \
+                   (move.product_id.track_incoming and move.location_id.usage == 'supplier') or \
+                   (move.product_id.track_outgoing and move.location_dest_id.usage == 'customer') \
+               ):
+                    product_visible_name = move.product_id.name_get()[0][1]
+                    _logger.info('Checking product %s for available lot', product_visible_name)
+                    product_id = move.product_id.id
+                    existing_prodlot_ids = self.pool['stock.production.lot'].search(cr, uid, [('product_id', '=', product_id), ('stock_available', '>', 0)])
+                    prodlot_id = existing_prodlot_ids and existing_prodlot_ids[0] or False
+                    if prodlot_id in just_used_lot:
+                        _logger.error('Lot %s already used for another move, skipping', prodlot_id)
+                        continue
+                    just_used_lot.append(prodlot_id)
+                    _logger.info('Found %s available lots for product %s', len(existing_prodlot_ids), product_visible_name)
+                    self.pool["stock.move"].write(cr, uid, [move.id], {'prodlot_id': prodlot_id})
+
+        res = super(stock_picking, self).force_assign(cr, uid, ids, context)
+        return res
 
     def _get_invoiced_state(self, cr, uid, ids, field_name, arg, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
