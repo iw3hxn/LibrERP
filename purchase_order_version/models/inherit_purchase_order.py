@@ -50,13 +50,17 @@ class purchase_order(orm.Model):
                 vals['purchase_version_id'] = purchase_order.id
 
             context['versioning'] = True
-            vals['name'] = (purchase_order.purchase_version_id and purchase_order.purchase_version_id.name or purchase_order.name) + u" V." + ustr(
-                vals['version'])
+            # purchase_no_gap.copy muta il dict default passato (forza name='/')
+            # e il suo create rigenera il nome da sequenza: salviamo il nome di
+            # versione prima della copy e lo ripristiniamo esplicitamente dopo.
+            version_name = (purchase_order.purchase_version_id and purchase_order.purchase_version_id.name or purchase_order.name) + u" V." + ustr(vals['version'])
+            vals['name'] = version_name
             new_order_id = self.copy(cr, uid, purchase_order.id, vals, context)
+            self.write(cr, uid, new_order_id, {'name': version_name}, context=context)
 
             attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'purchase.order'), ('res_id', '=', purchase_order.id)], context=context)
             if attachment_ids:
-                attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': vals['name']}, context)
+                attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': version_name}, context)
 
             purchase_order.write({'active': False})
             order_ids.append(new_order_id)
@@ -105,6 +109,16 @@ class purchase_order(orm.Model):
         'active': True,
         'version': 0,
     }
+
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+        # la duplicazione semplice copia anche purchase_version_id e version:
+        # vanno azzerati se non si sta versionando (stessa guardia di sale_order_version)
+        if not context.get('versioning', False) and vals.get('purchase_version_id', False):
+            del vals['purchase_version_id']
+            vals['version'] = 0
+        return super(purchase_order, self).create(cr, uid, vals, context)
 
     def print_report(self, cr, uid, ids, xml_id, context):
         def id_from_xml_id():
