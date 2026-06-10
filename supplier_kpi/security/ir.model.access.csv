@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_supplier_delay_report_user,supplier.delay.report user,model_supplier_delay_report,purchase.group_purchase_user,1,0,0,0
+access_supplier_nonconformity_report_user,supplier.nonconformity.report user,model_supplier_nonconformity_report,purchase.group_purchase_user,1,0,0,0

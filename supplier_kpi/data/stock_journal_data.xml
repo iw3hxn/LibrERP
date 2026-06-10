@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!--
+            Initialize nonconformity flags on well-known stock journal names.
+            noupdate="1": runs only on first install, not on module update,
+            so manual overrides made by the user are preserved on upgrade.
+        -->
+        <function model="stock.journal" name="init_nonconformity_flags"/>
+    </data>
+</openerp>
