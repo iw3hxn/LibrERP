@@ -53,6 +53,7 @@
                     <filter string="Solo fornitori classificati QC"
                             name="filter_qc_classified"
                             domain="[('supplier_type', '!=', False)]"/>
+                    <newline/>
                     <group expand="0" string="Raggruppa per">
                         <filter string="Anno"
                                 name="group_year"

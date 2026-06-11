@@ -12,7 +12,7 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <field name="supplier" position="after">
+                <field name="company_id" position="after">
                     <field name="supplier_type"
                            attrs="{'invisible': [('supplier', '=', False)]}"/>
                 </field>
