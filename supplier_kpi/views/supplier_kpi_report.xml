@@ -14,6 +14,7 @@
                 <tree string="Ritardi ricezione fornitori">
                     <field name="year"/>
                     <field name="partner_id"/>
+                    <field name="supplier_type"/>
                     <field name="order_id"/>
                     <field name="picking_id"/>
                     <field name="product_id"/>
@@ -45,9 +46,13 @@
                 <search string="Ritardi ricezione fornitori">
                     <field name="partner_id" string="Fornitore"/>
                     <field name="year" string="Anno"/>
+                    <field name="supplier_type" string="Classificazione QC"/>
                     <filter string="In ritardo"
                             name="filter_late"
                             domain="[('delay_days', '&gt;', 0)]"/>
+                    <filter string="Solo fornitori classificati QC"
+                            name="filter_qc_classified"
+                            domain="[('supplier_type', '!=', False)]"/>
                     <group expand="0" string="Raggruppa per">
                         <filter string="Anno"
                                 name="group_year"
@@ -55,6 +60,9 @@
                         <filter string="Fornitore"
                                 name="group_partner"
                                 context="{'group_by': 'partner_id'}"/>
+                        <filter string="Classificazione QC"
+                                name="group_supplier_type"
+                                context="{'group_by': 'supplier_type'}"/>
                     </group>
                 </search>
             </field>
@@ -66,7 +74,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,graph</field>
-            <field name="context">{'search_default_group_year': 1, 'search_default_group_partner': 1}</field>
+            <field name="context">{'search_default_group_year': 1, 'search_default_group_partner': 1, 'search_default_filter_qc_classified': 1}</field>
         </record>
 
         <!-- ============================================================ -->

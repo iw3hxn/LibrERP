@@ -48,6 +48,7 @@ Funzionalità:
     'data': [
         'security/ir.model.access.csv',
         'data/stock_journal_data.xml',
+        'views/inherit_res_partner.xml',
         'views/supplier_kpi_report.xml',
     ],
     'installable': True,

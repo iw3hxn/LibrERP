@@ -19,8 +19,25 @@
 #
 ##############################################################################
 
-from . import inherit_res_partner
-from . import inherit_stock_journal
-from . import supplier_kpi_report
+from openerp.osv import orm, fields
+
+SUPPLIER_TYPE_SELECTION = [
+    ('QC_important', 'QC Importante'),
+    ('QC_primary', 'QC Primario'),
+    ('QC_secondary', 'QC Secondario'),
+]
+
+
+class ResPartner(orm.Model):
+    _inherit = 'res.partner'
+
+    _columns = {
+        'supplier_type': fields.selection(
+            SUPPLIER_TYPE_SELECTION,
+            'Classificazione QC fornitore',
+            help="Classificazione qualita' del fornitore ai fini ISO 9001: "
+                 "determina quali fornitori compaiono di default nel report "
+                 "ritardi ricezione."),
+    }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

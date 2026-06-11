@@ -25,6 +25,7 @@ Covers:
   - stock.journal nonconformity flag initialisation (init_nonconformity_flags)
   - supplier.delay.report SQL view
   - supplier.nonconformity.report SQL view
+  - res.partner.supplier_type QC classification + delay report filter
 
 All tests use TransactionCase (rollback per method).  Data is created inside
 the transaction so the SQL views can read it without a COMMIT.
@@ -608,6 +609,146 @@ class TestSupplierDelayReport(test_common.TransactionCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]['year'], '2024',
                          'year must be the 4-digit string from ddt_in_date')
+
+
+# ===========================================================================
+# Test suite 2b — res.partner.supplier_type + delay report QC filter
+# ===========================================================================
+
+class TestSupplierTypeField(test_common.TransactionCase):
+    """
+    Tests for the res.partner.supplier_type selection field and its
+    exposure/filterability on supplier.delay.report.
+    """
+
+    SUPPLIER_TYPES = ['QC_important', 'QC_primary', 'QC_secondary']
+
+    def setUp(self):
+        super(TestSupplierTypeField, self).setUp()
+        self.report_model = self.registry('supplier.delay.report')
+        self.partner_model = self.registry('res.partner')
+        self.address_model = self.registry('res.partner.address')
+
+    def test_supplier_type_accepts_all_qc_values(self):
+        # Each of the 3 QC classification keys must be writable and read back
+        for stype in self.SUPPLIER_TYPES:
+            partner_id, _ = _make_supplier_and_address(
+                self.cr, self.uid, self.partner_model, self.address_model,
+                'KPI Supplier %s' % stype,
+            )
+            self.partner_model.write(self.cr, self.uid, [partner_id],
+                                     {'supplier_type': stype})
+            partner = self.partner_model.browse(self.cr, self.uid, partner_id)
+            self.assertEqual(partner.supplier_type, stype)
+
+    def test_supplier_type_defaults_to_false(self):
+        # A new partner must have no QC classification
+        partner_id, _ = _make_supplier_and_address(
+            self.cr, self.uid, self.partner_model, self.address_model,
+            'KPI Supplier unclassified',
+        )
+        partner = self.partner_model.browse(self.cr, self.uid, partner_id)
+        self.assertFalse(partner.supplier_type)
+
+    def test_supplier_type_rejects_invalid_value(self):
+        # A value outside the selection must be refused by the ORM
+        partner_id, _ = _make_supplier_and_address(
+            self.cr, self.uid, self.partner_model, self.address_model,
+            'KPI Supplier invalid type',
+        )
+        self.assertRaises(
+            Exception,
+            self.partner_model.write,
+            self.cr, self.uid, [partner_id],
+            {'supplier_type': 'QC_bogus'},
+        )
+
+    def _make_delay_row(self, partner_id, address_id):
+        """PO + done picking-in 5 days late → 1 delay report row."""
+        product_id = _make_product(self.registry, self.cr, self.uid)
+        po_id, line_id = _make_purchase_order(
+            self.registry, self.cr, self.uid,
+            partner_id, address_id, product_id,
+            date_planned='2025-01-10',
+        )
+        _make_done_picking_in(
+            self.registry, self.cr, self.uid,
+            po_id, address_id, product_id, line_id,
+            ddt_in_date='2025-01-15',
+        )
+        return po_id
+
+    def test_delay_report_exposes_supplier_type(self):
+        # The report row of a classified supplier must carry its supplier_type
+        partner_id, address_id = _make_supplier_and_address(
+            self.cr, self.uid, self.partner_model, self.address_model,
+            'KPI Supplier QC important',
+        )
+        self.partner_model.write(self.cr, self.uid, [partner_id],
+                                 {'supplier_type': 'QC_important'})
+        po_id = self._make_delay_row(partner_id, address_id)
+
+        rows = _search_read(self.report_model,
+            self.cr, self.uid,
+            [('order_id', '=', po_id)],
+            ['supplier_type'],
+        )
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['supplier_type'], 'QC_important',
+                         'Delay report row must expose the partner supplier_type')
+
+    def test_delay_report_filter_on_supplier_type_set(self):
+        # domain [('supplier_type','!=',False)] must include the classified
+        # supplier rows and exclude the unclassified one
+        classified_id, classified_addr = _make_supplier_and_address(
+            self.cr, self.uid, self.partner_model, self.address_model,
+            'KPI Supplier classified',
+        )
+        self.partner_model.write(self.cr, self.uid, [classified_id],
+                                 {'supplier_type': 'QC_primary'})
+        unclassified_id, unclassified_addr = _make_supplier_and_address(
+            self.cr, self.uid, self.partner_model, self.address_model,
+            'KPI Supplier not classified',
+        )
+        po_classified = self._make_delay_row(classified_id, classified_addr)
+        po_unclassified = self._make_delay_row(unclassified_id, unclassified_addr)
+
+        rows = _search_read(self.report_model,
+            self.cr, self.uid,
+            [('order_id', 'in', [po_classified, po_unclassified]),
+             ('supplier_type', '!=', False)],
+            ['partner_id', 'supplier_type'],
+        )
+        self.assertEqual(len(rows), 1,
+                         'Only the classified supplier row must pass the filter')
+        self.assertEqual(rows[0]['partner_id'][0], classified_id)
+        self.assertEqual(rows[0]['supplier_type'], 'QC_primary')
+
+    def test_delay_report_filter_on_specific_type(self):
+        # Filtering on a single QC class must return only that class
+        important_id, important_addr = _make_supplier_and_address(
+            self.cr, self.uid, self.partner_model, self.address_model,
+            'KPI Supplier important only',
+        )
+        self.partner_model.write(self.cr, self.uid, [important_id],
+                                 {'supplier_type': 'QC_important'})
+        secondary_id, secondary_addr = _make_supplier_and_address(
+            self.cr, self.uid, self.partner_model, self.address_model,
+            'KPI Supplier secondary only',
+        )
+        self.partner_model.write(self.cr, self.uid, [secondary_id],
+                                 {'supplier_type': 'QC_secondary'})
+        po_important = self._make_delay_row(important_id, important_addr)
+        po_secondary = self._make_delay_row(secondary_id, secondary_addr)
+
+        rows = _search_read(self.report_model,
+            self.cr, self.uid,
+            [('order_id', 'in', [po_important, po_secondary]),
+             ('supplier_type', '=', 'QC_important')],
+            ['partner_id'],
+        )
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['partner_id'][0], important_id)
 
 
 # ===========================================================================

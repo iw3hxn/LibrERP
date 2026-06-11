@@ -14,6 +14,7 @@
    - 3.2 Come si calcola il ritardo
    - 3.3 Come si usa la vista elenco
    - 3.4 Come si usa la vista grafico
+   - 3.5 Classificazione QC dei fornitori
 4. [Report Non conformità fornitori](#4-report-non-conformità-fornitori)
    - 4.1 Cosa mostra
    - 4.2 Criteri di inclusione
@@ -67,6 +68,7 @@ Espandendo un gruppo si vedono le singole righe, ciascuna corrispondente a una r
 |---|---|
 | **Anno** | Anno solare della ricezione |
 | **Fornitore** | Ragione sociale del fornitore |
+| **Classificazione QC** | Classe qualità assegnata al fornitore in anagrafica (paragrafo 3.5) |
 | **Ordine** | Riferimento dell'ordine di acquisto |
 | **Picking** | Riferimento del documento di ricezione merce in magazzino |
 | **Prodotto** | Articolo ricevuto |
@@ -102,13 +104,37 @@ La **media** visualizzata a livello di gruppo (fornitore/anno) è la media aritm
 
 **Filtro "In ritardo":** fare clic sul pulsante **Filtri** e selezionare **In ritardo** per visualizzare solo le righe in cui la consegna è avvenuta dopo la data concordata. Questo filtro è utile per isolare i casi problematici da presentare all'audit.
 
-**Modifica del raggruppamento:** fare clic su **Raggruppa per** per modificare i criteri di raggruppamento. Le opzioni disponibili sono **Anno** e **Fornitore**. Si possono combinare entrambi (es. prima per Anno, poi per Fornitore) oppure usarne uno solo.
+**Filtro "Solo fornitori classificati QC":** all'apertura del report questo filtro è **attivo di default**: vengono mostrati solo i fornitori a cui è stata assegnata una classificazione QC in anagrafica (paragrafo 3.5). Per vedere i ritardi di **tutti** i fornitori, rimuovere il filtro dalla barra di ricerca con un clic sulla relativa etichetta.
+
+**Modifica del raggruppamento:** fare clic su **Raggruppa per** per modificare i criteri di raggruppamento. Le opzioni disponibili sono **Anno**, **Fornitore** e **Classificazione QC**. Si possono combinare più criteri (es. prima per Anno, poi per Fornitore) oppure usarne uno solo.
 
 **Esportazione:** per esportare i dati in foglio di calcolo, selezionare le righe desiderate (oppure tutte con la casella in testa alla colonna) e utilizzare il pulsante **Esporta** nella barra degli strumenti.
 
 ### 3.4 Come si usa la vista grafico
 
 Fare clic sull'icona del **grafico a barre** in alto a destra (accanto all'icona dell'elenco) per passare alla vista grafico. Il grafico mostra, per ciascun fornitore, la somma dei giorni di ritardo sul periodo visualizzato. Questa vista è particolarmente utile per il riesame della direzione (Management Review ISO 9001).
+
+### 3.5 Classificazione QC dei fornitori
+
+Nell'anagrafica del fornitore (menu **Acquisti ▸ Fornitori**, oppure **Vendite ▸ Rubrica indirizzi ▸ Clienti e fornitori**) è disponibile il nuovo campo **Classificazione QC fornitore**, visibile solo quando la casella **Fornitore** è spuntata. I valori possibili sono:
+
+| Valore | Significato suggerito |
+|---|---|
+| **QC Importante** | Fornitore critico per la qualità del prodotto/servizio |
+| **QC Primario** | Fornitore principale, monitorato regolarmente |
+| **QC Secondario** | Fornitore secondario o occasionale |
+
+Il significato operativo delle tre classi è definito dal sistema di gestione qualità aziendale; il modulo si limita a registrare la classe e a usarla nel report.
+
+**Effetto sul report ritardi:** il report **Ritardi ricezione fornitori** mostra di default solo i fornitori che hanno una classificazione QC assegnata (qualsiasi delle tre classi). I fornitori senza classificazione restano visibili rimuovendo il filtro **Solo fornitori classificati QC** dalla barra di ricerca.
+
+**Come assegnare la classe a un fornitore:**
+
+1. Aprire la scheda del fornitore dall'anagrafica.
+2. Nella sezione dove compare la casella **Fornitore**, selezionare il valore desiderato nel campo **Classificazione QC fornitore**.
+3. Salvare la scheda con il pulsante **Salva**.
+
+> **Nota:** la classificazione non ha effetti su ordini, prezzi o flussi operativi: è un attributo puramente informativo usato dal report qualità.
 
 ---
 
@@ -234,6 +260,12 @@ R: Il modulo è progettato specificamente per le non conformità legate ai forni
 
 ---
 
+**D: Ho aperto il report ritardi e non vedo nessun dato (o vedo pochi fornitori). Perché?**
+
+R: All'apertura il report applica il filtro **Solo fornitori classificati QC**: se nessun fornitore ha ancora la **Classificazione QC fornitore** compilata in anagrafica, l'elenco risulta vuoto. Rimuovere il filtro dalla barra di ricerca per vedere tutti i fornitori, oppure assegnare la classificazione ai fornitori da monitorare (paragrafo 3.5).
+
+---
+
 **D: Posso modificare il calcolo del ritardo per escludere i giorni festivi?**
 
 R: No. Il calcolo attuale si basa sui giorni di calendario (differenza tra le due date), senza considerare il calendario lavorativo aziendale. Se si desidera un calcolo basato sui giorni lavorativi, è necessario richiedere una personalizzazione al fornitore del software.
@@ -253,4 +285,4 @@ R: Il manuale può essere convertito in PDF con lo strumento di generazione docu
 ---
 
 *Versione modulo: 1.0*
-*Aggiornato il: 2026-06-10*
+*Aggiornato il: 2026-06-11*

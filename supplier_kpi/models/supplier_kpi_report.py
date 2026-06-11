@@ -23,6 +23,8 @@ import logging
 from openerp.osv import orm, fields
 from openerp import tools
 
+from .inherit_res_partner import SUPPLIER_TYPE_SELECTION
+
 _logger = logging.getLogger(__name__)
 
 
@@ -39,6 +41,11 @@ class SupplierDelayReport(orm.Model):
     _columns = {
         'year': fields.char('Anno', size=4, readonly=True),
         'partner_id': fields.many2one('res.partner', 'Fornitore', readonly=True),
+        'supplier_type': fields.selection(
+            SUPPLIER_TYPE_SELECTION,
+            'Classificazione QC',
+            readonly=True,
+        ),
         'order_id': fields.many2one('purchase.order', 'Ordine', readonly=True),
         'picking_id': fields.many2one('stock.picking', 'Picking', readonly=True),
         'product_id': fields.many2one('product.product', 'Prodotto', readonly=True),
@@ -69,6 +76,7 @@ class SupplierDelayReport(orm.Model):
                     sm.id,
                     to_char(sp.ddt_in_date, 'YYYY')         AS year,
                     po.partner_id,
+                    rp.supplier_type                         AS supplier_type,
                     po.id                                    AS order_id,
                     sp.id                                    AS picking_id,
                     sm.product_id,
@@ -83,6 +91,7 @@ class SupplierDelayReport(orm.Model):
                 JOIN stock_picking sp     ON sm.picking_id = sp.id
                 JOIN purchase_order_line pol ON sm.purchase_line_id = pol.id
                 JOIN purchase_order po    ON pol.order_id = po.id
+                JOIN res_partner rp       ON po.partner_id = rp.id
                 LEFT JOIN stock_journal sj ON sp.stock_journal_id = sj.id
                 WHERE sp.type = 'in'
                   AND sp.state = 'done'
