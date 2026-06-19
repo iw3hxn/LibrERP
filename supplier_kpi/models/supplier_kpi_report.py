@@ -100,6 +100,25 @@ class SupplierDelayReport(orm.Model):
         ),
     }
 
+    # Colonne il cui aggregato di gruppo sarebbe fuorviante: sono valori
+    # per-entrata-merce e, sommati/mediati sui move, non danno un totale
+    # sensato. In 6.1 il default e' comunque 'sum' (non esiste un
+    # group_operator "nessuno"), quindi azzeriamo l'aggregato sovrascrivendo
+    # read_group e rimuovendo le chiavi dai gruppi: il footer resta vuoto.
+    _NO_GROUP_AGGREGATE = (
+        'ordered_qty', 'received_qty', 'line_amount'
+    )
+
+    def read_group(self, cr, uid, domain, fields, groupby, offset=0,
+                   limit=None, context=None, orderby=False):
+        res = super(SupplierDelayReport, self).read_group(
+            cr, uid, domain, fields, groupby, offset=offset, limit=limit,
+            context=context, orderby=orderby)
+        for group in res:
+            for field in self._NO_GROUP_AGGREGATE:
+                group.pop(field, None)
+        return res
+
     def init(self, cr):
         # Il totale riga e' l'imponibile della quantita' RICEVUTA in questa
         # entrata (sm.product_qty), non dell'intera riga ordinata. Lo sconto
