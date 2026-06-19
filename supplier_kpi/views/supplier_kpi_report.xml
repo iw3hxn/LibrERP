@@ -20,6 +20,10 @@
                     <field name="product_id"/>
                     <field name="date_planned"/>
                     <field name="ddt_in_date"/>
+                    <field name="ordered_qty"/>
+                    <field name="received_qty"/>
+                    <field name="line_amount"/>
+                    <field name="order_amount"/>
                     <field name="delay_days"/>
                     <field name="late"/>
                 </tree>

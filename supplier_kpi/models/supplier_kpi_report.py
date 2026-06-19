@@ -51,6 +51,38 @@ class SupplierDelayReport(orm.Model):
         'product_id': fields.many2one('product.product', 'Prodotto', readonly=True),
         'date_planned': fields.date('Data prevista', readonly=True),
         'ddt_in_date': fields.date('Data DDT in', readonly=True),
+        'ordered_qty': fields.float(
+            'Qta ordinata',
+            digits=(16, 3),
+            readonly=True,
+            # Valore di riga d'ordine ripetuto sui move multipli della
+            # stessa riga: in raggruppamento e' diagnostico, non un totale.
+            group_operator='sum',
+        ),
+        'received_qty': fields.float(
+            'Qta ricevuta',
+            digits=(16, 3),
+            readonly=True,
+            group_operator='sum',
+        ),
+        'line_amount': fields.float(
+            # Valore della merce RICEVUTA in questa entrata (sm.product_qty),
+            # non dell'intera riga ordinata: evita il sovra-conteggio su
+            # consegne parziali/multiple. SUM = valore realmente ricevuto.
+            'Totale riga',
+            digits=(16, 2),
+            readonly=True,
+            group_operator='sum',
+        ),
+        'order_amount': fields.float(
+            'Totale ordine',
+            digits=(16, 2),
+            readonly=True,
+            # In 6.1 il default e' 'sum': order_amount ripete l'imponibile
+            # ordine su ogni riga/move, quindi 'avg' evita il doppio conteggio
+            # (raggruppando per ordine restituisce il totale ordine corretto).
+            group_operator='avg',
+        ),
         'delay_days': fields.integer(
             'Ritardo (gg)',
             readonly=True,
@@ -69,6 +101,21 @@ class SupplierDelayReport(orm.Model):
     }
 
     def init(self, cr):
+        # Il totale riga e' l'imponibile della quantita' RICEVUTA in questa
+        # entrata (sm.product_qty), non dell'intera riga ordinata. Lo sconto
+        # (modulo purchase_discount) e' opzionale: supplier_kpi non ne dipende,
+        # quindi rileviamo la colonna a runtime e adattiamo la formula.
+        cr.execute("""
+            SELECT 1 FROM information_schema.columns
+            WHERE table_name = 'purchase_order_line'
+              AND column_name = 'discount'
+        """)
+        if cr.fetchone():
+            line_amount_sql = ("pol.price_unit * sm.product_qty "
+                               "* (1 - COALESCE(pol.discount, 0) / 100.0)")
+        else:
+            line_amount_sql = "pol.price_unit * sm.product_qty"
+
         tools.drop_view_if_exists(cr, 'supplier_delay_report')
         cr.execute("""
             CREATE OR REPLACE VIEW supplier_delay_report AS (
@@ -82,6 +129,10 @@ class SupplierDelayReport(orm.Model):
                     sm.product_id,
                     pol.date_planned::date                   AS date_planned,
                     sp.ddt_in_date::date                     AS ddt_in_date,
+                    pol.product_qty                          AS ordered_qty,
+                    sm.product_qty                           AS received_qty,
+                    """ + line_amount_sql + """              AS line_amount,
+                    po.amount_untaxed                        AS order_amount,
                     (sp.ddt_in_date::date - pol.date_planned::date)
                                                              AS delay_days,
                     CASE WHEN sp.ddt_in_date::date > pol.date_planned::date
