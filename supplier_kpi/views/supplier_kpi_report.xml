@@ -119,6 +119,7 @@
                     <field name="partner_id" string="Fornitore"/>
                     <field name="year" string="Anno"/>
                     <field name="stock_journal_id" string="Causale"/>
+                    <newline/>
                     <group expand="0" string="Raggruppa per">
                         <filter string="Anno"
                                 name="group_year"
@@ -148,17 +149,20 @@
         <!-- Menu items under Reporting (base.next_id_73)                 -->
         <!-- ============================================================ -->
 
+        <menuitem id="supplier_kpi.menu_reporting" name="Report KPI" parent="base.menu_purchase_root" sequence="8"
+            groups="supplier_kpi.group_kpi_purchase_view"/>
+
         <menuitem
             id="menu_supplier_delay_report"
             name="Ritardi ricezione fornitori"
-            parent="base.next_id_73"
+            parent="supplier_kpi.menu_reporting"
             action="action_supplier_delay_report"
             sequence="50"/>
 
         <menuitem
             id="menu_supplier_nonconformity_report"
             name="Non conformità fornitori"
-            parent="base.next_id_73"
+            parent="supplier_kpi.menu_reporting"
             action="action_supplier_nonconformity_report"
             sequence="51"/>
 

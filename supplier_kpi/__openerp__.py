@@ -21,7 +21,7 @@
 
 {
     'name': 'Supplier KPI (ISO 9001)',
-    'version': '1.0',
+    'version': '1.1',
     'author': 'Didotech SRL',
     'category': 'Reporting',
     'description': """
@@ -47,6 +47,7 @@ Funzionalità:
     ],
     'data': [
         'security/ir.model.access.csv',
+        'security/security.xml',
         'data/stock_journal_data.xml',
         'views/inherit_res_partner.xml',
         'views/supplier_kpi_report.xml',
